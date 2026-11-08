@@ -1,0 +1,122 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PerfilDashboard from '../components/PerfilDashboard.tsx';
+---
+
+<Layout title="Mi Perfil | ApuntesDev">
+  <Header />
+  
+  <main class="perfil-layout">
+    <header class="perfil-header">
+      <h1>Terminal del Estudiante</h1>
+      <p>Consulta tus estadísticas de estudio, tu rango y gestiona tu progreso.</p>
+    </header>
+
+    <!-- Cargamos el componente interactivo con client:load -->
+    <PerfilDashboard client:load />
+  </main>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  .perfil-layout {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .perfil-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .perfil-header h1 {
+    color: var(--accent-color);
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .perfil-header p {
+    color: #888;
+  }
+
+  /* Estilos del Dashboard Preact */
+  .dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+  .stat-card {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+  }
+  .stat-label {
+    color: #888;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+  .stat-value {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: monospace;
+  }
+  .stat-value.oro { color: #FFD700; }
+  .stat-value.xp { color: var(--accent-color); }
+  .stat-value small { font-size: 1rem; color: #666; }
+
+  /* Caja de Prestigio */
+  .prestigio-box {
+    background: linear-gradient(145deg, #1a1a1a, #222);
+    border: 2px dashed #444;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .prestigio-box h3 { color: #FFD700; margin-top: 0; font-size: 1.5rem; }
+  .prestigio-box p { color: #ccc; margin-bottom: 1.5rem; max-width: 600px; margin-inline: auto; }
+  
+  .btn-prestigio {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  .btn-prestigio.bloqueado {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+  }
+  .btn-prestigio.activo {
+    background: linear-gradient(90deg, #FF8C00, #FFD700);
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  .btn-prestigio.activo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+</style>
