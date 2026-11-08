@@ -2,6 +2,7 @@
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import BotonCompletar from '../components/BotonCompletar.tsx';
 
 const { frontmatter, headings } = Astro.props;
 const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth === 3) : [];
@@ -37,6 +38,9 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
 
       <div class="contenido-markdown">
         <slot />
+      </div>
+      <div class="zona-recompensa">
+        <BotonCompletar client:visible idApunte={Astro.url.pathname} />
       </div>
     </article>
   </div>
@@ -167,5 +171,12 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
     color: #ccc;
     line-height: 1.8;
     font-size: 1.05rem;
+  }
+  .zona-recompensa {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: center;
   }
 </style>
