@@ -23,13 +23,15 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
     <aside class="sidebar-indice">
       <div class="indice-sticky">
         <h3>En este apunte</h3>
-        <ul>
-          {indice.map((heading: any) => (
-            <li class={`nivel-${heading.depth}`}>
-              <a href={`#${heading.slug}`}>{heading.text}</a>
-            </li>
-          ))}
-        </ul>
+        <nav>
+          <ul>
+            {indice.map((heading: any) => (
+              <li class={`nivel-${heading.depth}`}>
+                <a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </aside>
 
@@ -54,7 +56,7 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
 
 <script>
   document.addEventListener('astro:page-load', () => {
-    // 1. LÓGICA DE LA BARRA DE LECTURA (Mantén lo que ya tenías)
+    // 1. LÓGICA DE LA BARRA DE LECTURA
     const barra = document.getElementById('barra-lectura');
     if (barra) {
       const actualizarProgreso = () => {
@@ -71,7 +73,6 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
     const bloquesCodigo = document.querySelectorAll('.contenido-markdown pre');
     
     bloquesCodigo.forEach((bloque) => {
-      // Evitamos duplicados si el botón ya existe
       if (bloque.querySelector('.copy-btn')) return;
 
       const btn = document.createElement('button');
@@ -79,11 +80,9 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
       btn.textContent = 'Copiar';
 
       btn.addEventListener('click', async () => {
-        // Buscamos el texto dentro de la etiqueta <code>
         const codigo = bloque.querySelector('code')?.innerText || '';
         await navigator.clipboard.writeText(codigo);
         
-        // Feedback visual
         btn.textContent = '¡Copiado! ✅';
         btn.style.color = 'var(--bg-color)';
         btn.style.background = 'var(--accent-color)';
@@ -96,6 +95,27 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
       });
 
       bloque.appendChild(btn);
+    });
+
+    // 3. NUEVA LÓGICA: ÍNDICE INTELIGENTE (SCROLLSPY)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0) {
+          document.querySelectorAll('.toc-link').forEach(link => {
+            link.classList.remove('active');
+          });
+          
+          const id = entry.target.getAttribute('id');
+          const enlaceActivo = document.querySelector(`.toc-link[href="#${id}"]`);
+          if (enlaceActivo) {
+            enlaceActivo.classList.add('active');
+          }
+        }
+      });
+    }, { rootMargin: '0px 0px -70% 0px' });
+
+    document.querySelectorAll('.contenido-markdown h2, .contenido-markdown h3').forEach(heading => {
+      observer.observe(heading);
     });
   });
 </script>
@@ -161,14 +181,35 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
   .indice-sticky li { margin-bottom: 0.5rem; }
   .indice-sticky .nivel-3 { padding-left: 1rem; font-size: 0.9rem; }
   
-  .indice-sticky a {
-    color: #aaa;
+  /* =========================================
+     ESTILOS PREMIUM: ÍNDICE INTELIGENTE
+     ========================================= */
+  .toc-link {
+    display: block;
+    color: #666;
     text-decoration: none;
-    transition: color 0.2s;
+    padding: 0.4rem 0 0.4rem 15px;
+    border-left: 2px solid #333;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
   }
-  .indice-sticky a:hover {
+
+  .toc-link:hover {
+    color: #aaa;
+    border-left-color: #666;
+  }
+
+  .toc-link.active {
     color: var(--accent-color);
+    border-left-color: var(--accent-color);
+    font-weight: bold;
+    background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, transparent 100%); 
   }
+  
+  [data-theme="kali"] .toc-link.active { background: linear-gradient(90deg, rgba(229, 57, 53, 0.1) 0%, transparent 100%); }
+  [data-theme="dracula"] .toc-link.active { background: linear-gradient(90deg, rgba(189, 147, 249, 0.1) 0%, transparent 100%); }
+  [data-theme="hacker"] .toc-link.active { background: linear-gradient(90deg, rgba(0, 255, 0, 0.15) 0%, transparent 100%); }
 
   .apunte-contenido {
     background: #1e1e1e;
@@ -218,17 +259,16 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
      ESTILOS PREMIUM: BLOQUES DE CÓDIGO (TERMINAL)
      ========================================= */
   .contenido-markdown pre {
-    background: #111 !important; /* Fondo ultra oscuro */
+    background: #111 !important; 
     border: 1px solid #333;
     border-radius: 8px;
-    padding: 3rem 1rem 1rem 1rem !important; /* Mucho espacio arriba para la barra */
+    padding: 3rem 1rem 1rem 1rem !important; 
     position: relative;
     margin: 2rem 0;
     overflow-x: auto;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   }
 
-  /* Los 3 puntitos estilo Mac OS */
   .contenido-markdown pre::before {
     content: '';
     position: absolute;
@@ -241,7 +281,6 @@ const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth =
     box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
   }
 
-  /* Estilos del botón flotante de copiar */
   .copy-btn {
     position: absolute;
     top: 0.5rem;
