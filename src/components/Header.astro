@@ -2,22 +2,20 @@
 ---
 <header>
   <div class="header-container">
+    
+    <!-- Enlace del logo que lleva a la página principal -->
+    <a href="/" class="logo-link">
+      <img src="/logo.png" alt="Logo ApuntesDev" class="logo-img" />
+    </a>
+
     <nav>
-      <a href="/">Inicio</a>
       <a href="/sistemas">Sistemas</a>
       <a href="/programacion">Programación</a>
-      <!-- Añade las demás categorías aquí -->
     </nav>
 
-    <!-- Nueva barra de búsqueda -->
+    <!-- La barra de búsqueda que ya tenías -->
     <form action="/buscar" method="GET" class="buscador-form">
-      <input 
-        type="search" 
-        name="q" 
-        placeholder="Buscar apuntes o comandos..." 
-        required 
-        autocomplete="off"
-      />
+      <input type="search" name="q" placeholder="Buscar apuntes..." required autocomplete="off" />
       <button type="submit">🔍</button>
     </form>
   </div>
@@ -39,10 +37,28 @@
     flex-wrap: wrap;
     gap: 1rem;
   }
+  
+  /* Nuevos estilos para el logo */
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+  .logo-img {
+    height: 40px; /* Ajusta este valor si lo ves muy grande o pequeño */
+    width: auto;
+    transition: transform 0.2s ease;
+  }
+  .logo-link:hover .logo-img {
+    transform: scale(1.05);
+  }
+
   nav {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
+    flex-grow: 1; /* Empuja la barra de búsqueda a la derecha */
+    margin-left: 1rem;
   }
   nav a {
     color: var(--text-color);
@@ -53,27 +69,9 @@
   nav a:hover {
     color: var(--accent-color);
   }
-  .buscador-form {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .buscador-form input {
-    background: var(--bg-color);
-    border: 1px solid #444;
-    color: #fff;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-family: inherit;
-  }
-  .buscador-form input:focus {
-    outline: none;
-    border-color: var(--accent-color);
-  }
-  .buscador-form button {
-    background: var(--accent-color);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 0.4rem 0.8rem;
-  }
+  /* Estilos del buscador (los mismos que tenías) */
+  .buscador-form { display: flex; gap: 0.5rem; }
+  .buscador-form input { background: var(--bg-color); border: 1px solid #444; color: #fff; padding: 0.4rem 0.8rem; border-radius: 4px; font-family: inherit; }
+  .buscador-form input:focus { outline: none; border-color: var(--accent-color); }
+  .buscador-form button { background: var(--accent-color); border: none; border-radius: 4px; cursor: pointer; padding: 0.4rem 0.8rem; }
 </style>
