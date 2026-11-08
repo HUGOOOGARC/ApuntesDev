@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+
+const apuntesBackend = Object.values(import.meta.glob('./backend/*.md', { eager: true }));
+const apuntesFrontend = Object.values(import.meta.glob('./frontend/*.md', { eager: true }));
 ---
 
 <Layout title="Programación - ApuntesDev">
@@ -9,17 +12,55 @@ import Footer from '../../components/Footer.astro';
   
   <section class="categoria-header">
     <h1>💻 Programación</h1>
-    <p>Apuntes, scripts y conceptos básicos de Python y otros lenguajes.</p>
+    <p>Apuntes, scripts y conceptos básicos de Python, C++, Frontend y Backend.</p>
   </section>
 
-  <section class="lista-apuntes">
-    <article class="apunte-card">
-      <h2><a href="/programacion/python-basico">Conceptos Básicos de Python</a></h2>
-      <p>Aprende a usar variables, la función print() y crea tu primer script.</p>
-      <a href="/programacion/python-basico" class="leer-mas">Leer apunte →</a>
-    </article>
-    
-    <!-- Aquí irás añadiendo más <article> conforme crees más apuntes -->
+  <!-- ACCESOS RÁPIDOS A LAS SUBCARPETAS -->
+  <div class="sub-nav-grid">
+    <a href="/programacion/backend" class="sub-nav-card">
+      <h3>⚙️ Backend</h3>
+      <p>Python, C++, Algoritmia y Servidores</p>
+    </a>
+    <a href="/programacion/frontend" class="sub-nav-card">
+      <h3>🎨 Frontend</h3>
+      <p>HTML, CSS, JavaScript, Astro y React</p>
+    </a>
+  </div>
+
+  <!-- SECCIÓN BACKEND -->
+  <section class="seccion-bloque">
+    <h2>📂 Apuntes de Backend</h2>
+    <div class="lista-apuntes">
+      {apuntesBackend.length > 0 ? (
+        apuntesBackend.map((apunte: any) => (
+          <article class="apunte-card">
+            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
+            <p>{apunte.frontmatter.description || 'Aprende y practica conceptos avanzados.'}</p>
+            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+          </article>
+        ))
+      ) : (
+        <p class="sin-apuntes">Próximamente subiremos apuntes de Backend...</p>
+      )}
+    </div>
+  </section>
+
+  <!-- SECCIÓN FRONTEND -->
+  <section class="seccion-bloque">
+    <h2>📂 Apuntes de Frontend</h2>
+    <div class="lista-apuntes">
+      {apuntesFrontend.length > 0 ? (
+        apuntesFrontend.map((apunte: any) => (
+          <article class="apunte-card">
+            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
+            <p>{apunte.frontmatter.description || 'Diseña interfaces web modernas.'}</p>
+            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+          </article>
+        ))
+      ) : (
+        <p class="sin-apuntes">Próximamente subiremos apuntes de Frontend...</p>
+      )}
+    </div>
   </section>
 
   <Footer />
@@ -34,17 +75,73 @@ import Footer from '../../components/Footer.astro';
     color: var(--accent-color);
     font-size: 2.5rem;
   }
+  .categoria-header p {
+    color: #aaa;
+  }
+
+  .sub-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .sub-nav-card {
+    background: #181818;
+    border: 1px solid #333;
+    padding: 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+  .sub-nav-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+  }
+  .sub-nav-card h3 {
+    margin: 0 0 0.4rem 0;
+    color: #fff;
+  }
+  .sub-nav-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .seccion-bloque {
+    margin-bottom: 3rem;
+  }
+  .seccion-bloque h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
   .lista-apuntes {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
+
+  .sin-apuntes {
+    color: #666;
+    font-style: italic;
+    background: #151515;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px dashed #333;
+    text-align: center;
+  }
+
   .apunte-card {
     background: #1e1e1e;
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid #333;
-    transition: transform 0.2s;
+    transition: transform 0.2s, border-color 0.2s;
   }
   .apunte-card:hover {
     transform: translateY(-5px);

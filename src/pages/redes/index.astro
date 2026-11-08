@@ -1,0 +1,163 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const apuntesRouting = Object.values(import.meta.glob('./routing-switching/*.md', { eager: true }));
+const apuntesServicios = Object.values(import.meta.glob('./servicios-red/*.md', { eager: true }));
+---
+
+<Layout title="Redes - ApuntesDev">
+  <Header />
+  
+  <section class="categoria-header">
+    <h1>🌐 Redes y Conectividad</h1>
+    <p>Enrutamiento, conmutación, VLANs, protocolos y servicios de red.</p>
+  </section>
+
+  <!-- ACCESOS RÁPIDOS A LAS SUBCARPETAS -->
+  <div class="sub-nav-grid">
+    <a href="/redes/routing-switching" class="sub-nav-card">
+      <h3>🔌 Routing & Switching</h3>
+      <p>Routers, Switches, VLANs y OSPF</p>
+    </a>
+    <a href="/redes/servicios-red" class="sub-nav-card">
+      <h3>🛡️ Servicios de Red</h3>
+      <p>DNS, DHCP, HTTP, FTP y Seguridad</p>
+    </a>
+  </div>
+
+  <!-- SECCIÓN ROUTING & SWITCHING -->
+  <section class="seccion-bloque">
+    <h2>📂 Apuntes de Routing & Switching</h2>
+    <div class="lista-apuntes">
+      {apuntesRouting.length > 0 ? (
+        apuntesRouting.map((apunte: any) => (
+          <article class="apunte-card">
+            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
+            <p>{apunte.frontmatter.description || 'Configuración y topologías de red.'}</p>
+            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+          </article>
+        ))
+      ) : (
+        <p class="sin-apuntes">Próximamente subiremos apuntes de Routing & Switching...</p>
+      )}
+    </div>
+  </section>
+
+  <!-- SECCIÓN SERVICIOS DE RED -->
+  <section class="seccion-bloque">
+    <h2>📂 Apuntes de Servicios de Red</h2>
+    <div class="lista-apuntes">
+      {apuntesServicios.length > 0 ? (
+        apuntesServicios.map((apunte: any) => (
+          <article class="apunte-card">
+            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
+            <p>{apunte.frontmatter.description || 'Administración de servicios en entornos de red.'}</p>
+            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+          </article>
+        ))
+      ) : (
+        <p class="sin-apuntes">Próximamente subiremos apuntes de Servicios de Red...</p>
+      )}
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .categoria-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .categoria-header h1 {
+    color: var(--accent-color);
+    font-size: 2.5rem;
+  }
+  .categoria-header p {
+    color: #aaa;
+  }
+
+  .sub-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .sub-nav-card {
+    background: #181818;
+    border: 1px solid #333;
+    padding: 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+  .sub-nav-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+  }
+  .sub-nav-card h3 {
+    margin: 0 0 0.4rem 0;
+    color: #fff;
+  }
+  .sub-nav-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .seccion-bloque {
+    margin-bottom: 3rem;
+  }
+  .seccion-bloque h2 {
+    color: #fff;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .lista-apuntes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sin-apuntes {
+    color: #666;
+    font-style: italic;
+    background: #151515;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px dashed #333;
+    text-align: center;
+  }
+
+  .apunte-card {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .apunte-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+  }
+  .apunte-card h2 a {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  .apunte-card p {
+    color: #aaa;
+    margin-bottom: 1rem;
+  }
+  .leer-mas {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
