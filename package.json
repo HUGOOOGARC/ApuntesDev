@@ -12,6 +12,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "@nanostores/persistent": "^1.3.5",
     "@nanostores/preact": "^1.1.1",
+    "@supabase/supabase-js": "^2.119.0",
     "astro": "^7.4.7",
     "canvas-confetti": "^1.9.4",
     "nanostores": "^1.5.5",
