@@ -8,7 +8,11 @@ const { frontmatter, headings } = Astro.props;
 const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth === 3) : [];
 ---
 
-<Layout title={`${frontmatter.title} - ApuntesDev`}>
+<!-- Aquí inyectamos el título y la descripción específicos del Markdown para el SEO -->
+<Layout 
+  title={`${frontmatter.title} | ApuntesDev`} 
+  description={frontmatter.description || "Apunte de SMR para dominar este concepto y ganar XP."}
+>
   <Header />
   
   <div class="progreso-contenedor">

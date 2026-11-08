@@ -1,39 +1,66 @@
 ---
-import Header from '../components/Header.astro';
-import BarraProgreso from '../components/BarraProgreso.tsx'; // <-- Añade esto
-// Cambiamos ViewTransitions por ClientRouter para Astro 5+
 import { ClientRouter } from 'astro:transitions';
+import BarraProgreso from '../components/BarraProgreso.tsx';
 
 interface Props {
 	title: string;
 	description?: string;
+	image?: string;
 }
 
-const { title, description = "Apuntes de SMR y Programación" } = Astro.props;
+// Recibimos los datos de la página actual, o ponemos unos por defecto muy potentes
+const { 
+	title, 
+	description = "Aprende Sistemas Operativos, Redes y Programación. Completa apuntes, gana XP y sube de nivel en esta plataforma gamificada.",
+	image = "/og-image.png" 
+} = Astro.props;
+
+// Astro calcula automáticamente la URL absoluta (ej: https://tu-web.vercel.app/sistemas)
+const canonicalURL = new URL(Astro.url.pathname, Astro.url);
+// Convertimos la ruta de la imagen en una URL absoluta (obligatorio para WhatsApp y Twitter)
+const socialImageURL = new URL(image, Astro.url);
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		
+		<!-- SEO Básico -->
 		<title>{title}</title>
-		<!-- Usamos la nueva etiqueta -->
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+
+		<!-- Open Graph (WhatsApp, Facebook, Discord, LinkedIn) -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={socialImageURL} />
+
+		<!-- Twitter Cards -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:url" content={canonicalURL} />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageURL} />
+
 		<ClientRouter />
-	<script is:inline>
-            // Ejecución inmediata para evitar parpadeo de temas
-            const rawData = localStorage.getItem('apuntes_perfil');
-            if (rawData) {
-                try {
-                    const perfil = JSON.parse(rawData);
-                    if (perfil.temaActivo) {
-                        document.documentElement.setAttribute('data-theme', perfil.temaActivo);
-                    }
-                } catch (e) {}
-            }
-    </script>
+
+		<!-- Script ant-parpadeo de la tienda de temas -->
+		<script is:inline>
+			const rawData = localStorage.getItem('apuntes_perfil');
+			if (rawData) {
+				try {
+					const perfil = JSON.parse(rawData);
+					if (perfil.temaActivo) {
+						document.documentElement.setAttribute('data-theme', perfil.temaActivo);
+					}
+				} catch (e) {}
+			}
+		</script>
 	</head>
 	<body>
 		<div class="hud-container">
