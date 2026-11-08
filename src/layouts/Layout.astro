@@ -8,17 +8,24 @@ interface Props {
 	image?: string;
 }
 
-// Recibimos los datos de la página actual, o ponemos unos por defecto muy potentes
+// Recibimos los datos de la página actual, o ponemos la imagen og-image
 const { 
 	title, 
 	description = "Aprende Sistemas Operativos, Redes y Programación. Completa apuntes, gana XP y sube de nivel en esta plataforma gamificada.",
 	image = "/og-image.png" 
 } = Astro.props;
 
-// Astro calcula automáticamente la URL absoluta (ej: https://tu-web.vercel.app/sistemas)
-const canonicalURL = new URL(Astro.url.pathname, Astro.url);
-// Convertimos la ruta de la imagen en una URL absoluta (obligatorio para WhatsApp y Twitter)
-const socialImageURL = new URL(image, Astro.url);
+// 1. URL base de tu web en producción (¡Cámbiala por tu subdominio de Vercel exacto!)
+// Pon https://apuntes-dev-six.vercel.app sin la barra diagonal del final.
+const BASE_URL = "https://apuntes-dev-six.vercel.app";
+
+const canonicalURL = new URL(Astro.url.pathname, BASE_URL);
+
+// 2. Aquí forzamos la URL absoluta de la imagen para que Discord la encuentre de verdad
+// Si la imagen ya tiene http:// o https:// la dejamos, si no, le pegamos tu dominio delante
+const socialImageURL = image.startsWith('http') 
+  ? image 
+  : `${BASE_URL}${image}`;
 ---
 
 <!doctype html>
