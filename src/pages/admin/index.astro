@@ -1,0 +1,286 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Panel de Administración | ApuntesDev">
+  <Header />
+
+  <main class="admin-layout">
+    <div class="admin-header">
+      <h1>⚡ Consola de Operador (Admin)</h1>
+      <p>Panel de control global de la academia de SMR y Programación.</p>
+    </div>
+
+    <!-- 1. ESTADÍSTICAS GLOBALES DE LA ACADEMIA -->
+    <section class="admin-section">
+      <h2>📊 Métricas Globales</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-title">Estudiantes Registrados</span>
+          <span class="stat-val" id="total-users">--</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-title">Nivel Promedio</span>
+          <span class="stat-val" id="avg-level">--</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-title">Monedas en Circulación</span>
+          <span class="stat-val oro" id="total-coins">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. HERRAMIENTAS RÁPIDAS (ACCIONES DE OPERADOR) -->
+    <section class="admin-section">
+      <h2>🛠️ Herramientas Rápidas</h2>
+      <div class="tools-grid">
+        <button class="btn-tool" id="btn-broadcast">📢 Enviar Aviso Global</button>
+        <button class="btn-tool" id="btn-reset-cache">🔄 Limpiar Caché General</button>
+      </div>
+    </section>
+
+    <!-- 2. GESTIÓN DE USUARIOS EN VIVO -->
+    <section class="admin-section">
+      <h2>👥 Base de Datos de Estudiantes</h2>
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Alias</th>
+              <th>Nivel</th>
+              <th>XP</th>
+              <th>Monedas</th>
+              <th>Prestigio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <tr>
+              <td colspan="6" style="text-align: center; color: #777;">Cargando registros de Supabase...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  document.addEventListener('astro:page-load', async () => {
+    // 1. Verificación de seguridad básica (puedes adaptarla a tu correo de admin)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = '/login';
+      return;
+    }
+
+    // Cargar datos de usuarios desde Supabase para métricas y tabla
+    const { data: profiles, error } = await supabase
+      .from('profiles')
+      .select('*');
+
+    if (error) {
+      console.error('Error al cargar perfiles:', error);
+      return;
+    }
+
+    if (profiles) {
+      // Calcular métricas
+      const totalUsers = profiles.length;
+      const totalCoinsSum = profiles.reduce((acc, curr) => acc + (curr.coins || 0), 0);
+      const avgLevelCalc = totalUsers > 0 ? (profiles.reduce((acc, curr) => acc + (curr.level || 1), 0) / totalUsers).toFixed(1) : 1;
+
+      document.getElementById('total-users')!.textContent = totalUsers.toString();
+      document.getElementById('total-coins')!.textContent = `🪙 ${totalCoinsSum}`;
+      document.getElementById('avg-level')!.textContent = `Nvl. ${avgLevelCalc}`;
+
+      // Renderizar tabla de usuarios
+      const tbody = document.getElementById('users-table-body');
+      if (tbody) {
+        tbody.innerHTML = '';
+        profiles.forEach((user) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${user.username || 'Estudiante Anónimo'}</strong></td>
+            <td>Nvl. ${user.level || 1}</td>
+            <td>${user.xp || 0} XP</td>
+            <td class="oro">🪙 ${user.coins || 0}</td>
+            <td>⭐ ${user.prestigio || 0}</td>
+            <td>
+              <button class="btn-accion" data-id="${user.id}">Dar +500 XP</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Eventos para los botones de acción rápida por usuario
+        document.querySelectorAll('.btn-accion').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const userId = (e.currentTarget as HTMLElement).getAttribute('data-id');
+            const targetUser = profiles.find(p => p.id === userId);
+            if (targetUser) {
+              const nuevaXp = (targetUser.xp || 0) + 500;
+              const { error: updateError } = await supabase
+                .from('profiles')
+                .update({ xp: nuevaXp })
+                .eq('id', userId);
+
+              if (!updateError) {
+                alert(`¡Se han otorgado 500 XP a ${targetUser.username || 'el usuario'}!`);
+                window.location.reload();
+              } else {
+                alert('Error al actualizar la XP.');
+              }
+            }
+          });
+        });
+      }
+    }
+
+    // Botones de herramientas
+    document.getElementById('btn-broadcast')?.addEventListener('click', () => {
+      const mensaje = prompt('Escribe el aviso global para la academia:');
+      if (mensaje) alert(`Aviso transmitido con éxito: "${mensaje}"`);
+    });
+
+    document.getElementById('btn-reset-cache')?.addEventListener('click', () => {
+      localStorage.clear();
+      alert('Caché local limpiada correctamente.');
+      window.location.reload();
+    });
+  });
+</script>
+
+<style>
+  .admin-layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .admin-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .admin-header h1 {
+    color: var(--accent-color);
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .admin-header p {
+    color: #888;
+  }
+
+  .admin-section {
+    background: #181818;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .admin-section h2 {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Estadísticas */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .stat-box {
+    background: #111;
+    border: 1px solid #333;
+    padding: 1.2rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .stat-title {
+    display: block;
+    color: #888;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .stat-val {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    font-family: monospace;
+  }
+  .stat-val.oro { color: #FFD700; }
+
+  /* Herramientas */
+  .tools-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-tool {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 0.7rem 1.2rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-tool:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+  }
+
+  /* Tabla de usuarios */
+  .table-container {
+    overflow-x: auto;
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  .admin-table th, .admin-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .admin-table th {
+    color: #888;
+    background: #121212;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+  .admin-table tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+  .oro { color: #FFD700; }
+
+  .btn-accion {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-accion:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+  }
+</style>
