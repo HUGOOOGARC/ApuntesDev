@@ -1,0 +1,245 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Clasificación Global | ApuntesDev">
+  <Header />
+
+  <main class="ranking-layout">
+    <div class="ranking-hero">
+      <div class="hero-badge">SALÓN DE LA FAMA</div>
+      <h1>🏆 Leaderboard Global</h1>
+      <p>Los mejores estudiantes de la academia ordenados por nivel, experiencia y prestigio.</p>
+    </div>
+
+    <!-- Contenedor del Ranking -->
+    <section class="ranking-section">
+      <div class="table-container">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>Posición</th>
+              <th>Estudiante</th>
+              <th>Nivel</th>
+              <th>Experiencia (XP)</th>
+              <th>Monedas</th>
+              <th>Prestigio</th>
+            </tr>
+          </thead>
+          <tbody id="ranking-table-body">
+            <tr>
+              <td colspan="6" class="loading-row">Cargando clasificación de la academia...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  document.addEventListener('astro:page-load', async () => {
+    const tbody = document.getElementById('ranking-table-body');
+    if (!tbody) return;
+
+    // Consultamos los perfiles ordenados por Nivel descendente y luego por XP descendente
+    const { data: perfiles, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('level', { ascending: false })
+      .order('xp', { ascending: false });
+
+    if (error) {
+      console.error('Error al cargar el ranking:', error);
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #e53935; padding: 2rem;">Error al cargar los datos del leaderboard.</td></tr>`;
+      return;
+    }
+
+    if (perfiles && perfiles.length > 0) {
+      tbody.innerHTML = '';
+      perfiles.forEach((user, index) => {
+        const posicion = index + 1;
+        let medalla = '';
+        let clasePodio = '';
+
+        if (posicion === 1) {
+          medalla = '🥇 ';
+          clasePodio = 'podium-1';
+        } else if (posicion === 2) {
+          medalla = '🥈 ';
+          clasePodio = 'podium-2';
+        } else if (posicion === 3) {
+          medalla = '🥉 ';
+          clasePodio = 'podium-3';
+        }
+
+        const inicial = (user.username || 'E').charAt(0).toUpperCase();
+        const tr = document.createElement('tr');
+        if (clasePodio) tr.className = clasePodio;
+
+        tr.innerHTML = `
+          <td class="col-posicion">
+            <span class="posicion-badge">${medalla}#${posicion}</span>
+          </td>
+          <td>
+            <div class="user-cell">
+              <div class="user-avatar">${inicial}</div>
+              <span class="user-name"><strong>${user.username || 'Estudiante Anónimo'}</strong></span>
+            </div>
+          </td>
+          <td><span class="badge-nivel">Nvl. ${user.level || 1}</span></td>
+          <td><code class="xp-code">${(user.xp || 0).toLocaleString()} XP</code></td>
+          <td class="oro">🪙 ${(user.coins || 0).toLocaleString()}</td>
+          <td>⭐ ${user.prestigio || 0}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } else {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #777; padding: 2rem;">No hay estudiantes registrados todavía.</td></tr>`;
+    }
+  });
+</script>
+
+<style>
+  .ranking-layout {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+
+  .ranking-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255, 215, 0, 0.15);
+    color: #FFD700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    padding: 0.25rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .ranking-hero h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .ranking-hero p {
+    color: #888;
+    font-size: 1rem;
+  }
+
+  .ranking-section {
+    background: linear-gradient(145deg, #141414, #1a1a1a);
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  .ranking-table th, .ranking-table td {
+    padding: 1.1rem 1rem;
+    border-bottom: 1px solid #222;
+  }
+
+  .ranking-table th {
+    color: #888;
+    background: #0d0d0d;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .ranking-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Estilos especiales para el podio (Top 3) */
+  .podium-1 {
+    background: rgba(255, 215, 0, 0.05);
+  }
+  .podium-1:hover { background: rgba(255, 215, 0, 0.08) !important; }
+
+  .podium-2 {
+    background: rgba(192, 192, 192, 0.04);
+  }
+
+  .col-posicion {
+    font-weight: bold;
+    width: 100px;
+  }
+
+  .posicion-badge {
+    font-family: monospace;
+    font-size: 1rem;
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent-color), #2e7d32);
+    color: #000;
+    font-weight: 900;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .badge-nivel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #333;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+
+  .xp-code {
+    font-family: monospace;
+    color: #aaa;
+  }
+
+  .oro { color: #FFD700; font-weight: bold; }
+
+  .loading-row {
+    text-align: center;
+    color: #666;
+    padding: 3rem !important;
+    font-style: italic;
+  }
+</style>
