@@ -64,25 +64,32 @@ export default function PerfilDashboard() {
 
   return (
     <div className="dashboard-grid">
-      {/* Tarjeta de configuración de alias integrada */}
-      <div style={{ background: '#1e1e1e', border: '1px solid #333', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
-        <h3 style={{ color: 'var(--accent-color)', marginTop: 0, marginBottom: '1rem', fontSize: '1.2rem' }}>👤 Identidad del Estudiante</h3>
-        <form onSubmit={handleGuardarUsername} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <div style={{ display: 'flex', gap: '1rem' }}>
+      
+      {/* TARJETA DE IDENTIDAD (Muestra el alias destacado y permite cambiarlo) */}
+      <div style={{ background: '#1e1e1e', border: '1px solid #333', padding: '2rem', borderRadius: '8px', marginBottom: '1.5rem', textAlign: 'center' }}>
+        <h2 style={{ color: '#fff', fontSize: '2rem', margin: '0 0 0.5rem 0' }}>
+          {username ? username : 'Estudiante Anónimo'}
+        </h2>
+        <p style={{ color: '#888', margin: '0 0 1.5rem 0' }}>
+          Nivel {perfil.nivel} | ⭐ Prestigio {perfil.prestigio}
+        </p>
+        
+        <form onSubmit={handleGuardarUsername} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '400px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
             <input 
               type="text" 
               value={username} 
               onInput={(e: any) => setUsername(e.target.value)}
-              placeholder="Introduce tu alias (ej. HackerSMR)" 
+              placeholder="Introduce tu alias" 
               maxLength={20}
               required 
-              style={{ flexGrow: 1, background: '#121212', border: '1px solid #333', padding: '0.75rem 1rem', color: '#fff', borderRadius: '6px', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
+              style={{ flexGrow: 1, background: '#121212', border: '1px solid #333', padding: '0.75rem', color: '#fff', borderRadius: '6px', fontSize: '1rem', outline: 'none' }}
             />
             <button type="submit" disabled={guardando} style={{ background: 'var(--accent-color)', color: 'var(--bg-color)', border: 'none', padding: '0 1.5rem', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              {guardando ? 'Guardando...' : 'Guardar Alias'}
+              {guardando ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
-          {mensajeExito && <p style={{ color: '#4CAF50', fontWeight: 'bold', fontSize: '0.85rem', margin: '0.5rem 0 0 0' }}>¡Alias actualizado correctamente! ✅</p>}
+          {mensajeExito && <p style={{ color: '#4CAF50', fontWeight: 'bold', fontSize: '0.85rem', margin: '0.5rem 0 0 0' }}>¡Alias actualizado! ✅</p>}
         </form>
       </div>
 
