@@ -22,6 +22,18 @@ const { title, description = "Apuntes de SMR y Programación" } = Astro.props;
 		<title>{title}</title>
 		<!-- Usamos la nueva etiqueta -->
 		<ClientRouter />
+	<script is:inline>
+            // Ejecución inmediata para evitar parpadeo de temas
+            const rawData = localStorage.getItem('apuntes_perfil');
+            if (rawData) {
+                try {
+                    const perfil = JSON.parse(rawData);
+                    if (perfil.temaActivo) {
+                        document.documentElement.setAttribute('data-theme', perfil.temaActivo);
+                    }
+                } catch (e) {}
+            }
+    </script>
 	</head>
 	<body>
 		<div class="hud-container">
@@ -62,12 +74,32 @@ const { title, description = "Apuntes de SMR y Programación" } = Astro.props;
 </html>
 
 <style is:global>
-	:root {
-		--bg-color: #121212;
-		--text-color: #e0e0e0;
-		--accent-color: #4CAF50;
-		--code-bg: #1e1e1e;
-	}
+/* Tema por defecto (Terminal Verde) */
+  :root {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --accent-color: #4CAF50; 
+  }
+
+  /* Tema Kali Linux */
+  [data-theme="kali"] {
+    --bg-color: #0d0d0d;
+    --accent-color: #e53935;
+  }
+
+  /* Tema Drácula */
+  [data-theme="dracula"] {
+    --bg-color: #282a36;
+    --text-color: #f8f8f2;
+    --accent-color: #bd93f9;
+  }
+
+  /* Tema Hacker / Matrix */
+  [data-theme="hacker"] {
+    --bg-color: #000000;
+    --text-color: #00ff00;
+    --accent-color: #00ff00;
+  }
 	html {
 		font-family: system-ui, -apple-system, sans-serif;
 		background-color: var(--bg-color);

@@ -2,6 +2,8 @@ import { persistentMap } from '@nanostores/persistent';
 
 // 1. Definimos exactamente qué forma tienen los datos de nuestro estudiante
 export interface PerfilEstudiante {
+  temaActivo: string;
+  temasDesbloqueados: string[];
   xp: number;
   nivel: number;
   monedas: number;
@@ -12,6 +14,8 @@ export interface PerfilEstudiante {
 
 // 2. Valores iniciales para un usuario nuevo
 const valoresIniciales: PerfilEstudiante = {
+  temaActivo: 'default',
+  temasDesbloqueados: ['default'],
   xp: 0,
   nivel: 1,
   monedas: 0,
@@ -85,9 +89,34 @@ export function aplicarPrestigio() {
     monedas: 0, // Reseteo
     prestigio: perfil.prestigio + 1, // Sube un rango de prestigio
     multiplicadorXP: perfil.multiplicadorXP + 0.25, // +25% de XP permanente por cada prestigio
-    // Ojo: no reseteamos los apuntesCompletados para que la web siga marcando lo que ya ha leído,
-    // a menos que quieras que tenga que leer todo de nuevo.
+    // Ojo: no reseteamos los apuntesCompletados para que la web siga marcando lo que ya ha leído
   });
 
   return true;
+}
+
+// --- ACCIONES DE LA TIENDA ---
+
+export function comprarTema(idTema: string, precio: number) {
+  const perfil = perfilStore.get();
+  
+  if (perfil.monedas >= precio && !perfil.temasDesbloqueados.includes(idTema)) {
+    perfilStore.set({
+      ...perfil,
+      monedas: perfil.monedas - precio,
+      temasDesbloqueados: [...perfil.temasDesbloqueados, idTema],
+      temaActivo: idTema // Se lo equipamos automáticamente al comprar
+    });
+    return true;
+  }
+  return false;
+}
+
+export function equiparTema(idTema: string) {
+  const perfil = perfilStore.get();
+  if (perfil.temasDesbloqueados.includes(idTema)) {
+    perfilStore.set({ ...perfil, temaActivo: idTema });
+    return true;
+  }
+  return false;
 }

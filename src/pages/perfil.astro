@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PerfilDashboard from '../components/PerfilDashboard.tsx';
+import TiendaTemas from '../components/TiendaTemas.tsx'; // <-- Importación
 ---
 
 <Layout title="Mi Perfil | ApuntesDev">
@@ -16,12 +17,31 @@ import PerfilDashboard from '../components/PerfilDashboard.tsx';
 
     <!-- Cargamos el componente interactivo con client:load -->
     <PerfilDashboard client:load />
+
+    <div style="margin-top: 4rem;">
+      <TiendaTemas client:load />
+    </div>
   </main>
 
   <Footer />
 </Layout>
 
 <style is:global>
+/* Estilos de la Tienda */
+  .tienda-container { background: #1a1a1a; padding: 2rem; border-radius: 8px; border: 1px solid #333; }
+  .tienda-container h2 { margin-top: 0; color: var(--accent-color); }
+  .temas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  .tema-card { background: #121212; border: 2px solid #333; border-radius: 8px; padding: 1rem; text-align: center; transition: all 0.2s; }
+  .tema-card.equipado { border-color: var(--accent-color); box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+  .tema-preview { padding: 2rem 0; border: 2px dashed #444; border-radius: 4px; margin-bottom: 1rem; font-weight: bold; font-family: monospace; font-size: 1.2rem; }
+  .btn-equipar, .btn-comprar, .btn-equipado { width: 100%; padding: 0.8rem; border-radius: 4px; font-weight: bold; cursor: pointer; border: none; transition: background 0.2s; }
+  .btn-equipar { background: #333; color: #fff; }
+  .btn-equipar:hover { background: #444; }
+  .btn-comprar { background: #2a2a2a; color: #FFD700; border: 1px solid #FFD700; }
+  .btn-comprar:hover:not(:disabled) { background: #FFD700; color: #000; }
+  .btn-comprar:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-equipado { background: var(--accent-color); color: var(--bg-color); cursor: default; }
+  
   .perfil-layout {
     max-width: 900px;
     margin: 0 auto;
