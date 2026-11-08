@@ -4,61 +4,82 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 ---
 
-<Layout title="Panel de Administración | ApuntesDev">
+<Layout title="Consola de Operador Elite | ApuntesDev">
   <Header />
 
   <main class="admin-layout">
-    <div class="admin-header">
-      <h1>⚡ Consola de Operador (Admin)</h1>
-      <p>Panel de control global de la academia de SMR y Programación.</p>
-    </div>
+    <!-- Cabecera de Comando de Élite -->
+    <header class="admin-hero">
+      <div class="hero-badge">ACCESO NIVEL 4 — ROOT</div>
+      <h1>⚡ System Command Core</h1>
+      <p>Centro de control y telemetría global de la academia de SMR y Programación.</p>
+    </header>
 
-    <!-- 1. ESTADÍSTICAS GLOBALES DE LA ACADEMIA -->
+    <!-- 1. MÉTRICAS GLOBALES AVANZADAS -->
     <section class="admin-section">
-      <h2>📊 Métricas Globales</h2>
+      <div class="section-title-wrapper">
+        <h2>📊 Telemetría Global</h2>
+        <span class="live-indicator"><span class="pulse-dot"></span> EN VIVO</span>
+      </div>
       <div class="stats-grid">
         <div class="stat-box">
-          <span class="stat-title">Estudiantes Registrados</span>
+          <span class="stat-label">Estudiantes Registrados</span>
           <span class="stat-val" id="total-users">--</span>
+          <span class="stat-sub">Cuentas activas en Supabase</span>
         </div>
         <div class="stat-box">
-          <span class="stat-title">Nivel Promedio</span>
-          <span class="stat-val" id="avg-level">--</span>
+          <span class="stat-label">Nivel Promedio Global</span>
+          <span class="stat-val accent" id="avg-level">--</span>
+          <span class="stat-sub">Progreso de la academia</span>
         </div>
         <div class="stat-box">
-          <span class="stat-title">Monedas en Circulación</span>
+          <span class="stat-label">Economía (Monedas)</span>
           <span class="stat-val oro" id="total-coins">--</span>
+          <span class="stat-sub">🪙 En circulación</span>
         </div>
       </div>
     </section>
 
-    <!-- 4. HERRAMIENTAS RÁPIDAS (ACCIONES DE OPERADOR) -->
+    <!-- 4. HERRAMIENTAS RÁPIDAS DE OPERADOR -->
     <section class="admin-section">
-      <h2>🛠️ Herramientas Rápidas</h2>
+      <h2>🛠️ Protocolos de Operador</h2>
       <div class="tools-grid">
-        <button class="btn-tool" id="btn-broadcast">📢 Enviar Aviso Global</button>
-        <button class="btn-tool" id="btn-reset-cache">🔄 Limpiar Caché General</button>
+        <button class="btn-tool" id="btn-broadcast">
+          <span>📢</span> Enviar Aviso Global
+        </button>
+        <button class="btn-tool" id="btn-export">
+          <span>📥</span> Exportar Telemetría (JSON)
+        </button>
+        <button class="btn-tool warning" id="btn-reset-cache">
+          <span>🔄</span> Purgar Caché Global
+        </button>
       </div>
     </section>
 
-    <!-- 2. GESTIÓN DE USUARIOS EN VIVO -->
+    <!-- 2 & 3. GESTIÓN DE USUARIOS CON BUSCADOR Y ACCIONES -->
     <section class="admin-section">
-      <h2>👥 Base de Datos de Estudiantes</h2>
+      <div class="table-header-flex">
+        <h2>👥 Directorio de Estudiantes</h2>
+        <div class="search-filter-wrapper">
+          <input type="text" id="admin-search" placeholder="Filtrar por alias..." autocomplete="off" />
+        </div>
+      </div>
+
       <div class="table-container">
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Alias</th>
+              <th>Identidad / Alias</th>
               <th>Nivel</th>
-              <th>XP</th>
+              <th>Experiencia (XP)</th>
               <th>Monedas</th>
               <th>Prestigio</th>
-              <th>Acciones</th>
+              <th>Acciones de Operador</th>
             </tr>
           </thead>
           <tbody id="users-table-body">
             <tr>
-              <td colspan="6" style="text-align: center; color: #777;">Cargando registros de Supabase...</td>
+              <td colspan="6" class="loading-row">Conectando con el clúster de Supabase...</td>
             </tr>
           </tbody>
         </table>
@@ -73,85 +94,131 @@ import Footer from '../../components/Footer.astro';
   import { supabase } from '../../lib/supabase';
 
   document.addEventListener('astro:page-load', async () => {
-    // 1. Verificación de seguridad básica (puedes adaptarla a tu correo de admin)
+    // 1. Verificación de sesión de seguridad
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       window.location.href = '/login';
       return;
     }
 
-    // Cargar datos de usuarios desde Supabase para métricas y tabla
+    // Cargar perfiles
     const { data: profiles, error } = await supabase
       .from('profiles')
       .select('*');
 
     if (error) {
-      console.error('Error al cargar perfiles:', error);
+      console.error('Error al cargar perfiles en admin:', error);
       return;
     }
 
     if (profiles) {
-      // Calcular métricas
+      // Métricas
       const totalUsers = profiles.length;
       const totalCoinsSum = profiles.reduce((acc, curr) => acc + (curr.coins || 0), 0);
-      const avgLevelCalc = totalUsers > 0 ? (profiles.reduce((acc, curr) => acc + (curr.level || 1), 0) / totalUsers).toFixed(1) : 1;
+      const avgLevelCalc = totalUsers > 0 ? (profiles.reduce((acc, curr) => acc + (curr.level || 1), 0) / totalUsers).toFixed(1) : '1.0';
 
       document.getElementById('total-users')!.textContent = totalUsers.toString();
-      document.getElementById('total-coins')!.textContent = `🪙 ${totalCoinsSum}`;
+      document.getElementById('total-coins')!.textContent = `🪙 ${totalCoinsSum.toLocaleString()}`;
       document.getElementById('avg-level')!.textContent = `Nvl. ${avgLevelCalc}`;
 
-      // Renderizar tabla de usuarios
-      const tbody = document.getElementById('users-table-body');
-      if (tbody) {
+      const tbody = document.getElementById('users-table-body') as HTMLElement;
+      
+      const renderTable = (filtro = '') => {
         tbody.innerHTML = '';
-        profiles.forEach((user) => {
+        const filtrados = profiles.filter(u => (u.username || '').toLowerCase().includes(filtro.toLowerCase()));
+
+        if (filtrados.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #777; padding: 2rem;">No se encontraron estudiantes</td></tr>`;
+          return;
+        }
+
+        filtrados.forEach((user) => {
+          const inicial = (user.username || 'E').charAt(0).toUpperCase();
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td><strong>${user.username || 'Estudiante Anónimo'}</strong></td>
-            <td>Nvl. ${user.level || 1}</td>
-            <td>${user.xp || 0} XP</td>
-            <td class="oro">🪙 ${user.coins || 0}</td>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">${inicial}</div>
+                <div class="user-info">
+                  <strong>${user.username || 'Estudiante Anónimo'}</strong>
+                  <small class="user-id">ID: ${user.id.substring(0, 8)}...</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge-nivel">Nvl. ${user.level || 1}</span></td>
+            <td><code class="xp-code">${(user.xp || 0).toLocaleString()} XP</code></td>
+            <td class="oro">🪙 ${(user.coins || 0).toLocaleString()}</td>
             <td>⭐ ${user.prestigio || 0}</td>
             <td>
-              <button class="btn-accion" data-id="${user.id}">Dar +500 XP</button>
+              <div class="action-buttons">
+                <button class="btn-accion xp" data-id="${user.id}">+500 XP</button>
+                <button class="btn-accion monedas" data-id="${user.id}">+200 🪙</button>
+              </div>
             </td>
           `;
           tbody.appendChild(tr);
         });
 
-        // Eventos para los botones de acción rápida por usuario
-        document.querySelectorAll('.btn-accion').forEach(btn => {
+        // Eventos de botones individuales
+        document.querySelectorAll('.btn-accion.xp').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const userId = (e.currentTarget as HTMLElement).getAttribute('data-id');
-            const targetUser = profiles.find(p => p.id === userId);
-            if (targetUser) {
-              const nuevaXp = (targetUser.xp || 0) + 500;
-              const { error: updateError } = await supabase
-                .from('profiles')
-                .update({ xp: nuevaXp })
-                .eq('id', userId);
-
-              if (!updateError) {
-                alert(`¡Se han otorgado 500 XP a ${targetUser.username || 'el usuario'}!`);
+            const target = profiles.find(p => p.id === userId);
+            if (target) {
+              const nuevaXp = (target.xp || 0) + 500;
+              const { error } = await supabase.from('profiles').update({ xp: nuevaXp }).eq('id', userId);
+              if (!error) {
+                alert(`¡Se han inyectado 500 XP a ${target.username || 'usuario'}!`);
                 window.location.reload();
-              } else {
-                alert('Error al actualizar la XP.');
               }
             }
           });
         });
-      }
+
+        document.querySelectorAll('.btn-accion.monedas').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const userId = (e.currentTarget as HTMLElement).getAttribute('data-id');
+            const target = profiles.find(p => p.id === userId);
+            if (target) {
+              const nuevasMonedas = (target.coins || 0) + 200;
+              const { error } = await supabase.from('profiles').update({ coins: nuevasMonedas }).eq('id', userId);
+              if (!error) {
+                alert(`¡Se han inyectado 200 Monedas a ${target.username || 'usuario'}!`);
+                window.location.reload();
+              }
+            }
+          });
+        });
+      };
+
+      renderTable();
+
+      // Buscador dinámico de la tabla
+      const searchInput = document.getElementById('admin-search') as HTMLInputElement;
+      searchInput?.addEventListener('input', (e) => {
+        renderTable((e.target as HTMLInputElement).value);
+      });
     }
 
-    // Botones de herramientas
+    // Botones globales de herramientas
     document.getElementById('btn-broadcast')?.addEventListener('click', () => {
-      const mensaje = prompt('Escribe el aviso global para la academia:');
-      if (mensaje) alert(`Aviso transmitido con éxito: "${mensaje}"`);
+      const msg = prompt('Transmisión global para la academia:');
+      if (msg) alert(`[TRANSMITIDO]: "${msg}"`);
+    });
+
+    document.getElementById('btn-export')?.addEventListener('click', () => {
+      if (profiles) {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(profiles, null, 2));
+        const dlAnchorElem = document.createElement('a');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "apuntesdev_telemetria.json");
+        dlAnchorElem.click();
+      }
     });
 
     document.getElementById('btn-reset-cache')?.addEventListener('click', () => {
       localStorage.clear();
-      alert('Caché local limpiada correctamente.');
+      alert('Caché local del navegador purgada con éxito.');
       window.location.reload();
     });
   });
@@ -159,67 +226,152 @@ import Footer from '../../components/Footer.astro';
 
 <style>
   .admin-layout {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 2.5rem 1.5rem;
   }
-  .admin-header {
+
+  .admin-hero {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
   }
-  .admin-header h1 {
-    color: var(--accent-color);
-    font-size: 2.2rem;
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(229, 57, 53, 0.15);
+    color: #e53935;
+    border: 1px solid rgba(229, 57, 53, 0.3);
+    padding: 0.25rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-hero h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -1px;
     margin-bottom: 0.5rem;
   }
-  .admin-header p {
+
+  .admin-hero p {
     color: #888;
+    font-size: 1rem;
   }
 
   .admin-section {
-    background: #181818;
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  }
-  .admin-section h2 {
-    color: #fff;
-    font-size: 1.2rem;
-    margin-top: 0;
-    margin-bottom: 1.2rem;
-    border-bottom: 1px solid #2a2a2a;
-    padding-bottom: 0.5rem;
+    background: linear-gradient(145deg, #141414, #1a1a1a);
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Estadísticas */
+  .section-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #262626;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title-wrapper h2, .admin-section > h2 {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    border-bottom: 1px solid #262626;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title-wrapper h2 {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    background: rgba(76, 175, 80, 0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-color);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--accent-color); }
+    100% { transform: scale(0.95); opacity: 0.8; }
+  }
+
+  /* Métricas */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
   }
+
   .stat-box {
-    background: #111;
-    border: 1px solid #333;
-    padding: 1.2rem;
-    border-radius: 8px;
-    text-align: center;
+    background: #0d0d0d;
+    border: 1px solid #222;
+    padding: 1.5rem;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease;
   }
-  .stat-title {
+
+  .stat-box:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-color);
+  }
+
+  .stat-label {
     display: block;
     color: #888;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
   }
+
   .stat-val {
-    font-size: 1.8rem;
-    font-weight: bold;
+    font-size: 2.2rem;
+    font-weight: 900;
     color: #fff;
     font-family: monospace;
   }
+
+  .stat-val.accent { color: var(--accent-color); }
   .stat-val.oro { color: #FFD700; }
+
+  .stat-sub {
+    display: block;
+    color: #555;
+    font-size: 0.75rem;
+    margin-top: 0.4rem;
+  }
 
   /* Herramientas */
   .tools-grid {
@@ -227,60 +379,173 @@ import Footer from '../../components/Footer.astro';
     gap: 1rem;
     flex-wrap: wrap;
   }
+
   .btn-tool {
-    background: #222;
+    background: #1e1e1e;
     color: #fff;
-    border: 1px solid #444;
-    padding: 0.7rem 1.2rem;
-    border-radius: 6px;
-    font-weight: bold;
+    border: 1px solid #333;
+    padding: 0.8rem 1.4rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
   }
+
   .btn-tool:hover {
     background: var(--accent-color);
     color: var(--bg-color);
     border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
   }
 
-  /* Tabla de usuarios */
+  .btn-tool.warning:hover {
+    background: #e53935;
+    box-shadow: 0 0 15px rgba(229, 57, 53, 0.3);
+  }
+
+  /* Tabla y Buscador */
+  .table-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #262626;
+    padding-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .table-header-flex h2 {
+    margin: 0;
+    border: none;
+    padding: 0;
+  }
+
+  #admin-search {
+    background: #0d0d0d;
+    border: 1px solid #333;
+    padding: 0.6rem 1rem;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    width: 240px;
+    transition: border-color 0.2s;
+  }
+
+  #admin-search:focus {
+    border-color: var(--accent-color);
+  }
+
   .table-container {
     overflow-x: auto;
   }
+
   .admin-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
     font-size: 0.95rem;
   }
+
   .admin-table th, .admin-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid #2a2a2a;
+    padding: 1rem;
+    border-bottom: 1px solid #222;
   }
+
   .admin-table th {
     color: #888;
-    background: #121212;
-    font-size: 0.85rem;
+    background: #0d0d0d;
+    font-size: 0.75rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
   }
+
   .admin-table tr:hover {
-    background: rgba(255,255,255,0.02);
+    background: rgba(255, 255, 255, 0.015);
   }
-  .oro { color: #FFD700; }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--accent-color), #2e7d32);
+    color: #000;
+    font-weight: 900;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-id {
+    color: #555;
+    font-size: 0.75rem;
+    font-family: monospace;
+  }
+
+  .badge-nivel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #333;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+
+  .xp-code {
+    font-family: monospace;
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+
+  .oro { color: #FFD700; font-weight: bold; }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
 
   .btn-accion {
-    background: rgba(76, 175, 80, 0.15);
-    color: var(--accent-color);
-    border: 1px solid var(--accent-color);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border: 1px solid #333;
     padding: 0.4rem 0.8rem;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
   }
+
   .btn-accion:hover {
     background: var(--accent-color);
     color: var(--bg-color);
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+  }
+
+  .loading-row {
+    text-align: center;
+    color: #666;
+    padding: 3rem !important;
+    font-style: italic;
   }
 </style>
