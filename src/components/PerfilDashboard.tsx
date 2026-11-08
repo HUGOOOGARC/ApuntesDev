@@ -12,7 +12,6 @@ export default function PerfilDashboard() {
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState(false);
 
-  // Cargamos el username actual de Supabase al montar el componente
   useEffect(() => {
     async function cargarUsername() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -65,11 +64,11 @@ export default function PerfilDashboard() {
 
   return (
     <div className="dashboard-grid">
-      {/* TARJETA DE CONFIGURACIÓN DE ALIAS */}
-      <div className="config-alias-card">
-        <h3>👤 Identidad del Estudiante</h3>
-        <form onSubmit={handleGuardarUsername} className="form-alias">
-          <div className="input-group-alias">
+      {/* Tarjeta de configuración de alias integrada en el dashboard */}
+      <div style={{ background: '#1e1e1e', border: '1px solid #333', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
+        <h3 style={{ color: 'var(--accent-color)', marginTop: 0, marginBottom: '1rem', fontSize: '1.2rem' }}>👤 Identidad del Estudiante</h3>
+        <form onSubmit={handleGuardarUsername} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '1rem' }}>
             <input 
               type="text" 
               value={username} 
@@ -77,12 +76,13 @@ export default function PerfilDashboard() {
               placeholder="Introduce tu alias (ej. HackerSMR)" 
               maxLength={20}
               required 
+              style={{ flexGrow: 1, background: '#121212', border: '1px solid #333', padding: '0.75rem 1rem', color: '#fff', borderRadius: '6px', fontSize: '1rem', outline: 'none', fontFamily: 'inherit' }}
             />
-            <button type="submit" className="btn-guardar-alias" disabled={guardando}>
+            <button type="submit" disabled={guardando} style={{ background: 'var(--accent-color)', color: 'var(--bg-color)', border: 'none', padding: '0 1.5rem', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
               {guardando ? 'Guardando...' : 'Guardar Alias'}
             </button>
           </div>
-          {mensajeExito && <p className="texto-exito">¡Alias actualizado correctamente! ✅</p>}
+          {mensajeExito && <p style={{ color: '#4CAF50', fontWeight: 'bold', fontSize: '0.85rem', margin: '0.5rem 0 0 0' }}>¡Alias actualizado correctamente! ✅</p>}
         </form>
       </div>
 
