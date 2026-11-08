@@ -1,4 +1,5 @@
 import { persistentMap } from '@nanostores/persistent';
+import { supabase } from '../lib/supabase';
 
 // 1. Definimos exactamente qué forma tienen los datos de nuestro estudiante
 export interface PerfilEstudiante {
@@ -9,7 +10,7 @@ export interface PerfilEstudiante {
   monedas: number;
   prestigio: number;
   multiplicadorXP: number;
-  apuntesCompletados: string[]; // Guardaremos las URLs de los apuntes leídos
+  apuntesCompletados: string[]; // Guardaremos los IDs de los apuntes leídos
 }
 
 // 2. Valores iniciales para un usuario nuevo
@@ -24,8 +25,7 @@ const valoresIniciales: PerfilEstudiante = {
   apuntesCompletados: []
 };
 
-// 3. Creamos el Store persistente. Esto se guarda solo en localStorage y se sincroniza.
-// El 'json' indica que vamos a guardar un objeto complejo.
+// 3. Creamos el Store persistente sincronizado con localStorage
 export const perfilStore = persistentMap<PerfilEstudiante>(
   'apuntesdev_perfil:',
   valoresIniciales,
@@ -35,14 +35,57 @@ export const perfilStore = persistentMap<PerfilEstudiante>(
   }
 );
 
-// --- FUNCIONES PURAS DE MATEMÁTICAS ---
+// --- FUNCIÓN AUXILIAR DE SINCRONIZACIÓN CON SUPABASE ---
+async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await supabase
+        .from('profiles')
+        .update({
+          xp: nuevoPerfil.xp,
+          coins: nuevoPerfil.monedas,
+          level: nuevoPerfil.nivel,
+        })
+        .eq('id', session.user.id);
+    }
+  } catch (error) {
+    console.error('Error al sincronizar con Supabase:', error);
+  }
+}
 
-// Fórmula: Cada nivel pide un 50% más de XP que el anterior (base 100)
+// Función para cargar los datos desde Supabase al iniciar sesión o recargar
+export async function cargarPerfilDesdeSupabase() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (data && !error) {
+        const perfilActual = perfilStore.get();
+        perfilStore.set({
+          ...perfilActual,
+          xp: data.xp ?? perfilActual.xp,
+          nivel: data.level ?? perfilActual.nivel,
+          monedas: data.coins ?? perfilActual.monedas,
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error al cargar perfil de Supabase:', error);
+  }
+}
+
+// --- FUNCIONES PURAS DE MATEMÁTICAS ---
 export const calcularXpNecesaria = (nivel: number) => Math.floor(100 * Math.pow(1.5, nivel - 1));
 
 // --- ACCIONES DEL SISTEMA ---
 
-export function completarApunte(idApunte: string, xpBase: number = 50, monedasBase: number = 10) {
+export async function completarApunte(idApunte: string, xpBase: number = 50, monedasBase: number = 10) {
   const perfil = perfilStore.get();
   
   // Si ya lo completó, no hacemos nada
@@ -64,58 +107,66 @@ export function completarApunte(idApunte: string, xpBase: number = 50, monedasBa
     xpNecesaria = calcularXpNecesaria(nuevoNivel);
   }
 
-  // Guardamos todo el estado actualizado de golpe
-  perfilStore.set({
+  const perfilActualizado: PerfilEstudiante = {
     ...perfil,
     xp: nuevaXp,
     nivel: nuevoNivel,
     monedas: nuevasMonedas,
     apuntesCompletados: [...perfil.apuntesCompletados, idApunte]
-  });
+  };
+
+  // Guardamos en el store local y sincronizamos con Supabase de inmediato
+  perfilStore.set(perfilActualizado);
+  await sincronizarConSupabase(perfilActualizado);
 
   return true;
 }
 
-export function aplicarPrestigio() {
+export async function aplicarPrestigio() {
   const perfil = perfilStore.get();
-  
-  // Condición para el prestigio (ej. ser nivel 50 mínimo)
   if (perfil.nivel < 50) return false;
 
-  perfilStore.set({
+  const perfilActualizado: PerfilEstudiante = {
     ...perfil,
-    xp: 0, // Reseteo
-    nivel: 1, // Reseteo
-    monedas: 0, // Reseteo
-    prestigio: perfil.prestigio + 1, // Sube un rango de prestigio
-    multiplicadorXP: perfil.multiplicadorXP + 0.25, // +25% de XP permanente por cada prestigio
-    // Ojo: no reseteamos los apuntesCompletados para que la web siga marcando lo que ya ha leído
-  });
+    xp: 0,
+    nivel: 1,
+    monedas: 0,
+    prestigio: perfil.prestigio + 1,
+    multiplicadorXP: perfil.multiplicadorXP + 0.25,
+  };
+
+  perfilStore.set(perfilActualizado);
+  await sincronizarConSupabase(perfilActualizado);
 
   return true;
 }
 
 // --- ACCIONES DE LA TIENDA ---
 
-export function comprarTema(idTema: string, precio: number) {
+export async function comprarTema(idTema: string, precio: number) {
   const perfil = perfilStore.get();
   
   if (perfil.monedas >= precio && !perfil.temasDesbloqueados.includes(idTema)) {
-    perfilStore.set({
+    const perfilActualizado: PerfilEstudiante = {
       ...perfil,
       monedas: perfil.monedas - precio,
       temasDesbloqueados: [...perfil.temasDesbloqueados, idTema],
-      temaActivo: idTema // Se lo equipamos automáticamente al comprar
-    });
+      temaActivo: idTema
+    };
+
+    perfilStore.set(perfilActualizado);
+    await sincronizarConSupabase(perfilActualizado);
     return true;
   }
   return false;
 }
 
-export function equiparTema(idTema: string) {
+export async function equiparTema(idTema: string) {
   const perfil = perfilStore.get();
   if (perfil.temasDesbloqueados.includes(idTema)) {
-    perfilStore.set({ ...perfil, temaActivo: idTema });
+    const perfilActualizado: PerfilEstudiante = { ...perfil, temaActivo: idTema };
+    perfilStore.set(perfilActualizado);
+    await sincronizarConSupabase(perfilActualizado);
     return true;
   }
   return false;
