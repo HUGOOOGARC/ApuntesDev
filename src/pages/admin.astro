@@ -10,16 +10,26 @@ import Layout from '../layouts/Layout.astro';
 
     <div id="admin-content" style="display: none;">
       <h1>🛡️ Panel de Administración</h1>
-      <p>Bienvenido al centro de control de ApuntesDev. Desde aquí podrás gestionar contenidos y supervisar la plataforma.</p>
+      <p>Bienvenido al centro de control de ApuntesDev. Supervisión de usuarios y progreso global.</p>
       
-      <div class="admin-grid">
-        <div class="admin-card">
-          <h3>Estadísticas de la plataforma</h3>
-          <p>Control de usuarios registrados, XP global y monedas en circulación.</p>
-        </div>
-        <div class="admin-card">
-          <h3>Gestión de Apuntes</h3>
-          <p>Herramientas rápidas para validar o añadir nuevos temas de SMR.</p>
+      <div class="admin-card">
+        <h3>👥 Estudiantes Registrados en la Plataforma</h3>
+        <p class="subtitle">Lista sincronizada en tiempo real desde Supabase.</p>
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID de Usuario</th>
+                <th>Nivel</th>
+                <th>XP</th>
+                <th>Monedas</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-usuarios-body">
+              <!-- Los usuarios se inyectarán aquí mediante JavaScript -->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -39,6 +49,7 @@ import Layout from '../layouts/Layout.astro';
     const loadingScreen = document.getElementById('loading-screen');
     const adminContent = document.getElementById('admin-content');
     const accessDenied = document.getElementById('access-denied');
+    const tbody = document.getElementById('tabla-usuarios-body');
 
     // 1. Comprobamos si hay una sesión activa
     const { data: { session } } = await supabase.auth.getSession();
@@ -50,15 +61,12 @@ import Layout from '../layouts/Layout.astro';
 
     // 2. LISTA DE ADMINISTRADORES AUTORIZADOS
     const CORREOS_ADMINS = [
-      'smr114.2026m@gmail.com',          // <--- Tu correo principal
-      'hgarciaaltuzarra@gmail.com', // <--- Correo de otro admin (puedes añadir más)
+      'hgarciaaltuzarra@gmail.com', // <--- Asegúrate de poner tu correo real aquí
     ];
 
-    // Comprobamos si el correo del usuario actual está en la lista de admins
     const emailUsuario = session.user.email ?? '';
     const esAdmin = CORREOS_ADMINS.includes(emailUsuario);
 
-    // Opcional por si prefieres consultar una columna de la base de datos:
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
@@ -71,6 +79,26 @@ import Layout from '../layouts/Layout.astro';
 
     if (esAdmin || esAdminPorBD) {
       adminContent.style.display = 'block';
+
+      // 3. Cargamos la lista de todos los perfiles de la base de datos
+      const { data: perfiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('xp', { ascending: false }); // Ordenados por el que más XP tenga
+
+      if (!error && perfiles && tbody) {
+        tbody.innerHTML = '';
+        perfiles.forEach((p) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="user-id" title="${p.id}">${p.id.substring(0, 12)}...</td>
+            <td><span class="badge-nivel">Nvl. ${p.level ?? 1}</span></td>
+            <td>${p.xp ?? 0} XP</td>
+            <td class="coins">🪙 ${p.coins ?? 0}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
     } else {
       accessDenied.style.display = 'block';
     }
@@ -79,7 +107,7 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
   .admin-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 3rem auto;
     padding: 0 1rem;
   }
@@ -94,12 +122,48 @@ import Layout from '../layouts/Layout.astro';
   h1 { color: var(--accent-color); margin-bottom: 0.5rem; }
   h2 { color: #fff; }
   p { color: #888; }
-  .admin-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
+  .subtitle { font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+  /* Estilos de la Tabla */
+  .table-responsive {
+    overflow-x: auto;
   }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-family: inherit;
+  }
+  .admin-table th, .admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #222;
+  }
+  .admin-table th {
+    color: var(--accent-color);
+    font-weight: bold;
+    border-bottom: 2px solid #333;
+  }
+  .admin-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .user-id {
+    font-family: monospace;
+    color: #888;
+    font-size: 0.9rem;
+  }
+  .badge-nivel {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+  .coins {
+    color: #FFD700;
+    font-weight: bold;
+  }
+
   .error-box {
     text-align: center;
     background: #1a0f0f;
