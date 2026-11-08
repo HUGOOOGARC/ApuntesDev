@@ -10,7 +10,7 @@ export interface PerfilEstudiante {
   monedas: number;
   prestigio: number;
   multiplicadorXP: number;
-  apuntesCompletados: string[]; // Guardaremos los IDs de los apuntes leídos
+  apuntesCompletados: string[];
 }
 
 // 2. Valores iniciales para un usuario nuevo
@@ -25,7 +25,7 @@ const valoresIniciales: PerfilEstudiante = {
   apuntesCompletados: []
 };
 
-// 3. Creamos el Store persistente sincronizado con localStorage
+// 3. Creamos el Store persistente sincronizado con localStorage (funciona de caché rápida)
 export const perfilStore = persistentMap<PerfilEstudiante>(
   'apuntesdev_perfil:',
   valoresIniciales,
@@ -36,6 +36,7 @@ export const perfilStore = persistentMap<PerfilEstudiante>(
 );
 
 // --- FUNCIÓN AUXILIAR DE SINCRONIZACIÓN CON SUPABASE ---
+// Guarda TODOS los datos actuales del store en la base de datos de Supabase
 async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -46,6 +47,10 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
           xp: nuevoPerfil.xp,
           coins: nuevoPerfil.monedas,
           level: nuevoPerfil.nivel,
+          prestigio: nuevoPerfil.prestigio,
+          multiplicador_xp: nuevoPerfil.multiplicadorXP,
+          apuntes_completados: nuevoPerfil.apuntesCompletados,
+          // Si añades columnas para los temas en el futuro, las mapeas aquí también
         })
         .eq('id', session.user.id);
     }
@@ -72,6 +77,9 @@ export async function cargarPerfilDesdeSupabase() {
           xp: data.xp ?? perfilActual.xp,
           nivel: data.level ?? perfilActual.nivel,
           monedas: data.coins ?? perfilActual.monedas,
+          prestigio: data.prestigio ?? perfilActual.prestigio,
+          multiplicadorXP: data.multiplicador_xp ?? perfilActual.multiplicadorXP,
+          apuntesCompletados: data.apuntes_completados ?? perfilActual.apuntesCompletados,
         });
       }
     }

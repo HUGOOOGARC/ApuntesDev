@@ -16,17 +16,15 @@ const {
 	image = "/og-image.png" 
 } = Astro.props;
 
-// 1. URL base de tu web en producción (¡Cámbiala por tu subdominio de Vercel exacto!)
-// Pon https://apuntes-dev-six.vercel.app sin la barra diagonal del final.
+// URL base de producción
 const BASE_URL = "https://apuntes-dev-six.vercel.app";
 
 const canonicalURL = new URL(Astro.url.pathname, BASE_URL);
 
-// 2. Aquí forzamos la URL absoluta de la imagen para que Discord la encuentre de verdad
-// Si la imagen ya tiene http:// o https:// la dejamos, si no, le pegamos tu dominio delante
+// URL absoluta de la imagen para redes sociales y Discord
 const socialImageURL = image.startsWith('http') 
-  ? image 
-  : `${BASE_URL}${image}`;
+	? image 
+	: `${BASE_URL}${image}`;
 ---
 
 <!doctype html>
@@ -57,9 +55,9 @@ const socialImageURL = image.startsWith('http')
 
 		<ClientRouter />
 
-		<!-- Script ant-parpadeo de la tienda de temas -->
+		<!-- Script anti-parpadeo de la tienda de temas -->
 		<script is:inline>
-			const rawData = localStorage.getItem('apuntes_perfil');
+			const rawData = localStorage.getItem('apuntesdev_perfil:');
 			if (rawData) {
 				try {
 					const perfil = JSON.parse(rawData);
@@ -81,31 +79,32 @@ const socialImageURL = image.startsWith('http')
 
 		<!-- Botón de copiar adaptado a ViewTransitions -->
 		<script>
-		  document.addEventListener('astro:page-load', () => {
-		    const bloquesDeCodigo = document.querySelectorAll('pre');
+			document.addEventListener('astro:page-load', () => {
+				const bloquesDeCodigo = document.querySelectorAll('pre');
 
-		    bloquesDeCodigo.forEach((bloque) => {
-		      // Evitamos duplicar botones si la página recarga transiciones
-		      if (bloque.querySelector('.boton-copiar')) return;
+				bloquesDeCodigo.forEach((bloque) => {
+					// Evitamos duplicar botones si la página recarga transiciones
+					if (bloque.querySelector('.boton-copiar')) return;
 
-		      const botonCopiar = document.createElement('button');
-		      botonCopiar.className = 'boton-copiar';
-		      botonCopiar.innerText = 'Copiar';
-		      bloque.appendChild(botonCopiar);
+					const botonCopiar = document.createElement('button');
+					botonCopiar.className = 'boton-copiar';
+					botonCopiar.innerText = 'Copiar';
+					bloque.appendChild(botonCopiar);
 
-		      botonCopiar.addEventListener('click', async () => {
-		        const codigo = bloque.querySelector('code')?.innerText;
-		        if (codigo) {
-		          await navigator.clipboard.writeText(codigo);
-		          botonCopiar.innerText = '¡Copiado!';
-		          setTimeout(() => {
-		            botonCopiar.innerText = 'Copiar';
-		          }, 2000);
-		        }
-		      });
-		    });
-		  });
+					botonCopiar.addEventListener('click', async () => {
+						const codigo = bloque.querySelector('code')?.innerText;
+						if (codigo) {
+							await navigator.clipboard.writeText(codigo);
+							botonCopiar.innerText = '¡Copiado!';
+							setTimeout(() => {
+								botonCopiar.innerText = 'Copiar';
+							}, 2000);
+						}
+					});
+				});
+			});
 		</script>
+
 		<!-- Sincronización automática del perfil con Supabase -->
 		<script>
 			import { cargarPerfilDesdeSupabase } from '../store/progreso';
@@ -122,32 +121,34 @@ const socialImageURL = image.startsWith('http')
 </html>
 
 <style is:global>
-/* Tema por defecto (Terminal Verde) */
-  :root {
-    --bg-color: #121212;
-    --text-color: #e0e0e0;
-    --accent-color: #4CAF50; 
-  }
+	/* Tema por defecto (Terminal Verde) */
+	:root {
+		--bg-color: #121212;
+		--text-color: #e0e0e0;
+		--accent-color: #4CAF50; 
+		--code-bg: #1a1a1a;
+	}
 
-  /* Tema Kali Linux */
-  [data-theme="kali"] {
-    --bg-color: #0d0d0d;
-    --accent-color: #e53935;
-  }
+	/* Tema Kali Linux */
+	[data-theme="kali"] {
+		--bg-color: #0d0d0d;
+		--accent-color: #e53935;
+	}
 
-  /* Tema Drácula */
-  [data-theme="dracula"] {
-    --bg-color: #282a36;
-    --text-color: #f8f8f2;
-    --accent-color: #bd93f9;
-  }
+	/* Tema Drácula */
+	[data-theme="dracula"] {
+		--bg-color: #282a36;
+		--text-color: #f8f8f2;
+		--accent-color: #bd93f9;
+	}
 
-  /* Tema Hacker / Matrix */
-  [data-theme="hacker"] {
-    --bg-color: #000000;
-    --text-color: #00ff00;
-    --accent-color: #00ff00;
-  }
+	/* Tema Hacker / Matrix */
+	[data-theme="hacker"] {
+		--bg-color: #000000;
+		--text-color: #00ff00;
+		--accent-color: #00ff00;
+	}
+
 	html {
 		font-family: system-ui, -apple-system, sans-serif;
 		background-color: var(--bg-color);
@@ -214,93 +215,91 @@ const socialImageURL = image.startsWith('http')
 	.btn-completar.dominado { background: var(--accent-color); color: var(--bg-color); opacity: 0.7; border-color: transparent; cursor: default; transform: none; }
 
 	/* =========================================
-     ESTILOS PREMIUM: PALETA DE COMANDOS (CTRL+K)
-     ========================================= */
-  .cmd-backdrop {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 100000; /* Siempre por encima de todo */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 15vh;
-    animation: fadeIn 0.2s ease-out;
-  }
-  
-  .cmd-modal {
-    width: 100%;
-    max-width: 600px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 12px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent-color);
-    overflow: hidden;
-    animation: slideDown 0.2s ease-out;
-  }
+	   ESTILOS PREMIUM: PALETA DE COMANDOS (CTRL+K)
+	   ========================================= */
+	.cmd-backdrop {
+		position: fixed;
+		top: 0; left: 0; width: 100vw; height: 100vh;
+		background: rgba(0, 0, 0, 0.6);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		z-index: 100000;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		padding-top: 15vh;
+		animation: fadeIn 0.2s ease-out;
+	}
+	
+	.cmd-modal {
+		width: 100%;
+		max-width: 600px;
+		background: #111;
+		border: 1px solid #333;
+		border-radius: 12px;
+		box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent-color);
+		overflow: hidden;
+		animation: slideDown 0.2s ease-out;
+	}
 
-  .cmd-header {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #333;
-  }
+	.cmd-header {
+		display: flex;
+		align-items: center;
+		padding: 1rem 1.5rem;
+		border-bottom: 1px solid #333;
+	}
 
-  .cmd-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 1.2rem;
-    outline: none;
-    font-family: inherit;
-  }
-  
-  .cmd-input::placeholder { color: #555; }
+	.cmd-input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		color: #fff;
+		font-size: 1.2rem;
+		outline: none;
+		font-family: inherit;
+	}
+	
+	.cmd-input::placeholder { color: #555; }
 
-  .cmd-esc {
-    font-size: 0.7rem;
-    color: #666;
-    background: #222;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid #333;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
+	.cmd-esc {
+		font-size: 0.7rem;
+		color: #666;
+		background: #222;
+		padding: 0.2rem 0.5rem;
+		border-radius: 4px;
+		border: 1px solid #333;
+		font-weight: bold;
+		letter-spacing: 1px;
+	}
 
-  .cmd-results {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 0.5rem;
-  }
+	.cmd-results {
+		max-height: 400px;
+		overflow-y: auto;
+		padding: 0.5rem;
+	}
 
-  .cmd-item {
-    display: block;
-    padding: 1rem;
-    color: #ccc;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.1s ease;
-    margin-bottom: 0.2rem;
-  }
+	.cmd-item {
+		display: block;
+		padding: 1rem;
+		color: #ccc;
+		text-decoration: none;
+		border-radius: 8px;
+		transition: all 0.1s ease;
+		margin-bottom: 0.2rem;
+	}
 
-  .cmd-item:hover {
-    background: var(--accent-color);
-    color: var(--bg-color);
-    font-weight: bold;
-  }
+	.cmd-item:hover {
+		background: var(--accent-color);
+		color: var(--bg-color);
+		font-weight: bold;
+	}
 
-  .cmd-empty {
-    padding: 2rem;
-    text-align: center;
-    color: #666;
-  }
+	.cmd-empty {
+		padding: 2rem;
+		text-align: center;
+		color: #666;
+	}
 
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideDown { from { transform: translateY(-20px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-
-
+	@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+	@keyframes slideDown { from { transform: translateY(-20px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 </style>
