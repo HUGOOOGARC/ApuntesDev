@@ -11,7 +11,7 @@
     <nav>
       <a href="/sistemas">Sistemas</a>
       <a href="/programacion">Programación</a>
-      <a href="/perfil" class="link-perfil">👤 Mi Perfil</a>
+      <a href="/perfil" class="link-perfil" id="link-perfil">👤 <span id="nav-username">Mi Perfil</span></a>
     </nav>
 
     <!-- La barra de búsqueda que ya tenías -->
@@ -21,6 +21,36 @@
     </form>
   </div>
 </header>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  document.addEventListener('astro:page-load', async () => {
+    const navUsername = document.getElementById('nav-username');
+    if (!navUsername) return;
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', session.user.id)
+          .single();
+
+        if (data && data.username) {
+          navUsername.textContent = data.username;
+        } else {
+          navUsername.textContent = 'Mi Perfil';
+        }
+      } else {
+        navUsername.textContent = 'Mi Perfil';
+      }
+    } catch (e) {
+      console.error('Error cargando el nombre de usuario en el header:', e);
+    }
+  });
+</script>
 
 <style>
   header {
@@ -70,6 +100,14 @@
   nav a:hover {
     color: var(--accent-color);
   }
+
+  /* Estilo especial para resaltar el botón de perfil con el nombre */
+  .link-perfil {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
   /* Estilos del buscador (los mismos que tenías) */
   .buscador-form { display: flex; gap: 0.5rem; }
   .buscador-form input { background: var(--bg-color); border: 1px solid #444; color: #fff; padding: 0.4rem 0.8rem; border-radius: 4px; font-family: inherit; }
