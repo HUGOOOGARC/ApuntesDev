@@ -110,6 +110,64 @@ import TiendaTemas from '../components/TiendaTemas.tsx';
 </script>
 
 <style is:global>
+/* Estilos para la tarjeta de cambio de alias en el dashboard */
+  .config-alias-card {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .config-alias-card h3 {
+    color: var(--accent-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+  .form-alias {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .input-group-alias {
+    display: flex;
+    gap: 1rem;
+  }
+  .input-group-alias input {
+    flex-grow: 1;
+    background: #121212;
+    border: 1px solid #333;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    font-family: inherit;
+  }
+  .input-group-alias input:focus {
+    border-color: var(--accent-color);
+  }
+  .btn-guardar-alias {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0 1.5rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-guardar-alias:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  .texto-exito {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0 0;
+  }
 /* Estilos para la tarjeta de configuración de usuario */
   .config-usuario-card {
     background: #1e1e1e;
