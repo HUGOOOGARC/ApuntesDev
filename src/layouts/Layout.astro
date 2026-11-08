@@ -106,6 +106,18 @@ const socialImageURL = image.startsWith('http')
 		    });
 		  });
 		</script>
+		<!-- Sincronización automática del perfil con Supabase -->
+		<script>
+			import { cargarPerfilDesdeSupabase } from '../store/progreso';
+			import { supabase } from '../lib/supabase';
+
+			document.addEventListener('astro:page-load', async () => {
+				const { data: { session } } = await supabase.auth.getSession();
+				if (session) {
+					await cargarPerfilDesdeSupabase();
+				}
+			});
+		</script>
 	</body>
 </html>
 
