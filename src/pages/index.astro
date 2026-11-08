@@ -4,56 +4,222 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="ApuntesDev - Inicio">
+<Layout title="ApuntesDev | Domina SMR y Programación">
   <Header />
-  
-  <section class="hero">
-    <h1>Bienvenido a <span>ApuntesDev</span></h1>
-    <p>Tu plataforma de aprendizaje para SMR, Programación y Desarrollo Web.</p>
-  </section>
 
-  <section class="ultimos-apuntes">
-    <h2>Últimos Apuntes</h2>
-    <ul>
-      <li>
-        <a href="/programacion/python-basico">🐍 Conceptos Básicos de Python</a>
-      </li>
-    </ul>
-  </section>
+  <main class="landing-container">
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-content">
+        <span class="badge">v2.0 X9999 Edition</span>
+        <h1>Sube de nivel tus conocimientos en <span class="highlight">SMR y Código</span></h1>
+        <p class="hero-subtitle">
+          Aprende Sistemas Operativos, Redes y Programación. Completa apuntes, gana XP, acumula monedas y desbloquea temas visuales en la primera plataforma educativa gamificada.
+        </p>
+        <div class="hero-buttons">
+          <a href="/sistemas" class="btn-primary">Empezar a Estudiar 🚀</a>
+          <a href="/perfil" class="btn-secondary">Ver mi Rango 👤</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN DE CARACTERÍSTICAS (GAMIFICACIÓN) -->
+    <section class="features">
+      <h2 class="section-title">¿Por qué estudiar en ApuntesDev?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Directo al Grano</h3>
+          <p>Apuntes limpios en formato Markdown, optimizados para leer, entender y aplicar sin paja.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <h3>Gamificación Real</h3>
+          <p>Gana 50 XP y 10 Monedas por cada apunte dominado. Sube de nivel y alcanza el Prestigio.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Tienda de Temas</h3>
+          <p>Invierte tus monedas en desbloquear paletas de colores exclusivas, como Kali Linux o Matrix.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN DE RUTAS -->
+    <section class="rutas">
+      <h2 class="section-title">Rutas de Aprendizaje</h2>
+      <div class="rutas-grid">
+        <a href="/sistemas" class="ruta-card sistemas">
+          <h3>Sistemas Operativos</h3>
+          <p>SOM, virtualización, comandos de terminal y administración de usuarios.</p>
+        </a>
+        <a href="/sistemas" class="ruta-card redes">
+          <h3>Redes Locales</h3>
+          <p>Topologías, cableado, enrutamiento y packet tracer.</p>
+        </a>
+        <a href="/programacion" class="ruta-card programacion">
+          <h3>Desarrollo Web</h3>
+          <p>Estructuras de control, bases de datos y creación de aplicaciones modernas.</p>
+        </a>
+      </div>
+    </section>
+  </main>
 
   <Footer />
 </Layout>
 
 <style>
+  .landing-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* HERO SECTION */
   .hero {
+    padding: 6rem 0;
     text-align: center;
-    margin: 2rem 0 3rem 0;
+    border-bottom: 1px solid #333;
   }
-  h1 span {
+  .badge {
+    background: #333;
     color: var(--accent-color);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--accent-color);
+    display: inline-block;
+    margin-bottom: 1.5rem;
   }
-  .ultimos-apuntes {
-    background: #1e1e1e;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  li a {
+  .hero h1 {
+    font-size: 4rem;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.1;
     color: var(--text-color);
-    text-decoration: none;
-    font-size: 1.2rem;
-    display: block;
-    padding: 1rem;
-    background: var(--bg-color);
-    border-radius: 4px;
-    border-left: 4px solid var(--accent-color);
-    transition: transform 0.2s ease;
   }
-  li a:hover {
-    transform: translateX(10px);
+  .highlight {
+    color: var(--accent-color);
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+  }
+  .hero-subtitle {
+    font-size: 1.2rem;
+    color: #aaa;
+    max-width: 700px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.6;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary, .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  .btn-primary {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+  }
+  .btn-secondary {
+    background: #2a2a2a;
+    color: var(--text-color);
+    border: 1px solid #444;
+  }
+  .btn-secondary:hover {
+    background: #333;
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+  }
+
+  /* FEATURES */
+  .features, .rutas {
+    padding: 5rem 0;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 3rem;
+    color: var(--text-color);
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  .feature-card {
+    background: #1a1a1a;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    border: 1px solid #333;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+  .feature-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent-color);
+  }
+  .feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+  }
+  .feature-card h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+  }
+  .feature-card p {
+    color: #888;
+    line-height: 1.6;
+  }
+
+  /* RUTAS */
+  .rutas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  .ruta-card {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-color);
+    transition: all 0.3s ease;
+  }
+  .ruta-card:hover {
+    transform: scale(1.03);
+    background: linear-gradient(145deg, #2a2a2a, #333);
+  }
+  .ruta-card h3 {
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+  .ruta-card p {
+    color: #aaa;
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  /* Ajustes para móviles */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .hero { padding: 4rem 0; }
   }
 </style>
