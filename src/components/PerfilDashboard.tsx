@@ -30,7 +30,7 @@ export default function PerfilDashboard() {
     cargarUsername();
   }, []);
 
-  const handleGuardarUsername = async (e: Event) => {
+  const handleGuardarUsername = async (e: any) => {
     e.preventDefault();
     setGuardando(true);
     setMensajeExito(false);
@@ -64,7 +64,7 @@ export default function PerfilDashboard() {
 
   return (
     <div className="dashboard-grid">
-      {/* Tarjeta de configuración de alias integrada en el dashboard */}
+      {/* Tarjeta de configuración de alias integrada */}
       <div style={{ background: '#1e1e1e', border: '1px solid #333', padding: '1.5rem', borderRadius: '8px', marginBottom: '1.5rem' }}>
         <h3 style={{ color: 'var(--accent-color)', marginTop: 0, marginBottom: '1rem', fontSize: '1.2rem' }}>👤 Identidad del Estudiante</h3>
         <form onSubmit={handleGuardarUsername} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -72,7 +72,7 @@ export default function PerfilDashboard() {
             <input 
               type="text" 
               value={username} 
-              onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
+              onInput={(e: any) => setUsername(e.target.value)}
               placeholder="Introduce tu alias (ej. HackerSMR)" 
               maxLength={20}
               required 
