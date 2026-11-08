@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="ApuntesDev - Inicio">
+  <Header />
+  
+  <section class="hero">
+    <h1>Bienvenido a <span>ApuntesDev</span></h1>
+    <p>Tu plataforma de aprendizaje para SMR, Programación y Desarrollo Web.</p>
+  </section>
+
+  <section class="ultimos-apuntes">
+    <h2>Últimos Apuntes</h2>
+    <ul>
+      <li>
+        <a href="/programacion/python-basico">🐍 Conceptos Básicos de Python</a>
+      </li>
+    </ul>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .hero {
+    text-align: center;
+    margin: 2rem 0 3rem 0;
+  }
+  h1 span {
+    color: var(--accent-color);
+  }
+  .ultimos-apuntes {
+    background: #1e1e1e;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block;
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 4px;
+    border-left: 4px solid var(--accent-color);
+    transition: transform 0.2s ease;
+  }
+  li a:hover {
+    transform: translateX(10px);
+  }
+</style>

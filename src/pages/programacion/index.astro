@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Programación - ApuntesDev">
+  <Header />
+  
+  <section class="categoria-header">
+    <h1>💻 Programación</h1>
+    <p>Apuntes, scripts y conceptos básicos de Python y otros lenguajes.</p>
+  </section>
+
+  <section class="lista-apuntes">
+    <article class="apunte-card">
+      <h2><a href="/programacion/python-basico">Conceptos Básicos de Python</a></h2>
+      <p>Aprende a usar variables, la función print() y crea tu primer script.</p>
+      <a href="/programacion/python-basico" class="leer-mas">Leer apunte →</a>
+    </article>
+    
+    <!-- Aquí irás añadiendo más <article> conforme crees más apuntes -->
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .categoria-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .categoria-header h1 {
+    color: var(--accent-color);
+    font-size: 2.5rem;
+  }
+  .lista-apuntes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .apunte-card {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    transition: transform 0.2s;
+  }
+  .apunte-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+  }
+  .apunte-card h2 a {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  .apunte-card p {
+    color: #aaa;
+    margin-bottom: 1rem;
+  }
+  .leer-mas {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>

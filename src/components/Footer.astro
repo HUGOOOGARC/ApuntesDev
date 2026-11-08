@@ -1,0 +1,49 @@
+---
+const anio = new Date().getFullYear();
+---
+<footer>
+  <div class="footer-content">
+    <p>&copy; {anio} ApuntesDev. Proyecto educativo de SMR y Programación.</p>
+    <nav class="legal-links">
+      <a href="/privacidad">Política de Privacidad</a>
+      <a href="/cookies">Política de Cookies</a>
+      <a href="/aviso-legal">Aviso Legal</a>
+      <a href="/contacto">Contacto</a>
+      <a href="/sobre-mi">Sobre mí</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+    padding: 2rem;
+    margin-top: 4rem;
+    text-align: center;
+  }
+  .footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  p {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .legal-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .legal-links a {
+    color: #b3b3b3;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .legal-links a:hover {
+    color: var(--accent-color);
+  }
+</style>

@@ -1,0 +1,19 @@
+{
+  "name": "apuntesdev",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@astrojs/preact": "^6.1.2",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.7",
+    "preact": "^11.2.0"
+  }
+}

@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Error 404 - ApuntesDev">
+  <Header />
+  
+  <section class="error-container">
+    <h1 class="codigo-error">404</h1>
+    <h2>¡Ups! Comando no encontrado</h2>
+    <p>Parece que has intentado acceder a un directorio o apunte que no existe, ha sido movido, o hay un error de sintaxis en la URL.</p>
+    
+    <a href="/" class="btn-volver">cd / (Volver al inicio)</a>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .error-container {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid #333;
+    margin: 2rem auto;
+    max-width: 600px;
+  }
+  .codigo-error {
+    font-size: 8rem;
+    color: var(--accent-color);
+    margin: 0;
+    line-height: 1;
+    font-family: monospace;
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  }
+  h2 {
+    color: #fff;
+    margin-top: 1rem;
+    font-size: 2rem;
+  }
+  p {
+    color: #ccc;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  .btn-volver {
+    display: inline-block;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 1rem 2rem;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    font-family: Menlo, Monaco, Lucida Console, monospace;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease, opacity 0.2s;
+  }
+  .btn-volver:hover {
+    opacity: 0.9;
+    transform: translateY(-3px);
+  }
+</style>

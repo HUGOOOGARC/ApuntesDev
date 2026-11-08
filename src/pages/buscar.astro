@@ -1,0 +1,122 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// Obtenemos todos los apuntes de todas las carpetas dentro de pages
+const todosLosApuntes = Object.values(import.meta.glob('./**/*.md', { eager: true }));
+
+// Limpiamos los datos para enviarlos al navegador en formato JSON
+const listaBuscador = todosLosApuntes.map((apunte: any) => ({
+  titulo: apunte.frontmatter.title,
+  url: apunte.url,
+  categoria: apunte.frontmatter.category
+}));
+---
+
+<Layout title="Buscar Apuntes - ApuntesDev">
+  <Header />
+  
+  <section class="busqueda-container">
+    <h1>Resultados de búsqueda</h1>
+    <p id="mensaje-busqueda">Buscando...</p>
+    
+    <!-- Aquí inyectamos el JSON de los apuntes para que el JS lo lea -->
+    <div id="datos-busqueda" data-apuntes={JSON.stringify(listaBuscador)} style="display: none;"></div>
+
+    <ul id="lista-resultados" class="resultados-grid">
+      <!-- Los resultados aparecerán aquí por arte de magia (JS) -->
+    </ul>
+  </section>
+
+  <Footer />
+</Layout>
+
+<script>
+  // Usamos astro:page-load para compatibilidad con las View Transitions
+  document.addEventListener('astro:page-load', () => {
+    const listaResultados = document.getElementById('lista-resultados');
+    const mensajeBusqueda = document.getElementById('mensaje-busqueda');
+    const contenedorDatos = document.getElementById('datos-busqueda');
+    
+    if (!listaResultados || !contenedorDatos || !mensajeBusqueda) return;
+
+    // 1. Obtenemos el texto que el usuario buscó de la URL (ej: /buscar?q=linux)
+    const urlParams = new URLSearchParams(window.location.search);
+    const busqueda = urlParams.get('q')?.toLowerCase() || '';
+
+    // 2. Leemos la lista completa de apuntes
+    const todosLosApuntes = JSON.parse(contenedorDatos.getAttribute('data-apuntes') || '[]');
+
+    // 3. Filtramos los que coincidan con la búsqueda (por título o categoría)
+    const resultados = todosLosApuntes.filter((apunte) => 
+      apunte.titulo.toLowerCase().includes(busqueda) || 
+      apunte.categoria.toLowerCase().includes(busqueda)
+    );
+
+    // 4. Mostramos los resultados en la pantalla
+    if (resultados.length > 0) {
+      mensajeBusqueda.innerHTML = `Hemos encontrado <strong>${resultados.length}</strong> apunte(s) para "<em>${busqueda}</em>"`;
+      
+      listaResultados.innerHTML = resultados.map(apunte => `
+        <li class="resultado-card">
+          <h2><a href="${apunte.url}">${apunte.titulo}</a></h2>
+          <span class="etiqueta">${apunte.categoria}</span>
+        </li>
+      `).join('');
+    } else {
+      mensajeBusqueda.innerHTML = `No se han encontrado resultados para "<em>${busqueda}</em>". Prueba con otros términos.`;
+      listaResultados.innerHTML = '';
+    }
+  });
+</script>
+
+<style>
+  .busqueda-container {
+    background: #1e1e1e;
+    padding: 2.5rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+  }
+  h1 {
+    color: var(--accent-color);
+    margin-top: 0;
+  }
+  #mensaje-busqueda {
+    color: #ccc;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+  .resultados-grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .resultado-card {
+    background: var(--bg-color);
+    padding: 1.5rem;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent-color);
+    transition: transform 0.2s;
+  }
+  .resultado-card:hover {
+    transform: translateX(10px);
+  }
+  .resultado-card h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+  }
+  .resultado-card h2 a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .etiqueta {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+</style>

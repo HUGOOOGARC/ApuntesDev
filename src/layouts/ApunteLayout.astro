@@ -1,0 +1,171 @@
+---
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const { frontmatter, headings } = Astro.props;
+const indice = headings ? headings.filter((h: any) => h.depth === 2 || h.depth === 3) : [];
+---
+
+<Layout title={`${frontmatter.title} - ApuntesDev`}>
+  <Header />
+  
+  <div class="progreso-contenedor">
+    <div class="progreso-barra" id="barra-lectura"></div>
+  </div>
+
+  <div class="layout-apunte">
+    <aside class="sidebar-indice">
+      <div class="indice-sticky">
+        <h3>En este apunte</h3>
+        <ul>
+          {indice.map((heading: any) => (
+            <li class={`nivel-${heading.depth}`}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </aside>
+
+    <article class="apunte-contenido">
+      <header class="apunte-cabecera">
+        <h1>{frontmatter.title}</h1>
+        <p class="fecha">Publicado el: {frontmatter.date}</p>
+        <span class="etiqueta">{frontmatter.category}</span>
+      </header>
+
+      <div class="contenido-markdown">
+        <slot />
+      </div>
+    </article>
+  </div>
+
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const barra = document.getElementById('barra-lectura');
+    if (!barra) return;
+    
+    const actualizarProgreso = () => {
+      const alturaTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollActual = document.documentElement.scrollTop;
+      const porcentaje = (scrollActual / alturaTotal) * 100;
+      barra.style.width = porcentaje + '%';
+    };
+
+    window.addEventListener('scroll', actualizarProgreso);
+    actualizarProgreso();
+  });
+</script>
+
+<style is:global>
+  .progreso-contenedor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: transparent;
+    z-index: 9999;
+  }
+  .progreso-barra {
+    height: 100%;
+    background-color: var(--accent-color);
+    width: 0%;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px var(--accent-color);
+  }
+
+  .layout-apunte {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  @media (min-width: 768px) {
+    .layout-apunte {
+      grid-template-columns: 250px 1fr;
+    }
+  }
+
+  .sidebar-indice {
+    display: none;
+  }
+  
+  @media (min-width: 768px) {
+    .sidebar-indice {
+      display: block;
+    }
+  }
+
+  .indice-sticky {
+    position: sticky;
+    top: 2rem;
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+  }
+  .indice-sticky h3 {
+    margin-top: 0;
+    color: #fff;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+  }
+  .indice-sticky ul { list-style: none; padding: 0; margin: 0; }
+  .indice-sticky li { margin-bottom: 0.5rem; }
+  .indice-sticky .nivel-3 { padding-left: 1rem; font-size: 0.9rem; }
+  
+  .indice-sticky a {
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .indice-sticky a:hover {
+    color: var(--accent-color);
+  }
+
+  .apunte-contenido {
+    background: #1e1e1e;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+  }
+  .apunte-cabecera {
+    border-bottom: 1px solid #333;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .apunte-cabecera h1 {
+    color: var(--accent-color);
+    margin: 0 0 0.5rem 0;
+    font-size: 2.2rem;
+  }
+  .fecha { color: #888; font-size: 0.9rem; margin: 0 0 1rem 0; }
+  .etiqueta {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  
+  .contenido-markdown h2, .contenido-markdown h3 {
+    scroll-margin-top: 2rem;
+    color: #fff;
+    border-bottom: 1px dashed #444;
+    padding-bottom: 0.5rem;
+  }
+  .contenido-markdown p, .contenido-markdown li {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 1.05rem;
+  }
+</style>

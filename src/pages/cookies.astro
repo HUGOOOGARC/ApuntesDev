@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Política de Cookies - ApuntesDev">
+  <Header />
+  <article class="legal-doc">
+    <h1>Política de Cookies</h1>
+    <p>Esta web utiliza cookies propias y de terceros (Google AdSense) para ofrecer una mejor experiencia y mostrar anuncios personalizados.</p>
+    <h2>¿Qué son las cookies?</h2>
+    <p>Son pequeños archivos de texto que se guardan en tu navegador para recordar tus preferencias y visitas.</p>
+    <h2>Desactivación</h2>
+    <p>Puedes desactivar las cookies desde la configuración de tu navegador en cualquier momento.</p>
+  </article>
+  <Footer />
+</Layout>
+
+<style>
+  /* Puedes copiar aquí exactamente los mismos estilos CSS que pusiste en privacidad.astro */
+  .legal-doc { background: #1e1e1e; padding: 2rem 3rem; border-radius: 8px; border: 1px solid #333; }
+  h1 { color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 1rem; }
+  h2 { margin-top: 2rem; color: #fff; }
+  p { color: #ccc; line-height: 1.8; }
+</style>

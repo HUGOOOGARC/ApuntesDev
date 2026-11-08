@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Quiz from '../../components/Quiz.jsx'; // 1. Importamos el componente
+---
+
+<Layout title="ApuntesDev - Conceptos Básicos de Python">
+  <h1>Conceptos Básicos de Python</h1>
+  <p>En este apunte vamos a aprender cómo imprimir un mensaje por pantalla en Python, algo fundamental para empezar en SMR.</p>
+
+  <h2>1. La función print()</h2>
+  <pre><code>print("¡Hola, mundo desde ApuntesDev!")</code></pre>
+
+  <h2>2. Variables sencillas</h2>
+  <pre><code>
+nombre = "Estudiante SMR"
+curso = 1
+print("Hola " + nombre + ", bienvenido a " + str(curso) + "º de SMR")
+  </code></pre>
+
+  <!-- 2. Insertamos el Quiz interactivo aquí -->
+  <Quiz 
+    client:load 
+    pregunta="¿Qué función utilizamos en Python para mostrar texto por pantalla?"
+    opciones={["console.log()", "escribir()", "print()", "echo()"]}
+    respuestaCorrecta="print()"
+  />
+
+  <br><br>
+  <a href="/">⬅ Volver al inicio</a>
+</Layout>

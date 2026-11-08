@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Política de Privacidad - ApuntesDev">
+  <Header />
+  
+  <article class="legal-doc">
+    <h1>Política de Privacidad</h1>
+    <p><em>Última actualización: Octubre 2024</em></p>
+    
+    <h2>1. Recopilación de datos</h2>
+    <p>En ApuntesDev, accesible desde apuntesdev.com, una de nuestras principales prioridades es la privacidad de nuestros visitantes.</p>
+    
+    <h2>2. Google AdSense y Cookies de DoubleClick</h2>
+    <p>Google, como proveedor asociado de terceros, utiliza cookies para publicar anuncios en nuestro sitio. En concreto, el uso de las cookies de publicidad permite a Google y a sus socios mostrar anuncios basados en las visitas que los usuarios realizan a sus sitios o a otros sitios de Internet.</p>
+    <p>Los usuarios pueden inhabilitar la publicidad personalizada visitando la <a href="https://myadcenter.google.com/" target="_blank" rel="noopener noreferrer">Configuración de anuncios de Google</a>.</p>
+  </article>
+
+  <Footer />
+</Layout>
+
+<style>
+  .legal-doc {
+    background: #1e1e1e;
+    padding: 2rem 3rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    margin-bottom: 2rem;
+  }
+  h1 { 
+    color: var(--accent-color); 
+    border-bottom: 1px solid #333;
+    padding-bottom: 1rem;
+  }
+  h2 { 
+    margin-top: 2rem; 
+    color: #fff; 
+    font-size: 1.3rem;
+  }
+  p { 
+    color: #ccc; 
+    line-height: 1.8;
+  }
+  a {
+    color: var(--accent-color);
+  }
+</style>

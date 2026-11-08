@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const apuntes = Object.values(import.meta.glob('./*.md', { eager: true }));
+---
+
+<Layout title="Sistemas Operativos - ApuntesDev">
+  <Header />
+  
+  <section class="categoria-header">
+    <h1>🖥️ Sistemas Operativos</h1>
+    <p>Comandos, administración y configuración de Windows y Linux.</p>
+  </section>
+
+  <section class="lista-apuntes">
+    {apuntes.map((apunte) => (
+      <article class="apunte-card">
+        <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
+        <p>Categoría: {apunte.frontmatter.category} | 📅 {apunte.frontmatter.date}</p>
+        <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+      </article>
+    ))}
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .categoria-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .categoria-header h1 {
+    color: var(--accent-color);
+    font-size: 2.5rem;
+  }
+  .lista-apuntes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Efecto Glow Hover */
+  .apunte-card {
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .apunte-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+  .apunte-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15);
+  }
+  .apunte-card:hover::before {
+    left: 100%;
+  }
+  .apunte-card h2 a {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  .apunte-card p {
+    color: #aaa;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  .leer-mas {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>

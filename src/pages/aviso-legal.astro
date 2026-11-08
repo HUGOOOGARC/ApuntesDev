@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Aviso Legal - ApuntesDev">
+  <Header />
+  <article class="legal-doc">
+    <h1>Aviso Legal</h1>
+    <p>El contenido de ApuntesDev tiene un fin puramente educativo. Los códigos y tutoriales se proporcionan "tal cual", sin garantías de ningún tipo.</p>
+    <h2>Propiedad Intelectual</h2>
+    <p>El diseño y los textos originales de esta web pertenecen a su creador. Si utilizas nuestros apuntes en tu web, te pedimos que incluyas un enlace citando la fuente.</p>
+  </article>
+  <Footer />
+</Layout>
+
+<style>
+  /* Copia los mismos estilos de privacidad.astro */
+  .legal-doc { background: #1e1e1e; padding: 2rem 3rem; border-radius: 8px; border: 1px solid #333; }
+  h1 { color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 1rem; }
+  h2 { margin-top: 2rem; color: #fff; }
+  p { color: #ccc; line-height: 1.8; }
+</style>

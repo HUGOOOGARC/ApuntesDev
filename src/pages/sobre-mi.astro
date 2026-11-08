@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Sobre mí - ApuntesDev">
+  <Header />
+  
+  <article class="perfil">
+    <h1>Sobre mí</h1>
+    
+    <div class="contenido-perfil">
+      <p>¡Hola! Soy el creador de <strong>ApuntesDev</strong>.</p>
+      
+      <p>Actualmente soy estudiante del ciclo de <strong>Sistemas Microinformáticos y Redes (SMR)</strong>. Decidí crear esta web con un doble propósito: tener mis apuntes de 1º y 2º organizados y accesibles en cualquier momento, y ayudar a otras personas que estén estudiando lo mismo o que quieran adentrarse en el mundo de la informática desde cero.</p>
+      
+      <h2>¿Qué encontrarás aquí?</h2>
+      <ul>
+        <li>Tutoriales y comandos para Sistemas Operativos (Windows/Linux).</li>
+        <li>Conceptos de Redes locales y seguridad.</li>
+        <li>Introducción a la programación (Python) y Desarrollo Web (HTML/CSS/Astro).</li>
+      </ul>
+      
+      <p>Todo el contenido está escrito desde mi experiencia en clase y mis propias prácticas, diseñado para ir directo al grano.</p>
+    </div>
+  </article>
+
+  <Footer />
+</Layout>
+
+<style>
+  .perfil {
+    background: #1e1e1e;
+    padding: 2rem 3rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+  }
+  h1 {
+    color: var(--accent-color);
+    border-bottom: 1px solid #333;
+    padding-bottom: 1rem;
+  }
+  h2 {
+    color: #fff;
+    margin-top: 2rem;
+  }
+  .contenido-perfil p, .contenido-perfil li {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 1.1rem;
+  }
+  ul {
+    margin-bottom: 2rem;
+  }
+  li {
+    margin-bottom: 0.5rem;
+  }
+</style>
