@@ -1,0 +1,176 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Mi Perfil - ApuntesDev">
+  <Header />
+  
+  <main class="perfil-container">
+    <div class="perfil-card">
+      <h1>⚙️ Configuración del Perfil</h1>
+      <p>Personaliza tu identidad en la plataforma y actualiza tu nombre de usuario.</p>
+
+      <div id="loading" class="mensaje-estado">Cargando datos del perfil...</div>
+
+      <form id="form-perfil" class="form-perfil" style="display: none;">
+        <div class="input-group">
+          <label for="email">Correo electrónico</label>
+          <input type="text" id="email" disabled class="input-disabled" />
+        </div>
+
+        <div class="input-group">
+          <label for="username">Nombre de usuario (Alias)</label>
+          <input type="text" id="username" placeholder="Ej. HackerSMR" required maxlength="20" />
+        </div>
+
+        <button type="submit" id="btn-guardar" class="btn-guardar">Guardar cambios</button>
+        <p id="mensaje-exito" class="mensaje-exito" style="display: none;">¡Cambios guardados correctamente! ✅</p>
+      </form>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  document.addEventListener('astro:page-load', async () => {
+    const loading = document.getElementById('loading');
+    const form = document.getElementById('form-perfil') as HTMLFormElement;
+    const inputEmail = document.getElementById('email') as HTMLInputElement;
+    const inputUsername = document.getElementById('username') as HTMLInputElement;
+    const mensajeExito = document.getElementById('mensaje-exito');
+
+    if (!form) return;
+
+    // 1. Verificar sesión activa
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = '/login';
+      return;
+    }
+
+    if (inputEmail) {
+      inputEmail.value = session.user.email ?? '';
+    }
+
+    // 2. Cargar perfil actual desde Supabase
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', session.user.id)
+      .single();
+
+    if (profile && profile.username && inputUsername) {
+      inputUsername.value = profile.username;
+    }
+
+    if (loading) loading.style.display = 'none';
+    form.style.display = 'block';
+
+    // 3. Manejar el envío del formulario
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nuevoUsername = inputUsername.value.trim();
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ username: nuevoUsername })
+        .eq('id', session.user.id);
+
+      if (!updateError) {
+        if (mensajeExito) {
+          mensajeExito.style.display = 'block';
+          setTimeout(() => {
+            mensajeExito.style.display = 'none';
+          }, 3000);
+        }
+      } else {
+        alert('Hubo un error al actualizar el nombre de usuario.');
+      }
+    });
+  });
+</script>
+
+<style>
+  .perfil-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+    flex-grow: 1;
+  }
+  .perfil-card {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  h1 { 
+    color: var(--accent-color); 
+    margin-bottom: 0.5rem; 
+    border-bottom: 1px solid #333;
+    padding-bottom: 1rem;
+  }
+  p { color: #888; margin-bottom: 2rem; }
+  .form-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  label {
+    font-weight: bold;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+  input {
+    background: #121212;
+    border: 1px solid #333;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    font-family: inherit;
+  }
+  input:focus {
+    border-color: var(--accent-color);
+  }
+  .input-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .btn-guardar {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0.75rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn-guardar:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  .mensaje-estado {
+    color: #888;
+    text-align: center;
+    padding: 2rem;
+  }
+  .mensaje-exito {
+    color: #4CAF50;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+</style>
