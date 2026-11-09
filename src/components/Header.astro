@@ -38,6 +38,14 @@ import BarraProgreso from './BarraProgreso.tsx';
         <span class="pill-icon">🏆</span>
         <span>Leaderboard</span>
       </a>
+      <a href="/duelo" class="nav-pill nav-pill--duelo">
+        <span class="pill-icon">⚔️</span>
+        <span>Arena 1v1</span>
+      </a>
+      <a href="/tienda" class="nav-pill nav-pill--tienda">
+        <span class="pill-icon">🏪</span>
+        <span>Tienda</span>
+      </a>
     </nav>
 
     <!-- Acciones Derecha: Buscador + HUD XP + Perfil -->
@@ -252,6 +260,24 @@ import BarraProgreso from './BarraProgreso.tsx';
   .nav-pill--ranking:hover {
     background: rgba(255, 215, 0, 0.12);
     box-shadow: 0 0 16px rgba(255, 215, 0, 0.2);
+  }
+
+  .nav-pill--duelo {
+    color: #f43f5e;
+  }
+
+  .nav-pill--duelo:hover {
+    background: rgba(244, 63, 94, 0.12);
+    box-shadow: 0 0 16px rgba(244, 63, 94, 0.25);
+  }
+
+  .nav-pill--tienda {
+    color: #38bdf8;
+  }
+
+  .nav-pill--tienda:hover {
+    background: rgba(56, 189, 248, 0.12);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
   }
 
   .pill-icon {

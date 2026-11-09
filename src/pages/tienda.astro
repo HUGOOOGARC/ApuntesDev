@@ -1,0 +1,634 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CyberStore from '../components/store/CyberStore.tsx';
+---
+
+<Layout
+  title="Cyber Market & Tienda de Recompensas | ApuntesDev"
+  description="Personaliza tu experiencia de estudio en ApuntesDev. Canjea tus monedas en temas de interfaz, títulos de honor para el leaderboard, aceleradores de XP y cofres misteriosos."
+>
+  <Header />
+
+  <main class="store-page-layout">
+    <!-- HERO DE LA TIENDA -->
+    <header class="store-hero reveal">
+      <div class="store-hero-glow"></div>
+      <div class="store-hero-badge">
+        <span class="badge-dot"></span>
+        <span>ACADEMIA CYBER MARKET // SEASON 2026</span>
+        <span class="badge-icon">🛍️</span>
+      </div>
+      <h1 class="store-main-title">
+        Tienda de <span class="gradient-text">Recompensas</span>
+      </h1>
+      <p class="store-main-subtitle">
+        Invierte las monedas ganadas en tus quizzes y lecciones de SMR y Programación. Desbloquea temas de terminal, títulos honoríficos y aceleradores de experiencia.
+      </p>
+    </header>
+
+    <!-- COMPONENTE INTERACTIVO DE LA TIENDA -->
+    <section class="store-interactive-section reveal">
+      <CyberStore client:load />
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  /* ==========================================================================
+     ESTILOS CYBER STORE (MERCADO DE LA ACADEMIA)
+     ========================================================================== */
+  .store-page-layout {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+    position: relative;
+    min-height: 80vh;
+  }
+
+  .store-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .store-hero-glow {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .store-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
+  }
+
+  .store-main-title {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.03em;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #38bdf8, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .store-main-subtitle {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* STORE HUD BAR */
+  .store-hud-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(18, 22, 32, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .hud-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .hud-avatar {
+    width: 44px;
+    height: 44px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+  }
+
+  .hud-title {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .hud-user-title {
+    color: #fff;
+    font-size: 0.95rem;
+  }
+
+  .hud-user-title strong {
+    color: #38bdf8;
+  }
+
+  .hud-currencies {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .hud-currency-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.45rem 0.85rem;
+    border-radius: 10px;
+  }
+
+  .hud-currency-pill.gold { border-color: rgba(245, 158, 11, 0.3); }
+  .hud-currency-pill.blue { border-color: rgba(59, 130, 246, 0.3); }
+  .hud-currency-pill.purple { border-color: rgba(168, 85, 247, 0.3); }
+  .hud-currency-pill.star { border-color: rgba(245, 158, 11, 0.2); }
+
+  .currency-icon { font-size: 1.15rem; }
+
+  .currency-data {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .currency-label {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .currency-val {
+    font-size: 0.95rem;
+    font-family: monospace;
+    color: #fff;
+  }
+
+  /* STORE TABS */
+  .store-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.75rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+
+  .store-tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #94a3b8;
+    padding: 0.65rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .store-tab-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .store-tab-btn.active {
+    color: #fff;
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+  }
+
+  /* CATALOG GRID */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* ITEM CARD */
+  .item-card {
+    background: rgba(18, 20, 28, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .item-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .item-card.equipped-card {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.04);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+  }
+
+  .card-top-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+
+  .rarity-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+  }
+
+  .rarity-tag.rare { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+  .rarity-tag.epic { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+  .rarity-tag.legendary { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+  .equipped-badge {
+    font-size: 0.68rem;
+    font-weight: 900;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+  }
+
+  /* PREVIEWS */
+  .theme-preview-box {
+    border-radius: 8px;
+    border: 1px solid #333;
+    padding: 0.85rem;
+    margin-bottom: 1rem;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  }
+
+  .preview-terminal-header {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .pdot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .preview-body {
+    font-family: monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .prompt-sym { opacity: 0.7; }
+
+  .preview-cursor {
+    width: 7px;
+    height: 12px;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .title-banner-box {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 1.25rem 0.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .banner-icon { font-size: 1.5rem; }
+  .banner-title-text {
+    margin: 0;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  .item-info {
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .item-title {
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 0.4rem;
+  }
+
+  .item-desc {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* STORE BUTTONS */
+  .btn-store {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-store.equipped {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    cursor: default;
+  }
+
+  .btn-store.equip {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid #334155;
+  }
+
+  .btn-store.equip:hover {
+    background: #38bdf8;
+    color: #000;
+    border-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+  }
+
+  .btn-store.buy-coins {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+  }
+
+  .btn-store.buy-coins:hover:not(:disabled) {
+    background: #f59e0b;
+    color: #000;
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-store.buy-crystal {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+  }
+
+  .btn-store.buy-crystal:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3b82f6, #a855f7);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-store:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #334155 !important;
+  }
+
+  /* BOOSTERS */
+  .booster-card {
+    text-align: center;
+    align-items: center;
+  }
+
+  .booster-icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .booster-icon-wrap.cyan { background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); }
+  .booster-icon-wrap.purple { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); }
+  .booster-icon-wrap.gold { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+  .booster-effect-box {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .booster-effect-box strong { color: #34d399; font-family: monospace; font-size: 0.92rem; }
+
+  /* COFRES MISTERIOSOS */
+  .crate-card {
+    text-align: center;
+    align-items: center;
+  }
+
+  .crate-visual {
+    padding: 1.5rem 0;
+  }
+
+  .crate-icon {
+    font-size: 3.5rem;
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .shake-anim {
+    animation: crateShake 0.4s infinite;
+  }
+
+  @keyframes crateShake {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(-8deg) scale(1.1); }
+    50% { transform: rotate(8deg) scale(1.1); }
+    75% { transform: rotate(-4deg) scale(1.1); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+
+  .crate-loot-list {
+    text-align: left;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    padding: 0.75rem 1rem 0.75rem 1.75rem;
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    margin: 0.75rem 0 1.25rem;
+    width: 100%;
+    line-height: 1.6;
+  }
+
+  /* MODAL DE RESULTADO DEL COFRE */
+  .crate-result-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1.5rem;
+  }
+
+  .crate-result-card {
+    background: #11141d;
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(245, 158, 11, 0.2);
+    animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .result-sparkle { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+  .crate-result-card h3 {
+    color: #fff;
+    font-size: 1.4rem;
+    margin: 0 0 1.25rem;
+    font-weight: 800;
+  }
+
+  .reward-display {
+    margin-bottom: 1.75rem;
+  }
+
+  .reward-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1.4rem;
+  }
+
+  .reward-badge.xp {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid #10b981;
+    color: #34d399;
+  }
+
+  .reward-badge.coins {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid #f59e0b;
+    color: #fbbf24;
+  }
+
+  .reward-badge.crystal {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid #3b82f6;
+    color: #60a5fa;
+  }
+
+  /* TOAST */
+  .store-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    border: 1px solid #38bdf8;
+    color: #fff;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    animation: toastSlide 0.3s ease;
+  }
+
+  @keyframes toastSlide {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (max-width: 768px) {
+    .store-main-title { font-size: 2rem; }
+    .store-hud-bar { flex-direction: column; align-items: flex-start; }
+    .hud-currencies { width: 100%; justify-content: space-between; }
+  }
+</style>

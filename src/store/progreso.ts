@@ -5,26 +5,34 @@ import { supabase } from '../lib/supabase';
 export interface PerfilEstudiante {
   temaActivo: string;
   temasDesbloqueados: string[];
+  tituloActivo?: string;
+  titulosDesbloqueados?: string[];
   xp: number;
   nivel: number;
   monedas: number;
   prestigio: number;
   multiplicadorXP: number;
-  cristalesAscension: number; // NUEVO: La moneda premium del Endgame
+  cristalesAscension: number; // La moneda premium del Endgame
   apuntesCompletados: string[];
+  duelosGanados?: number;
+  duelosJugados?: number;
 }
 
 // 2. Valores iniciales para un usuario nuevo
 const valoresIniciales: PerfilEstudiante = {
   temaActivo: 'default',
   temasDesbloqueados: ['default'],
+  tituloActivo: 'Cadete Técnico',
+  titulosDesbloqueados: ['Cadete Técnico'],
   xp: 0,
   nivel: 1,
   monedas: 0,
   prestigio: 0,
   multiplicadorXP: 1.0,
   cristalesAscension: 0,
-  apuntesCompletados: []
+  apuntesCompletados: [],
+  duelosGanados: 0,
+  duelosJugados: 0
 };
 
 // 3. Store persistente sincronizado con localStorage (caché ultrarrápida)
@@ -182,9 +190,9 @@ export async function aplicarPrestigio() {
     ...perfil,
     xp: 0,          // Reset de estadísticas
     nivel: 1,       // Reset de estadísticas
-    monedas: 0,     // Opcional: Pierde las monedas normales al ascender (ajusta a gusto)
+    monedas: 0,     // Opcional: Pierde las monedas normales al ascender
     prestigio: perfil.prestigio + 1,
-    multiplicadorXP: perfil.multiplicadorXP + 0.25, // Sube un 25% la ganancia de XP global
+    multiplicadorXP: parseFloat((perfil.multiplicadorXP + 0.25).toFixed(2)), // Sube un 25% la ganancia de XP global
     cristalesAscension: perfil.cristalesAscension + 1 // Recompensa Premium
   };
 
@@ -241,4 +249,174 @@ export async function equiparTema(idTema: string) {
     return true;
   }
   return false;
+}
+
+export async function comprarBoosterXP(multiplicadorDelta: number, precioMonedas: number, precioCristales: number = 0) {
+  const perfil = perfilStore.get();
+
+  if (precioCristales > 0) {
+    if (perfil.cristalesAscension >= precioCristales) {
+      const nuevoMult = parseFloat((perfil.multiplicadorXP + multiplicadorDelta).toFixed(2));
+      const perfilActualizado: PerfilEstudiante = {
+        ...perfil,
+        cristalesAscension: perfil.cristalesAscension - precioCristales,
+        multiplicadorXP: nuevoMult
+      };
+      perfilStore.set(perfilActualizado);
+      await sincronizarConSupabase(perfilActualizado);
+      return true;
+    }
+    return false;
+  }
+
+  if (perfil.monedas >= precioMonedas) {
+    const nuevoMult = parseFloat((perfil.multiplicadorXP + multiplicadorDelta).toFixed(2));
+    const perfilActualizado: PerfilEstudiante = {
+      ...perfil,
+      monedas: perfil.monedas - precioMonedas,
+      multiplicadorXP: nuevoMult
+    };
+    perfilStore.set(perfilActualizado);
+    await sincronizarConSupabase(perfilActualizado);
+    return true;
+  }
+  return false;
+}
+
+export async function comprarTitulo(titulo: string, precio: number) {
+  const perfil = perfilStore.get();
+  const titulos = perfil.titulosDesbloqueados || ['Cadete Técnico'];
+
+  if (perfil.monedas >= precio && !titulos.includes(titulo)) {
+    const perfilActualizado: PerfilEstudiante = {
+      ...perfil,
+      monedas: perfil.monedas - precio,
+      titulosDesbloqueados: [...titulos, titulo],
+      tituloActivo: titulo
+    };
+    perfilStore.set(perfilActualizado);
+    await sincronizarConSupabase(perfilActualizado);
+    return true;
+  }
+  return false;
+}
+
+export async function equiparTitulo(titulo: string) {
+  const perfil = perfilStore.get();
+  const titulos = perfil.titulosDesbloqueados || ['Cadete Técnico'];
+  if (titulos.includes(titulo)) {
+    const perfilActualizado: PerfilEstudiante = {
+      ...perfil,
+      tituloActivo: titulo
+    };
+    perfilStore.set(perfilActualizado);
+    return true;
+  }
+  return false;
+}
+
+export async function abrirCofreMisterioso(precio: number) {
+  const perfil = perfilStore.get();
+  if (perfil.monedas < precio) return null;
+
+  // Ruleta de recompensas:
+  // 60% probabilidad: XP (entre 100 y 350 XP)
+  // 30% probabilidad: Monedas bonus (entre 120 y 450 Monedas)
+  // 10% probabilidad: 1 Cristal de Ascensión 💎
+  const roll = Math.random();
+  let tipoRecompensa: 'xp' | 'monedas' | 'cristal' = 'xp';
+  let cantidad = 0;
+
+  if (roll < 0.6) {
+    tipoRecompensa = 'xp';
+    cantidad = Math.floor(Math.random() * 250) + 100;
+  } else if (roll < 0.9) {
+    tipoRecompensa = 'monedas';
+    cantidad = Math.floor(Math.random() * 330) + 120;
+  } else {
+    tipoRecompensa = 'cristal';
+    cantidad = 1;
+  }
+
+  let nuevaXp = perfil.xp;
+  let nuevoNivel = perfil.nivel;
+  let nuevasMonedas = perfil.monedas - precio;
+  let nuevosCristales = perfil.cristalesAscension;
+
+  if (tipoRecompensa === 'xp') {
+    nuevaXp += Math.floor(cantidad * perfil.multiplicadorXP);
+    let xpNecesaria = calcularXpNecesaria(nuevoNivel);
+    while (nuevaXp >= xpNecesaria && nuevoNivel < 50) {
+      nuevaXp -= xpNecesaria;
+      nuevoNivel++;
+      nuevasMonedas += 50;
+      xpNecesaria = calcularXpNecesaria(nuevoNivel);
+    }
+  } else if (tipoRecompensa === 'monedas') {
+    nuevasMonedas += cantidad;
+  } else if (tipoRecompensa === 'cristal') {
+    nuevosCristales += cantidad;
+  }
+
+  const perfilActualizado: PerfilEstudiante = {
+    ...perfil,
+    xp: nuevaXp,
+    nivel: nuevoNivel,
+    monedas: nuevasMonedas,
+    cristalesAscension: nuevosCristales
+  };
+
+  perfilStore.set(perfilActualizado);
+  await sincronizarConSupabase(perfilActualizado);
+
+  return { tipo: tipoRecompensa, cantidad };
+}
+
+// --- ACCIONES DE COMBATE Y DUELOS ---
+
+export async function registrarResultadoDuelo(victoria: boolean, xpPremio: number, monedasPremio: number, prestigioPremio: number = 0) {
+  const perfil = perfilStore.get();
+  const duelosJugados = (perfil.duelosJugados || 0) + 1;
+  const duelosGanados = (perfil.duelosGanados || 0) + (victoria ? 1 : 0);
+
+  let nuevaXp = perfil.xp;
+  let nuevoNivel = perfil.nivel;
+  let nuevasMonedas = perfil.monedas;
+  let nuevoPrestigio = perfil.prestigio;
+
+  if (victoria) {
+    const xpFinal = Math.floor(xpPremio * perfil.multiplicadorXP);
+    nuevaXp += xpFinal;
+    nuevasMonedas += monedasPremio;
+    nuevoPrestigio += prestigioPremio;
+
+    let xpNecesaria = calcularXpNecesaria(nuevoNivel);
+    while (nuevaXp >= xpNecesaria && nuevoNivel < 50) {
+      nuevaXp -= xpNecesaria;
+      nuevoNivel++;
+      nuevasMonedas += 50;
+      xpNecesaria = calcularXpNecesaria(nuevoNivel);
+    }
+  }
+
+  const perfilActualizado: PerfilEstudiante = {
+    ...perfil,
+    xp: nuevaXp,
+    nivel: nuevoNivel,
+    monedas: nuevasMonedas,
+    prestigio: nuevoPrestigio,
+    duelosJugados,
+    duelosGanados
+  };
+
+  perfilStore.set(perfilActualizado);
+  await sincronizarConSupabase(perfilActualizado);
+
+  return {
+    victoria,
+    nuevoNivel,
+    nuevasMonedas,
+    duelosGanados,
+    duelosJugados
+  };
 }

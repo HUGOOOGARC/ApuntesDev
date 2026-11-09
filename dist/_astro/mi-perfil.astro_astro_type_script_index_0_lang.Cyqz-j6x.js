@@ -1,4 +1,4 @@
-import{c as e,s as t}from"./progreso.t9dW0l9W.js";document.addEventListener(`astro:page-load`,()=>{let n=document.getElementById(`bento-dashboard`);if(!n)return;e.subscribe(e=>{let r=t(e.nivel,e.xp),i=e.apuntesCompletados?e.apuntesCompletados.length:0,a=e.apuntesCompletados.filter(e=>e.includes(`som`)||e.includes(`sor`)).length,o=e.apuntesCompletados.filter(e=>e.includes(`python`)||e.includes(`backend`)||e.includes(`frontend`)).length,s=e.apuntesCompletados.filter(e=>e.includes(`redes`)||e.includes(`routing`)).length,c=Math.min(a*20,100),l=Math.min(o*20,100),u=Math.min(s*20,100);n.innerHTML=`
+import{f as e,p as t}from"./progreso.DjnHUJLd.js";document.addEventListener(`astro:page-load`,()=>{let n=document.getElementById(`bento-dashboard`);if(!n)return;t.subscribe(t=>{let r=e(t.nivel,t.xp),i=t.apuntesCompletados?t.apuntesCompletados.length:0,a=t.apuntesCompletados.filter(e=>e.includes(`som`)||e.includes(`sor`)).length,o=t.apuntesCompletados.filter(e=>e.includes(`python`)||e.includes(`backend`)||e.includes(`frontend`)).length,s=t.apuntesCompletados.filter(e=>e.includes(`redes`)||e.includes(`routing`)).length,c=Math.min(a*20,100),l=Math.min(o*20,100),u=Math.min(s*20,100);n.innerHTML=`
         <!-- CARD 1: IDENTIDAD Y PROGRESO -->
         <article class="bento-card bento-wide">
           <div class="perfil-header">
@@ -8,15 +8,15 @@ import{c as e,s as t}from"./progreso.t9dW0l9W.js";document.addEventListener(`ast
             <div class="perfil-info">
               <h2>Operador SMR</h2>
               <div class="nivel-badge">
-                Nivel ${e.nivel} 
-                ${e.prestigio>0?`<span class="prestigio-star">⭐ x${e.prestigio}</span>`:``}
+                Nivel ${t.nivel} 
+                ${t.prestigio>0?`<span class="prestigio-star">⭐ x${t.prestigio}</span>`:``}
               </div>
             </div>
           </div>
           
           <div class="progreso-container">
             <div class="progreso-stats">
-              <span>Progreso de Nivel ${e.nivel}</span>
+              <span>Progreso de Nivel ${t.nivel}</span>
               <span>${r.xpEnEsteNivel} / ${r.xpRequerida} XP</span>
             </div>
             <div class="barra-fondo">
@@ -30,7 +30,7 @@ import{c as e,s as t}from"./progreso.t9dW0l9W.js";document.addEventListener(`ast
           <h3>Bóveda de Créditos</h3>
           <div class="monedas-display">
             <span class="moneda-icon">🪙</span>
-            <span class="moneda-valor">${e.monedas}</span>
+            <span class="moneda-valor">${t.monedas}</span>
           </div>
           <p class="vault-desc">Acumula créditos completando apuntes para desbloquear temas y skins en la tienda.</p>
         </article>
@@ -70,7 +70,7 @@ import{c as e,s as t}from"./progreso.t9dW0l9W.js";document.addEventListener(`ast
               <h4>Primeros Pasos</h4>
               <p>Completa tu primer apunte.</p>
             </div>
-            <div class="logro-item ${e.nivel>=5?`unlocked`:``}">
+            <div class="logro-item ${t.nivel>=5?`unlocked`:``}">
               <div class="logro-icon">⚡</div>
               <h4>Operador Nivel 5</h4>
               <p>Alcanza el nivel 5 de experiencia.</p>
@@ -80,11 +80,11 @@ import{c as e,s as t}from"./progreso.t9dW0l9W.js";document.addEventListener(`ast
               <h4>Cerebro Máquina</h4>
               <p>Domina 10 apuntes en total.</p>
             </div>
-            <div class="logro-item ${e.prestigio>0?`unlocked`:``}">
+            <div class="logro-item ${t.prestigio>0?`unlocked`:``}">
               <div class="logro-icon">👑</div>
               <h4>Prestigio I</h4>
               <p>Alcanza el nivel máximo y renace.</p>
             </div>
           </div>
         </article>
-      `});let r=e.get();r&&e.set(r)});
+      `});let r=t.get();r&&t.set(r)});
