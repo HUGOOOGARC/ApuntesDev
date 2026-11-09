@@ -1,176 +1,324 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
 ---
 
-<Layout title="Mi Perfil - ApuntesDev">
+<Layout title="Centro de Mando - ApuntesDev">
   <Header />
-  
-  <main class="perfil-container">
-    <div class="perfil-card">
-      <h1>⚙️ Configuración del Perfil</h1>
-      <p>Personaliza tu identidad en la plataforma y actualiza tu nombre de usuario.</p>
 
-      <div id="loading" class="mensaje-estado">Cargando datos del perfil...</div>
+  <section class="dashboard-header">
+    <div class="header-glow"></div>
+    <h1>Centro de Mando</h1>
+    <p>Monitorización global de progreso, estadísticas de estudio y arsenal de conocimientos.</p>
+  </section>
 
-      <form id="form-perfil" class="form-perfil" style="display: none;">
-        <div class="input-group">
-          <label for="email">Correo electrónico</label>
-          <input type="text" id="email" disabled class="input-disabled" />
-        </div>
-
-        <div class="input-group">
-          <label for="username">Nombre de usuario (Alias)</label>
-          <input type="text" id="username" placeholder="Ej. HackerSMR" required maxlength="20" />
-        </div>
-
-        <button type="submit" id="btn-guardar" class="btn-guardar">Guardar cambios</button>
-        <p id="mensaje-exito" class="mensaje-exito" style="display: none;">¡Cambios guardados correctamente! ✅</p>
-      </form>
-    </div>
-  </main>
+  <!-- BENTO GRID SYSTEM -->
+  <div class="bento-grid" id="bento-dashboard">
+    <!-- Se llenará dinámicamente con JS al cargar el perfil de Zustand -->
+    <div class="cargando-perfil">Sincronizando con los servidores...</div>
+  </div>
 
   <Footer />
 </Layout>
 
 <script>
-  import { supabase } from '../lib/supabase';
+  import { perfilStore, obtenerEstadisticasNivel } from '../../store/progreso';
 
-  document.addEventListener('astro:page-load', async () => {
-    const loading = document.getElementById('loading');
-    const form = document.getElementById('form-perfil') as HTMLFormElement;
-    const inputEmail = document.getElementById('email') as HTMLInputElement;
-    const inputUsername = document.getElementById('username') as HTMLInputElement;
-    const mensajeExito = document.getElementById('mensaje-exito');
+  document.addEventListener('astro:page-load', () => {
+    const contenedor = document.getElementById('bento-dashboard');
+    if (!contenedor) return;
 
-    if (!form) return;
+    // Suscribirnos a los cambios del perfil para que reaccione en tiempo real
+    const unsubscribe = perfilStore.subscribe((perfil) => {
+      // 1. Cálculos matemáticos usando tu función calcularXpNecesaria
+      const stats = obtenerEstadisticasNivel(perfil.nivel, perfil.xp);
+      
+      // 2. Cálculos temporales de estadísticas por categoría
+      const totalApuntes = perfil.apuntesCompletados ? perfil.apuntesCompletados.length : 0;
+      
+      // Contar apuntes por prefijo de ID (som-, sor-, python-, etc.)
+      const countSom = perfil.apuntesCompletados.filter(id => id.includes('som') || id.includes('sor')).length;
+      const countProg = perfil.apuntesCompletados.filter(id => id.includes('python') || id.includes('backend') || id.includes('frontend')).length;
+      const countRedes = perfil.apuntesCompletados.filter(id => id.includes('redes') || id.includes('routing')).length;
 
-    // 1. Verificar sesión activa
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = '/login';
-      return;
-    }
+      // Porcentajes visuales para el radar (máximo 100%)
+      const statsSistemas = Math.min((countSom * 20), 100);
+      const statsProg = Math.min((countProg * 20), 100);
+      const statsRedes = Math.min((countRedes * 20), 100);
 
-    if (inputEmail) {
-      inputEmail.value = session.user.email ?? '';
-    }
+      // 3. Renderizar el Bento Grid
+      contenedor.innerHTML = `
+        <!-- CARD 1: IDENTIDAD Y PROGRESO -->
+        <article class="bento-card bento-wide">
+          <div class="perfil-header">
+            <div class="avatar-box">
+              <span class="avatar-emoji">👨‍💻</span>
+            </div>
+            <div class="perfil-info">
+              <h2>Operador SMR</h2>
+              <div class="nivel-badge">
+                Nivel ${perfil.nivel} 
+                ${perfil.prestigio > 0 ? `<span class="prestigio-star">⭐ x${perfil.prestigio}</span>` : ''}
+              </div>
+            </div>
+          </div>
+          
+          <div class="progreso-container">
+            <div class="progreso-stats">
+              <span>Progreso de Nivel ${perfil.nivel}</span>
+              <span>${stats.xpEnEsteNivel} / ${stats.xpRequerida} XP</span>
+            </div>
+            <div class="barra-fondo">
+              <div class="barra-relleno" style="width: ${stats.porcentaje}%"></div>
+            </div>
+          </div>
+        </article>
 
-    // 2. Cargar perfil actual desde Supabase
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('id', session.user.id)
-      .single();
+        <!-- CARD 2: BÓVEDA FINANCIERA -->
+        <article class="bento-card bento-square vault-card">
+          <h3>Bóveda de Créditos</h3>
+          <div class="monedas-display">
+            <span class="moneda-icon">🪙</span>
+            <span class="moneda-valor">${perfil.monedas}</span>
+          </div>
+          <p class="vault-desc">Acumula créditos completando apuntes para desbloquear temas y skins en la tienda.</p>
+        </article>
 
-    if (profile && profile.username && inputUsername) {
-      inputUsername.value = profile.username;
-    }
+        <!-- CARD 3: RADAR DE HABILIDADES -->
+        <article class="bento-card bento-square">
+          <h3>Radar de Habilidades</h3>
+          
+          <div class="skill-row">
+            <div class="skill-label">Sistemas (SOM/SOR)</div>
+            <div class="skill-barra-fondo">
+              <div class="skill-barra-relleno" style="width: ${statsSistemas}%; background: #4CAF50;"></div>
+            </div>
+          </div>
+          
+          <div class="skill-row">
+            <div class="skill-label">Programación</div>
+            <div class="skill-barra-fondo">
+              <div class="skill-barra-relleno" style="width: ${statsProg}%; background: #2196F3;"></div>
+            </div>
+          </div>
 
-    if (loading) loading.style.display = 'none';
-    form.style.display = 'block';
+          <div class="skill-row">
+            <div class="skill-label">Redes & Ciber</div>
+            <div class="skill-barra-fondo">
+              <div class="skill-barra-relleno" style="width: ${statsRedes}%; background: #FF9800;"></div>
+            </div>
+          </div>
+        </article>
 
-    // 3. Manejar el envío del formulario
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const nuevoUsername = inputUsername.value.trim();
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ username: nuevoUsername })
-        .eq('id', session.user.id);
-
-      if (!updateError) {
-        if (mensajeExito) {
-          mensajeExito.style.display = 'block';
-          setTimeout(() => {
-            mensajeExito.style.display = 'none';
-          }, 3000);
-        }
-      } else {
-        alert('Hubo un error al actualizar el nombre de usuario.');
-      }
+        <!-- CARD 4: VITRINA DE LOGROS (GLASSMORPHISM) -->
+        <article class="bento-card bento-wide logros-card">
+          <h3>Vitrina de Logros</h3>
+          <div class="logros-grid">
+            <div class="logro-item ${totalApuntes >= 1 ? 'unlocked' : ''}">
+              <div class="logro-icon">🚀</div>
+              <h4>Primeros Pasos</h4>
+              <p>Completa tu primer apunte.</p>
+            </div>
+            <div class="logro-item ${perfil.nivel >= 5 ? 'unlocked' : ''}">
+              <div class="logro-icon">⚡</div>
+              <h4>Operador Nivel 5</h4>
+              <p>Alcanza el nivel 5 de experiencia.</p>
+            </div>
+            <div class="logro-item ${totalApuntes >= 10 ? 'unlocked' : ''}">
+              <div class="logro-icon">🧠</div>
+              <h4>Cerebro Máquina</h4>
+              <p>Domina 10 apuntes en total.</p>
+            </div>
+            <div class="logro-item ${perfil.prestigio > 0 ? 'unlocked' : ''}">
+              <div class="logro-icon">👑</div>
+              <h4>Prestigio I</h4>
+              <p>Alcanza el nivel máximo y renace.</p>
+            </div>
+          </div>
+        </article>
+      `;
     });
+
+    // Disparar la primera carga del perfil
+    const perfilActual = perfilStore.get();
+    if (perfilActual) {
+      perfilStore.set(perfilActual); 
+    }
   });
 </script>
 
 <style>
-  .perfil-container {
-    max-width: 600px;
-    margin: 3rem auto;
-    padding: 0 1rem;
-    flex-grow: 1;
+  /* CABECERA DEL DASHBOARD */
+  .dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+    padding-top: 2rem;
   }
-  .perfil-card {
-    background: #1e1e1e;
-    border: 1px solid #333;
-    padding: 2.5rem;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  .header-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(76, 175, 80, 0.15) 0%, transparent 70%);
+    z-index: -1;
   }
-  h1 { 
-    color: var(--accent-color); 
-    margin-bottom: 0.5rem; 
-    border-bottom: 1px solid #333;
-    padding-bottom: 1rem;
+  .dashboard-header h1 {
+    color: var(--accent-color);
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+    text-transform: uppercase;
   }
-  p { color: #888; margin-bottom: 2rem; }
-  .form-perfil {
-    display: flex;
-    flex-direction: column;
+  .dashboard-header p {
+    color: #888;
+    font-size: 1.1rem;
+  }
+
+  /* BENTO GRID (Arquitectura de Cuadrícula Pro) */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto 4rem auto;
   }
-  .input-group {
+
+  @media (max-width: 768px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .bento-card {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .bento-card:hover {
+    border-color: rgba(76, 175, 80, 0.5);
+    transform: translateY(-2px);
+  }
+
+  .bento-wide { grid-column: 1 / -1; }
+  .bento-square { display: flex; flex-direction: column; }
+
+  /* CARD 1: PERFIL Y PROGRESO */
+  .perfil-header {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
   }
-  label {
+  .avatar-box {
+    width: 80px;
+    height: 80px;
+    background: #111;
+    border: 2px solid var(--accent-color);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+  }
+  .perfil-info h2 { margin: 0 0 0.5rem 0; font-size: 1.8rem; color: #fff; }
+  .nivel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent-color);
+    color: #000;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
     font-weight: bold;
-    color: #ccc;
     font-size: 0.9rem;
   }
-  input {
-    background: #121212;
-    border: 1px solid #333;
-    padding: 0.75rem 1rem;
-    color: #fff;
-    border-radius: 6px;
-    font-size: 1rem;
-    outline: none;
-    font-family: inherit;
-  }
-  input:focus {
-    border-color: var(--accent-color);
-  }
-  .input-disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  .btn-guardar {
-    background: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
-    padding: 0.75rem;
+  .prestigio-star { color: #fff; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); }
+  
+  /* Sistema de Barras y Stats Generales */
+  .progreso-stats {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 0.9rem;
     font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
-  .btn-guardar:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
+  .barra-fondo {
+    width: 100%;
+    height: 16px;
+    background: #111;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    border: 1px solid #222;
   }
-  .mensaje-estado {
-    color: #888;
+  .barra-relleno {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #81C784);
+    border-radius: 8px;
+    transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+  }
+
+  /* CARD 2: BÓVEDA FINANCIERA */
+  .vault-card { text-align: center; justify-content: center; }
+  .vault-card h3 { color: #888; font-size: 1rem; text-transform: uppercase; margin-top: 0; }
+  .monedas-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 1.5rem 0;
+  }
+  .moneda-icon { font-size: 3rem; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); }
+  .moneda-valor { font-size: 3.5rem; font-family: monospace; font-weight: bold; color: #fff; line-height: 1; }
+  .vault-desc { color: #666; font-size: 0.85rem; margin: 0; line-height: 1.5; }
+
+  /* CARD 3: RADAR DE HABILIDADES */
+  .skill-row { margin-bottom: 1.2rem; }
+  .skill-row:last-child { margin-bottom: 0; }
+  .skill-label { font-size: 0.85rem; color: #ccc; margin-bottom: 0.4rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+  .skill-barra-fondo { width: 100%; height: 8px; background: #1a1a1a; border-radius: 4px; overflow: hidden; border: 1px solid #222; }
+  .skill-barra-relleno { height: 100%; border-radius: 4px; transition: width 1s ease-out; box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2); }
+
+  /* CARD 4: LOGROS GLASSMORPHISM */
+  .logros-card h3 { color: #888; font-size: 1rem; text-transform: uppercase; margin-top: 0; margin-bottom: 1.5rem; }
+  .logros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+  .logro-item {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px dashed #333;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
     text-align: center;
-    padding: 2rem;
+    opacity: 0.5;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
   }
-  .mensaje-exito {
-    color: #4CAF50;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 0.5rem;
+  .logro-item.unlocked {
+    opacity: 1;
+    filter: grayscale(0%);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.05);
   }
+  .logro-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .logro-item h4 { color: #fff; margin: 0 0 0.3rem 0; font-size: 0.95rem; }
+  .logro-item p { color: #666; font-size: 0.75rem; margin: 0; line-height: 1.4; }
+  
+  .cargando-perfil { text-align: center; color: #666; padding: 3rem; font-style: italic; }
 </style>

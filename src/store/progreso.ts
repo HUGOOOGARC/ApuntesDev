@@ -91,6 +91,19 @@ export async function cargarPerfilDesdeSupabase() {
 // --- FUNCIONES PURAS DE MATEMÁTICAS ---
 export const calcularXpNecesaria = (nivel: number) => Math.floor(100 * Math.pow(1.5, nivel - 1));
 
+export function obtenerEstadisticasNivel(nivelActual: number, xpActual: number) {
+  // Calculamos cuánta XP requiere el nivel actual para ser superado
+  const xpRequeridaParaSubir = calcularXpNecesaria(nivelActual);
+  
+  // Calculamos el porcentaje de la barra (asegurando que no pase del 100%)
+  const porcentaje = (xpActual / xpRequeridaParaSubir) * 100;
+  
+  return {
+    xpEnEsteNivel: xpActual,
+    xpRequerida: xpRequeridaParaSubir,
+    porcentaje: Math.min(porcentaje, 100).toFixed(1)
+  };
+}
 // --- ACCIONES DEL SISTEMA ---
 
 export async function completarApunte(idApunte: string, xpBase: number = 50, monedasBase: number = 10) {
