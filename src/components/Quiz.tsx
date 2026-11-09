@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
-import { perfilStore } from '../store/progreso';
-import { supabase } from '../lib/supabase';
+import { perfilStore, completarApunte } from '../store/progreso';
 import confetti from 'canvas-confetti';
 import type { QuizItem } from '../data/quizzes';
 
@@ -22,7 +21,8 @@ export default function Quiz({ apunteId, quiz }: Props) {
   useEffect(() => {
     try {
       const previo = localStorage.getItem(storageKey);
-      if (previo === 'true') {
+      const enPerfil = perfil.apuntesCompletados?.includes(apunteId);
+      if (previo === 'true' || enPerfil) {
         setYaCompletadoPreviamente(true);
         setRespondido(true);
         setEsCorrecto(true);
@@ -31,7 +31,7 @@ export default function Quiz({ apunteId, quiz }: Props) {
     } catch (e) {
       // Ignorar errores de localStorage en entornos restringidos
     }
-  }, [apunteId]);
+  }, [apunteId, perfil.apuntesCompletados]);
 
   const evaluarRespuesta = async () => {
     if (!seleccion || respondido) return;
@@ -49,37 +49,23 @@ export default function Quiz({ apunteId, quiz }: Props) {
         colors: ['#4ade80', '#38bdf8', '#ffd700', '#ffffff']
       });
 
-      // Sumar XP bonus en nano store
-      const nuevaXp = perfil.xp + quiz.xpBonus;
-      const nuevoNivel = nuevaXp >= perfil.nivel * 100 ? perfil.nivel + 1 : perfil.nivel;
-      
-      perfilStore.set({
-        ...perfil,
-        xp: nuevaXp,
-        nivel: nuevoNivel,
-      });
-
       // Guardar en localStorage
       try {
         localStorage.setItem(storageKey, 'true');
         setYaCompletadoPreviamente(true);
       } catch (e) {}
 
-      // Sincronizar en Supabase si hay sesión
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          await supabase
-            .from('profiles')
-            .update({
-              xp: nuevaXp,
-              level: nuevoNivel,
-            })
-            .eq('id', session.user.id);
+      // Llamar al motor de progreso centralizado: suma XP con multiplicador, sube nivel según la curva, añade monedas, registra apunte completado y sincroniza con Supabase
+      await completarApunte(apunteId, quiz.xpBonus, 15);
+
+      // Notificar al botón global de completar apunte si está presente en la página
+      window.dispatchEvent(new CustomEvent('recompensa-ganada', {
+        detail: {
+          xp: quiz.xpBonus,
+          monedas: 15,
+          titulo: '¡Quiz Superado con Éxito!'
         }
-      } catch (err) {
-        console.error('Error guardando XP del quiz:', err);
-      }
+      }));
     }
   };
 
