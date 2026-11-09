@@ -1,5 +1,6 @@
 import { useStore } from '@nanostores/preact';
-import { perfilStore, comprarTema, equiparTema } from '../store/progreso';
+// Corregido: Importamos la nueva función con un alias para no romper el resto del archivo
+import { perfilStore, comprarTemaNormal as comprarTema, equiparTema } from '../store/progreso';
 import { useEffect } from 'preact/hooks';
 import confetti from 'canvas-confetti';
 
@@ -18,12 +19,18 @@ export default function TiendaTemas() {
     document.documentElement.setAttribute('data-theme', perfil.temaActivo);
   }, [perfil.temaActivo]);
 
-  const handleComprar = (idTema: string, precio: number) => {
-    if (comprarTema(idTema, precio)) {
+  // Corregido: Ahora usamos async/await porque la función guarda en Supabase
+  const handleComprar = async (idTema: string, precio: number) => {
+    const exito = await comprarTema(idTema, precio);
+    if (exito) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     } else {
       alert("No tienes suficientes monedas.");
     }
+  };
+
+  const handleEquipar = async (idTema: string) => {
+    await equiparTema(idTema);
   };
 
   return (
@@ -46,7 +53,7 @@ export default function TiendaTemas() {
                 {equipado ? (
                   <button disabled className="btn-equipado">Equipado</button>
                 ) : desbloqueado ? (
-                  <button onClick={() => equiparTema(tema.id)} className="btn-equipar">Equipar</button>
+                  <button onClick={() => handleEquipar(tema.id)} className="btn-equipar">Equipar</button>
                 ) : (
                   <button 
                     onClick={() => handleComprar(tema.id, tema.precio)} 
