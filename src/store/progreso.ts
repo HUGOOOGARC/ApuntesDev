@@ -1,7 +1,7 @@
 import { persistentMap } from '@nanostores/persistent';
 import { supabase } from '../lib/supabase';
 
-// 1. Definimos exactamente qué forma tienen los datos de nuestro estudiante
+// 1. Definimos la forma exacta de los datos del estudiante
 export interface PerfilEstudiante {
   temaActivo: string;
   temasDesbloqueados: string[];
@@ -10,6 +10,7 @@ export interface PerfilEstudiante {
   monedas: number;
   prestigio: number;
   multiplicadorXP: number;
+  cristalesAscension: number; // NUEVO: La moneda premium del Endgame
   apuntesCompletados: string[];
 }
 
@@ -22,10 +23,11 @@ const valoresIniciales: PerfilEstudiante = {
   monedas: 0,
   prestigio: 0,
   multiplicadorXP: 1.0,
+  cristalesAscension: 0,
   apuntesCompletados: []
 };
 
-// 3. Creamos el Store persistente sincronizado con localStorage (funciona de caché rápida)
+// 3. Store persistente sincronizado con localStorage (caché ultrarrápida)
 export const perfilStore = persistentMap<PerfilEstudiante>(
   'apuntesdev_perfil:',
   valoresIniciales,
@@ -35,7 +37,8 @@ export const perfilStore = persistentMap<PerfilEstudiante>(
   }
 );
 
-// --- FUNCIÓN AUXILIAR DE SINCRONIZACIÓN CON SUPABASE ---
+// --- SINCRONIZACIÓN CON SUPABASE ---
+
 // Guarda TODOS los datos actuales del store en la base de datos de Supabase
 async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
   try {
@@ -45,12 +48,14 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
         .from('profiles')
         .update({
           xp: nuevoPerfil.xp,
-          coins: nuevoPerfil.monedas,
           level: nuevoPerfil.nivel,
+          coins: nuevoPerfil.monedas,
           prestigio: nuevoPerfil.prestigio,
           multiplicador_xp: nuevoPerfil.multiplicadorXP,
+          cristales_ascension: nuevoPerfil.cristalesAscension,
           apuntes_completados: nuevoPerfil.apuntesCompletados,
-          // Si añades columnas para los temas en el futuro, las mapeas aquí también
+          tema_activo: nuevoPerfil.temaActivo,
+          temas_desbloqueados: nuevoPerfil.temasDesbloqueados
         })
         .eq('id', session.user.id);
     }
@@ -59,7 +64,7 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
   }
 }
 
-// Función para cargar los datos desde Supabase al iniciar sesión o recargar
+// Carga los datos desde Supabase al iniciar sesión o recargar
 export async function cargarPerfilDesdeSupabase() {
   try {
     const { data: { session } } = await supabase.auth.getSession();
@@ -79,7 +84,10 @@ export async function cargarPerfilDesdeSupabase() {
           monedas: data.coins ?? perfilActual.monedas,
           prestigio: data.prestigio ?? perfilActual.prestigio,
           multiplicadorXP: data.multiplicador_xp ?? perfilActual.multiplicadorXP,
+          cristalesAscension: data.cristales_ascension ?? perfilActual.cristalesAscension,
           apuntesCompletados: data.apuntes_completados ?? perfilActual.apuntesCompletados,
+          temaActivo: data.tema_activo ?? perfilActual.temaActivo,
+          temasDesbloqueados: data.temas_desbloqueados ?? perfilActual.temasDesbloqueados
         });
       }
     }
@@ -89,13 +97,12 @@ export async function cargarPerfilDesdeSupabase() {
 }
 
 // --- FUNCIONES PURAS DE MATEMÁTICAS ---
+
+// Curva de dificultad: Cada nivel cuesta más que el anterior
 export const calcularXpNecesaria = (nivel: number) => Math.floor(100 * Math.pow(1.5, nivel - 1));
 
 export function obtenerEstadisticasNivel(nivelActual: number, xpActual: number) {
-  // Calculamos cuánta XP requiere el nivel actual para ser superado
   const xpRequeridaParaSubir = calcularXpNecesaria(nivelActual);
-  
-  // Calculamos el porcentaje de la barra (asegurando que no pase del 100%)
   const porcentaje = (xpActual / xpRequeridaParaSubir) * 100;
   
   return {
@@ -104,28 +111,49 @@ export function obtenerEstadisticasNivel(nivelActual: number, xpActual: number) 
     porcentaje: Math.min(porcentaje, 100).toFixed(1)
   };
 }
-// --- ACCIONES DEL SISTEMA ---
+
+// --- ACCIONES CORE DEL SISTEMA ---
 
 export async function completarApunte(idApunte: string, xpBase: number = 50, monedasBase: number = 10) {
   const perfil = perfilStore.get();
   
-  // Si ya lo completó, no hacemos nada
-  if (perfil.apuntesCompletados.includes(idApunte)) return false;
+  // Nivel máximo: No gana más XP hasta que haga Prestigio, pero sí gana monedas
+  if (perfil.nivel >= 50) {
+    if (!perfil.apuntesCompletados.includes(idApunte)) {
+       const perfilActualizado: PerfilEstudiante = {
+         ...perfil,
+         monedas: perfil.monedas + monedasBase,
+         apuntesCompletados: [...perfil.apuntesCompletados, idApunte]
+       };
+       perfilStore.set(perfilActualizado);
+       await sincronizarConSupabase(perfilActualizado);
+    }
+    return { completado: true, nivelMaximo: true };
+  }
+  
+  if (perfil.apuntesCompletados.includes(idApunte)) return { completado: false, nivelMaximo: false };
 
-  // Calculamos la XP con el boost del prestigio
+  // Multiplicador de XP basado en prestigio
   const xpGanada = Math.floor(xpBase * perfil.multiplicadorXP);
   let nuevaXp = perfil.xp + xpGanada;
   let nuevoNivel = perfil.nivel;
   let nuevasMonedas = perfil.monedas + monedasBase;
-
   let xpNecesaria = calcularXpNecesaria(nuevoNivel);
+  let subioNivel = false;
 
-  // Bucle por si gana tanta XP que sube varios niveles de golpe
-  while (nuevaXp >= xpNecesaria) {
+  // Bucle de subida de nivel
+  while (nuevaXp >= xpNecesaria && nuevoNivel < 50) {
     nuevaXp -= xpNecesaria;
     nuevoNivel++;
-    nuevasMonedas += 50; // Bono por subir de nivel
+    nuevasMonedas += 50; // Bono por nivel
     xpNecesaria = calcularXpNecesaria(nuevoNivel);
+    subioNivel = true;
+  }
+
+  // Si llega a nivel 50, pierde la XP sobrante
+  if (nuevoNivel >= 50) {
+    nuevoNivel = 50;
+    nuevaXp = 0; 
   }
 
   const perfilActualizado: PerfilEstudiante = {
@@ -136,24 +164,28 @@ export async function completarApunte(idApunte: string, xpBase: number = 50, mon
     apuntesCompletados: [...perfil.apuntesCompletados, idApunte]
   };
 
-  // Guardamos en el store local y sincronizamos con Supabase de inmediato
   perfilStore.set(perfilActualizado);
   await sincronizarConSupabase(perfilActualizado);
 
-  return true;
+  return { completado: true, nivelMaximo: nuevoNivel >= 50, subioNivel };
 }
+
+// --- EL PROTOCOLO DE ASCENSIÓN (PRESTIGIO) ---
 
 export async function aplicarPrestigio() {
   const perfil = perfilStore.get();
+  
+  // Verificación de seguridad
   if (perfil.nivel < 50) return false;
 
   const perfilActualizado: PerfilEstudiante = {
     ...perfil,
-    xp: 0,
-    nivel: 1,
-    monedas: 0,
+    xp: 0,          // Reset de estadísticas
+    nivel: 1,       // Reset de estadísticas
+    monedas: 0,     // Opcional: Pierde las monedas normales al ascender (ajusta a gusto)
     prestigio: perfil.prestigio + 1,
-    multiplicadorXP: perfil.multiplicadorXP + 0.25,
+    multiplicadorXP: perfil.multiplicadorXP + 0.25, // Sube un 25% la ganancia de XP global
+    cristalesAscension: perfil.cristalesAscension + 1 // Recompensa Premium
   };
 
   perfilStore.set(perfilActualizado);
@@ -164,13 +196,31 @@ export async function aplicarPrestigio() {
 
 // --- ACCIONES DE LA TIENDA ---
 
-export async function comprarTema(idTema: string, precio: number) {
+export async function comprarTemaNormal(idTema: string, precio: number) {
   const perfil = perfilStore.get();
   
   if (perfil.monedas >= precio && !perfil.temasDesbloqueados.includes(idTema)) {
     const perfilActualizado: PerfilEstudiante = {
       ...perfil,
       monedas: perfil.monedas - precio,
+      temasDesbloqueados: [...perfil.temasDesbloqueados, idTema],
+      temaActivo: idTema
+    };
+
+    perfilStore.set(perfilActualizado);
+    await sincronizarConSupabase(perfilActualizado);
+    return true;
+  }
+  return false;
+}
+
+export async function comprarTemaPremium(idTema: string, precioCristales: number) {
+  const perfil = perfilStore.get();
+  
+  if (perfil.cristalesAscension >= precioCristales && !perfil.temasDesbloqueados.includes(idTema)) {
+    const perfilActualizado: PerfilEstudiante = {
+      ...perfil,
+      cristalesAscension: perfil.cristalesAscension - precioCristales,
       temasDesbloqueados: [...perfil.temasDesbloqueados, idTema],
       temaActivo: idTema
     };
