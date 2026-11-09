@@ -3,9 +3,11 @@ import { useState, useEffect, useRef } from 'preact/hooks';
 // Catálogo de rutas rápidas y comandos
 const ACCIONES = [
   { id: 'home', title: '🏠 Inicio', route: '/' },
-  { id: 'sistemas', title: '💻 Sistemas Operativos (SOM)', route: '/sistemas' },
-  { id: 'redes', title: '🌐 Redes Locales', route: '/sistemas' },
-  { id: 'programacion', title: '⚡ Desarrollo y Programación', route: '/programacion' },
+  { id: 'herramientas', title: '🛠️ Herramientas del Técnico (Subnetting, Chmod, Terminal)', route: '/herramientas' },
+  { id: 'sistemas', title: '🖥️ Sistemas Operativos (SOM/SOR)', route: '/sistemas' },
+  { id: 'redes', title: '🌐 Redes de Computadores & Cisco', route: '/redes' },
+  { id: 'programacion', title: '💻 Desarrollo y Programación', route: '/programacion' },
+  { id: 'ranking', title: '🏆 Leaderboard Global', route: '/ranking' },
   { id: 'perfil', title: '👤 Mi Perfil y Estadísticas', route: '/perfil' },
   { id: 'tienda', title: '🎨 Tienda de Temas', route: '/perfil' }
 ];

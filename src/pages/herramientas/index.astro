@@ -1,0 +1,1325 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SubnettingCalculator from '../../components/tools/SubnettingCalculator.tsx';
+import ChmodCalculator from '../../components/tools/ChmodCalculator.tsx';
+import LinuxTerminal from '../../components/tools/LinuxTerminal.tsx';
+---
+
+<Layout
+  title="Herramientas del Técnico & Simuladores | ApuntesDev"
+  description="Calculadora interactiva de subnetting IPv4/VLSM, generador de permisos chmod Linux y simulador de consola Bash en navegador para estudiantes de SMR, ASIR y DAM."
+>
+  <Header />
+
+  <main class="tools-page-container">
+    <!-- Hero de Herramientas -->
+    <section class="tools-hero reveal">
+      <div class="hero-glow-orb"></div>
+      <div class="hero-grid-pattern"></div>
+      
+      <div class="hero-content">
+        <div class="tools-pill">
+          <span class="pill-dot"></span>
+          <span>SUITE DE UTILIDADES INTERACTIVAS • 100% CLIENTE</span>
+        </div>
+        <h1 class="hero-title">
+          Herramientas del <span class="highlight-gradient">Técnico SMR</span>
+        </h1>
+        <p class="hero-description">
+          Calculadoras interactivas, simuladores de consola y utilidades de configuración de red para aprender sin rodeos y resolver laboratorios reales.
+        </p>
+
+        <!-- Navegación de Herramientas -->
+        <div class="tools-quicknav">
+          <a href="#subnetting" class="quicknav-card magnetic">
+            <span class="qcard-icon">🌐</span>
+            <div class="qcard-info">
+              <strong>Subnetting & VLSM</strong>
+              <small>IPv4, máscaras y bits</small>
+            </div>
+            <span class="qcard-arrow">↓</span>
+          </a>
+
+          <a href="#chmod" class="quicknav-card magnetic">
+            <span class="qcard-icon">🔒</span>
+            <div class="qcard-info">
+              <strong>Permisos chmod</strong>
+              <small>Octal, simbólico y chown</small>
+            </div>
+            <span class="qcard-arrow">↓</span>
+          </a>
+
+          <a href="#terminal" class="quicknav-card magnetic">
+            <span class="qcard-icon">💻</span>
+            <div class="qcard-info">
+              <strong>Consola Linux Bash</strong>
+              <small>Simulador con sistema VFS</small>
+            </div>
+            <span class="qcard-arrow">↓</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERRAMIENTA 1: SUBNETTING IPV4 -->
+    <section id="subnetting" class="tool-section reveal">
+      <div class="section-label">
+        <span class="label-badge">REDES & DIRECCIONAMIENTO</span>
+        <h2>1. Calculadora Visual de Subnetting IPv4 & VLSM</h2>
+        <p>Introduce cualquier dirección IP y ajusta la máscara CIDR para inspeccionar el desglose binario exacto, direcciones de red, broadcast y rangos de hosts.</p>
+      </div>
+
+      <SubnettingCalculator client:load />
+    </section>
+
+    <!-- HERRAMIENTA 2: CHMOD CALCULATOR -->
+    <section id="chmod" class="tool-section reveal">
+      <div class="section-label">
+        <span class="label-badge">SISTEMAS & SEGURIDAD</span>
+        <h2>2. Generador y Calculadora de Permisos Linux (chmod)</h2>
+        <p>Configura permisos mediante checkboxes visuales o escribe directamente el código octal. Obtén los comandos exactos listos para tu terminal.</p>
+      </div>
+
+      <ChmodCalculator client:load />
+    </section>
+
+    <!-- HERRAMIENTA 3: TERMINAL LINUX -->
+    <section id="terminal" class="tool-section reveal">
+      <div class="section-label">
+        <span class="label-badge">LABORATORIO EN VIVO</span>
+        <h2>3. Simulador de Consola Linux (Ubuntu 24.04 LTS)</h2>
+        <p>Practica comandos de administración de sistemas, navegación de directorios (FHS), lectura de archivos del sistema y diagnóstico de red en una máquina virtual en memoria.</p>
+      </div>
+
+      <LinuxTerminal client:load />
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  /* ══════════════════════════════════════════════
+     ESTILOS GLOBALES DE LA SUITE DE HERRAMIENTAS
+  ══════════════════════════════════════════════ */
+  .tools-page-container {
+    max-width: 1480px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 6rem;
+  }
+
+  /* ── HERO ── */
+  .tools-hero {
+    position: relative;
+    background: linear-gradient(145deg, rgba(18, 20, 30, 0.95) 0%, rgba(10, 12, 18, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 4rem 3rem 3.5rem;
+    margin-bottom: 4rem;
+    overflow: hidden;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .hero-glow-orb {
+    position: absolute;
+    top: -120px;
+    right: 5%;
+    width: 550px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74, 222, 128, 0.18) 0%, rgba(56, 189, 248, 0.1) 40%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  .hero-grid-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse 70% 80% at 75% 30%, #000 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 75% 30%, #000 20%, transparent 80%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+  }
+
+  .tools-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+  }
+
+  .pill-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-color);
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+    color: #ffffff;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+  }
+
+  .highlight-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #4ade80 50%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    line-height: 1.65;
+    margin: 0 0 2.5rem;
+    max-width: 680px;
+  }
+
+  /* Tarjetas de Navegación Rápida */
+  .tools-quicknav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .quicknav-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    color: #ffffff;
+    backdrop-filter: blur(12px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .quicknav-card:hover {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(74, 222, 128, 0.15);
+  }
+
+  .qcard-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .qcard-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .qcard-info strong {
+    font-size: 0.95rem;
+    color: #f1f5f9;
+  }
+
+  .qcard-info small {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-family: var(--font-mono);
+  }
+
+  .qcard-arrow {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    transition: transform 0.2s ease;
+  }
+
+  .quicknav-card:hover .qcard-arrow {
+    transform: translateY(3px);
+  }
+
+  /* ── SECCIONES DE CADA HERRAMIENTA ── */
+  .tool-section {
+    margin-bottom: 5rem;
+    scroll-margin-top: 5.5rem;
+  }
+
+  .section-label {
+    margin-bottom: 1.75rem;
+  }
+
+  .label-badge {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    color: var(--accent-color);
+    letter-spacing: 0.12em;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-label h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.025em;
+    margin: 0 0 0.5rem;
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+  }
+
+  .section-label p {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    max-width: 780px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ══════════════════════════════════════════════
+     TARJETA CONTENEDORA DE CADA HERRAMIENTA
+  ══════════════════════════════════════════════ */
+  .tool-card {
+    background: linear-gradient(145deg, rgba(20, 23, 34, 0.9) 0%, rgba(12, 14, 22, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.2rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
+  }
+
+  .tool-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .tool-icon-pill {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+
+  .tool-header h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.25rem;
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+  }
+
+  .tool-header p {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* ══════════════════════════════════════════════
+     ESTILOS: SUBNETTING CALCULATOR
+  ══════════════════════════════════════════════ */
+  .tool-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .control-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cidr-highlight {
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    font-weight: 700;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 0.15rem 0.6rem;
+    border-radius: 100px;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+  }
+
+  .tool-input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .tool-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15), 0 0 16px var(--accent-glow);
+  }
+
+  .input-error {
+    border-color: #f87171 !important;
+  }
+
+  .error-hint {
+    font-size: 0.75rem;
+    color: #f87171;
+    font-family: var(--font-mono);
+  }
+
+  .cidr-slider {
+    accent-color: var(--accent-color);
+    height: 8px;
+    cursor: pointer;
+    margin-top: 0.75rem;
+  }
+
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: #64748b;
+    margin-top: 0.35rem;
+  }
+
+  /* Presets Bar */
+  .presets-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: 0.85rem 1.1rem;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+  }
+
+  .presets-label {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-weight: 700;
+  }
+
+  .preset-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 0.35rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .preset-btn:hover {
+    background: var(--accent-color);
+    color: #05070a;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .preset-btn--danger:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+  }
+
+  /* Matriz de Bits */
+  .bit-matrix-section {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .bit-matrix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .bit-matrix-header h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .bit-legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: #94a3b8;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .red-dot { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+  .host-dot { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
+
+  .octets-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .octet-block {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 0.85rem;
+    text-align: center;
+  }
+
+  .octet-title {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: #64748b;
+    margin-bottom: 0.6rem;
+  }
+
+  .bits-row {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .bit-badge {
+    width: 22px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 800;
+    border-radius: 6px;
+    transition: transform 0.15s ease;
+  }
+
+  .bit-badge:hover {
+    transform: scale(1.15);
+  }
+
+  .bit-net {
+    background: rgba(74, 222, 128, 0.18);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.4);
+  }
+
+  .bit-host {
+    background: rgba(56, 189, 248, 0.12);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+  }
+
+  /* Resultados Grid */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .result-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .result-card:hover {
+    border-color: rgba(74, 222, 128, 0.3);
+  }
+
+  .result-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+  }
+
+  .result-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .result-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #f1f5f9;
+  }
+
+  .accent-text { color: var(--accent-color); }
+  .text-small { font-size: 0.92rem; }
+  .arrow-sep { color: var(--accent-color); margin: 0 0.25rem; }
+
+  .highlight-num {
+    color: #38bdf8;
+    font-size: 1.35rem;
+  }
+
+  .unit-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .total-badge {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: #64748b;
+  }
+
+  .scope-tag {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    background: rgba(74, 222, 128, 0.08);
+    color: var(--accent-color);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    padding: 0.2rem 0.55rem;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+
+  .copy-chip {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .copy-chip:hover {
+    background: var(--accent-color);
+    color: #060809;
+    border-color: var(--accent-color);
+  }
+
+  /* Acordeón VLSM */
+  .vlsm-accordion {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1.5rem;
+  }
+
+  .vlsm-toggle-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(74, 222, 128, 0.06);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .vlsm-toggle-btn:hover {
+    background: rgba(74, 222, 128, 0.12);
+  }
+
+  .vlsm-panel {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .vlsm-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .vlsm-controls label {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    font-weight: 600;
+  }
+
+  .tool-select {
+    background: #090a10;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    outline: none;
+  }
+
+  .subnets-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .subnets-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    text-align: left;
+  }
+
+  .subnets-table th {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--accent-color);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .subnets-table td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #94a3b8;
+  }
+
+  .subnets-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .subnet-badge {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  .hosts-strong { color: #38bdf8; }
+
+  /* ══════════════════════════════════════════════
+     ESTILOS: CHMOD CALCULATOR
+  ══════════════════════════════════════════════ */
+  .warning-banner {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
+    color: #fca5a5;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+
+  .chmod-matrix-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .permission-column {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 1.5rem;
+  }
+
+  .column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .role-badge {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .role-user { color: #4ade80; }
+  .role-group { color: #38bdf8; }
+  .role-others { color: #a78bfa; }
+
+  .octal-digit {
+    font-size: 1.8rem;
+    font-weight: 900;
+    font-family: var(--font-mono);
+    color: #ffffff;
+  }
+
+  .checkboxes-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .checkbox-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .checkbox-row input[type="checkbox"] {
+    accent-color: var(--accent-color);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+
+  .perm-label {
+    flex: 1;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+  }
+
+  .perm-val {
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  /* Permisos Especiales */
+  .special-perms-box {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .special-title {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    margin-bottom: 0.85rem;
+  }
+
+  .special-options-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .special-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: #cbd5e1;
+  }
+
+  .special-checkbox input[type="checkbox"] {
+    accent-color: #f59e0b;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Salidas de chmod */
+  .chmod-outputs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .output-row {
+    display: grid;
+    grid-template-columns: 140px 180px 1fr 180px;
+    gap: 1.25rem;
+    align-items: center;
+  }
+
+  .octal-input-box, .symbolic-box, .file-target-box, .recursive-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .octal-input-box label, .symbolic-box label, .file-target-box label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+
+  .octal-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 0.65rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--accent-color);
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .symbolic-text {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #38bdf8;
+    text-align: center;
+  }
+
+  .file-input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: #ffffff;
+    outline: none;
+  }
+
+  .switch-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-top: 1.25rem;
+  }
+
+  .switch-label input {
+    accent-color: var(--accent-color);
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Comandos generados */
+  .code-commands-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .command-card {
+    background: #08090f;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.1rem 1.4rem;
+  }
+
+  .command-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .command-badge {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .copy-btn-sm {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    font-size: 0.7rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .copy-btn-sm:hover {
+    background: var(--accent-color);
+    color: #05070a;
+    border-color: var(--accent-color);
+  }
+
+  .command-card pre {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .command-card code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 1.05rem;
+    color: #ffffff;
+  }
+
+  /* Sección Chown */
+  .chown-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .chown-inputs-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .chown-inputs-row label {
+    font-size: 0.85rem;
+    color: #94a3b8;
+  }
+
+  .chown-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .chown-user-input {
+    background: #090a10;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 0.35rem 0.6rem;
+    font-family: var(--font-mono);
+    color: #ffffff;
+    font-size: 0.85rem;
+    width: 100px;
+    outline: none;
+  }
+
+  .chown-command-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #08090f;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+  }
+
+  .chown-command-box code {
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: #e2e8f0;
+    font-size: 0.92rem;
+  }
+
+  .human-explanation {
+    background: rgba(74, 222, 128, 0.04);
+    border: 1px solid rgba(74, 222, 128, 0.15);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .human-explanation h4 {
+    margin: 0 0 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  .human-explanation ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: #cbd5e1;
+    font-size: 0.88rem;
+  }
+
+  /* ══════════════════════════════════════════════
+     ESTILOS: TERMINAL LINUX EN VIVO
+  ══════════════════════════════════════════════ */
+  .terminal-window {
+    background: #07080e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(74, 222, 128, 0.06);
+    margin-bottom: 1.5rem;
+  }
+
+  .terminal-topbar {
+    background: #0f111a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 7px;
+  }
+
+  .window-title {
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: #64748b;
+  }
+
+  .window-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .term-reset-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-family: var(--font-sans);
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .term-reset-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  .online-tag {
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .pulse-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 6px var(--accent-color);
+    animation: pulseDot 2s infinite;
+  }
+
+  .terminal-screen {
+    padding: 1.5rem;
+    min-height: 380px;
+    max-height: 520px;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #e2e8f0;
+    cursor: text;
+  }
+
+  .terminal-line {
+    margin-bottom: 0.5rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .line-command {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .line-output {
+    color: #94a3b8;
+  }
+
+  .line-error {
+    color: #f87171;
+  }
+
+  .term-prompt {
+    color: var(--accent-color);
+    font-weight: 700;
+  }
+
+  .terminal-active-line {
+    display: flex;
+    align-items: center;
+  }
+
+  .term-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+  }
+
+  .terminal-hints-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .hints-label {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  .hint-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .hint-btn:hover {
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--accent-color);
+    border-color: rgba(74, 222, 128, 0.3);
+  }
+
+  /* ══════════════════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .tools-hero { padding: 2.5rem 1.5rem; }
+    .tool-controls-grid { grid-template-columns: 1fr; }
+    .octets-container { grid-template-columns: repeat(2, 1fr); }
+    .chmod-matrix-container { grid-template-columns: 1fr; }
+    .output-row { grid-template-columns: 1fr; }
+    .code-commands-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .tools-page-container { padding: 1.5rem 1rem 4rem; }
+    .tool-card { padding: 1.5rem 1.2rem; }
+    .octets-container { grid-template-columns: 1fr; }
+  }
+</style>
