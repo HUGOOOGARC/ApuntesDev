@@ -7,10 +7,23 @@ import confetti from 'canvas-confetti';
 export default function PerfilDashboard() {
   const perfil = useStore(perfilStore);
   const xpNecesaria = calcularXpNecesaria(perfil.nivel);
+  
+  // Cálculo del porcentaje de la barra de nivel
+  const porcentajeNivel = Math.min((perfil.xp / xpNecesaria) * 100, 100).toFixed(1);
 
   const [username, setUsername] = useState('');
   const [guardando, setGuardando] = useState(false);
   const [mensajeExito, setMensajeExito] = useState(false);
+
+  // Cálculos para el radar de habilidades basados en los apuntes completados
+  const totalApuntes = perfil.apuntesCompletados ? perfil.apuntesCompletados.length : 0;
+  const countSom = perfil.apuntesCompletados.filter(id => id.includes('som') || id.includes('sor')).length;
+  const countProg = perfil.apuntesCompletados.filter(id => id.includes('python') || id.includes('backend') || id.includes('frontend')).length;
+  const countRedes = perfil.apuntesCompletados.filter(id => id.includes('redes') || id.includes('routing')).length;
+
+  const statsSistemas = Math.min((countSom * 20), 100);
+  const statsProg = Math.min((countProg * 20), 100);
+  const statsRedes = Math.min((countRedes * 20), 100);
 
   useEffect(() => {
     async function cargarUsername() {
@@ -65,17 +78,27 @@ export default function PerfilDashboard() {
   return (
     <div className="dashboard-grid">
       
-      {/* TARJETA DE IDENTIDAD (Muestra el alias destacado y permite cambiarlo) */}
-      <div style={{ background: '#1e1e1e', border: '1px solid #333', padding: '2rem', borderRadius: '8px', marginBottom: '1.5rem', textAlign: 'center' }}>
-        <h2 style={{ color: '#fff', fontSize: '2rem', margin: '0 0 0.5rem 0' }}>
-          {username ? username : 'Estudiante Anónimo'}
-        </h2>
-        <p style={{ color: '#888', margin: '0 0 1.5rem 0' }}>
-          Nivel {perfil.nivel} | ⭐ Prestigio {perfil.prestigio}
-        </p>
+      {/* BENTO GRID PRINCIPAL */}
+      <div className="bento-grid">
         
-        <form onSubmit={handleGuardarUsername} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: '400px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+        {/* CARD 1: IDENTIDAD, ALIAS Y PROGRESO DE NIVEL */}
+        <article className="bento-card bento-wide">
+          <div className="perfil-header">
+            <div className="avatar-box">
+              <span className="avatar-emoji">👨‍💻</span>
+            </div>
+            <div className="perfil-info">
+              <h2>{username ? username : 'Operador Anónimo'}</h2>
+              <div className="badges-row">
+                <span className="nivel-badge">Nivel {perfil.nivel}</span>
+                <span className="prestigio-badge">⭐ Prestigio {perfil.prestigio}</span>
+                <span className="boost-badge">⚡ x{perfil.multiplicadorXP} XP</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Formulario de Alias integrado */}
+          <form onSubmit={handleGuardarUsername} className="alias-form">
             <input 
               type="text" 
               value={username} 
@@ -83,53 +106,101 @@ export default function PerfilDashboard() {
               placeholder="Introduce tu alias" 
               maxLength={20}
               required 
-              style={{ flexGrow: 1, background: '#121212', border: '1px solid #333', padding: '0.75rem', color: '#fff', borderRadius: '6px', fontSize: '1rem', outline: 'none' }}
+              className="alias-input"
             />
-            <button type="submit" disabled={guardando} style={{ background: 'var(--accent-color)', color: 'var(--bg-color)', border: 'none', padding: '0 1.5rem', fontWeight: 'bold', borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              {guardando ? 'Guardando...' : 'Guardar'}
+            <button type="submit" disabled={guardando} className="alias-btn">
+              {guardando ? 'Guardando...' : 'Actualizar Alias'}
             </button>
+            {mensajeExito && <span className="exito-text">¡Actualizado! ✅</span>}
+          </form>
+          
+          <div className="progreso-container" style={{ marginTop: '1.5rem' }}>
+            <div className="progreso-stats">
+              <span>Progreso de Nivel {perfil.nivel}</span>
+              <span>{perfil.xp} / {xpNecesaria} XP ({porcentajeNivel}%)</span>
+            </div>
+            <div className="barra-fondo">
+              <div className="barra-relleno" style={{ width: `${porcentajeNivel}%` }}></div>
+            </div>
           </div>
-          {mensajeExito && <p style={{ color: '#4CAF50', fontWeight: 'bold', fontSize: '0.85rem', margin: '0.5rem 0 0 0' }}>¡Alias actualizado! ✅</p>}
-        </form>
-      </div>
+        </article>
 
-      <div className="stats-container">
-        <div className="stat-card">
-          <span className="stat-label">Nivel Actual</span>
-          <span className="stat-value">{perfil.nivel}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Experiencia</span>
-          <span className="stat-value xp">{perfil.xp} <small>/ {xpNecesaria}</small></span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Monedas</span>
-          <span className="stat-value oro">🪙 {perfil.monedas}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Boost de XP</span>
-          <span className="stat-value">x{perfil.multiplicadorXP}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Rango Prestigio</span>
-          <span className="stat-value oro">⭐ {perfil.prestigio}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Apuntes Leídos</span>
-          <span className="stat-value">{perfil.apuntesCompletados.length}</span>
-        </div>
-      </div>
+        {/* CARD 2: BÓVEDA FINANCIERA */}
+        <article className="bento-card bento-square vault-card">
+          <h3>Bóveda de Créditos</h3>
+          <div className="monedas-display">
+            <span className="moneda-icon">🪙</span>
+            <span className="moneda-valor">{perfil.monedas}</span>
+          </div>
+          <p className="vault-desc">Acumula créditos completando apuntes para adquirir temas y personalizaciones en la tienda.</p>
+        </article>
 
-      <div className="prestigio-box">
-        <h3>Sistema de Renacimiento</h3>
-        <p>Alcanza el <strong>Nivel 50</strong> para reiniciar tus estadísticas a cambio de un +25% permanente en toda la XP que ganes y subir de Rango de Prestigio.</p>
-        <button 
-          className={`btn-prestigio ${perfil.nivel >= 50 ? 'activo' : 'bloqueado'}`}
-          onClick={handlePrestigio}
-          disabled={perfil.nivel < 50}
-        >
-          {perfil.nivel >= 50 ? '🔥 Activar Prestigio' : `Bloqueado (Requiere Nivel 50)`}
-        </button>
+        {/* CARD 3: RADAR DE HABILIDADES */}
+        <article className="bento-card bento-square">
+          <h3>Radar de Habilidades</h3>
+          
+          <div className="skill-row">
+            <div className="skill-label">Sistemas (SOM/SOR) — {countSom} leídos</div>
+            <div className="skill-barra-fondo">
+              <div className="skill-barra-relleno" style={{ width: `${statsSistemas}%`, background: '#4CAF50' }}></div>
+            </div>
+          </div>
+          
+          <div className="skill-row">
+            <div className="skill-label">Programación — {countProg} leídos</div>
+            <div className="skill-barra-fondo">
+              <div className="skill-barra-relleno" style={{ width: `${statsProg}%`, background: '#2196F3' }}></div>
+            </div>
+          </div>
+
+          <div className="skill-row">
+            <div className="skill-label">Redes & Ciber — {countRedes} leídos</div>
+            <div className="skill-barra-fondo">
+              <div className="skill-barra-relleno" style={{ width: `${statsRedes}%`, background: '#FF9800' }}></div>
+            </div>
+          </div>
+        </article>
+
+        {/* CARD 4: PROTOCOLO DE ASCENSIÓN (PRESTIGIO) */}
+        <article className="bento-card bento-square prestigio-bento">
+          <h3>Renacimiento (Endgame)</h3>
+          <p className="prestigio-desc">Al alcanzar el Nivel 50, reinicia tu rango a cambio de un +25% permanente en la XP global.</p>
+          <button 
+            className={`btn-prestigio-bento ${perfil.nivel >= 50 ? 'activo' : 'bloqueado'}`}
+            onClick={handlePrestigio}
+            disabled={perfil.nivel < 50}
+          >
+            {perfil.nivel >= 50 ? '🔥 Activar Prestigio' : `Requiere Nivel 50 (${perfil.nivel}/50)`}
+          </button>
+        </article>
+
+        {/* CARD 5: VITRINA DE LOGROS (GLASSMORPHISM) */}
+        <article className="bento-card bento-wide logros-card">
+          <h3>Vitrina de Logros ({totalApuntes} Apuntes Dominados)</h3>
+          <div className="logros-grid">
+            <div className={`logro-item ${totalApuntes >= 1 ? 'unlocked' : ''}`}>
+              <div className="logro-icon">🚀</div>
+              <h4>Primeros Pasos</h4>
+              <p>Completa tu primer apunte.</p>
+            </div>
+            <div className={`logro-item ${perfil.nivel >= 5 ? 'unlocked' : ''}`}>
+              <div className="logro-icon">⚡</div>
+              <h4>Operador Nivel 5</h4>
+              <p>Alcanza el nivel 5 de experiencia.</p>
+            </div>
+            <div className={`logro-item ${totalApuntes >= 10 ? 'unlocked' : ''}`}>
+              <div className="logro-icon">🧠</div>
+              <h4>Cerebro Máquina</h4>
+              <p>Domina 10 apuntes en total.</p>
+            </div>
+            <div className={`logro-item ${perfil.prestigio > 0 ? 'unlocked' : ''}`}>
+              <div className="logro-icon">👑</div>
+              <h4>Prestigio I</h4>
+              <p>Alcanza el renacimiento.</p>
+            </div>
+          </div>
+        </article>
+
       </div>
     </div>
   );

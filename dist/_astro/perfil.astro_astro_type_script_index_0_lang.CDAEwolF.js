@@ -1,1 +1,0 @@
-import{t as e}from"./supabase.Cj3_0XfG.js";document.addEventListener(`astro:page-load`,async()=>{let{data:{session:t}}=await e.auth.getSession();t||(window.location.href=`/login`)});

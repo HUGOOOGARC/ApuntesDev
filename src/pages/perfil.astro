@@ -151,4 +151,196 @@ import TiendaTemas from '../components/TiendaTemas.tsx';
     transform: scale(1.05);
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
   }
+  /* =========================================
+     ESTILOS BENTO GRID DASHBOARD PRO
+     ========================================= */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .bento-card {
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .bento-card:hover {
+    border-color: rgba(76, 175, 80, 0.5);
+    transform: translateY(-2px);
+  }
+
+  .bento-wide { grid-column: 1 / -1; }
+  .bento-square { display: flex; flex-direction: column; justify-content: space-between; }
+
+  /* Cabecera de Identidad */
+  .perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .avatar-box {
+    width: 70px;
+    height: 70px;
+    background: #111;
+    border: 2px solid var(--accent-color);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+  }
+  .perfil-info h2 { margin: 0 0 0.4rem 0; font-size: 1.6rem; color: #fff; }
+  
+  .badges-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .nivel-badge { background: var(--accent-color); color: #000; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+  .prestigio-badge { background: #333; color: #FFD700; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid #555; }
+  .boost-badge { background: rgba(33, 150, 243, 0.1); color: #2196F3; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold; font-size: 0.8rem; border: 1px solid rgba(33, 150, 243, 0.3); }
+
+  /* Formulario de Alias */
+  .alias-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    background: rgba(0,0,0,0.3);
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+  }
+  .alias-input {
+    flex-grow: 1;
+    background: #121212;
+    border: 1px solid #333;
+    padding: 0.6rem 0.8rem;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+  }
+  .alias-btn {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+  }
+  .alias-btn:hover { opacity: 0.9; }
+  .exito-text { color: #4CAF50; font-size: 0.85rem; font-weight: bold; }
+
+  /* Barra de Progreso */
+  .progreso-stats {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+  .barra-fondo {
+    width: 100%;
+    height: 14px;
+    background: #111;
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid #222;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+  }
+  .barra-relleno {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #81C784);
+    border-radius: 7px;
+    transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.4);
+  }
+
+  /* Bóveda Financiera */
+  .vault-card { text-align: center; }
+  .vault-card h3 { color: #888; font-size: 0.9rem; text-transform: uppercase; margin: 0 0 0.5rem 0; }
+  .monedas-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 0.5rem 0;
+  }
+  .moneda-icon { font-size: 2.2rem; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3)); }
+  .moneda-valor { font-size: 2.8rem; font-family: monospace; font-weight: bold; color: #fff; line-height: 1; }
+  .vault-desc { color: #666; font-size: 0.8rem; margin: 0; line-height: 1.4; }
+
+  /* Radar de Habilidades */
+  .bento-square h3 { color: #888; font-size: 0.9rem; text-transform: uppercase; margin: 0 0 1rem 0; }
+  .skill-row { margin-bottom: 1rem; }
+  .skill-row:last-child { margin-bottom: 0; }
+  .skill-label { font-size: 0.8rem; color: #ccc; margin-bottom: 0.3rem; font-weight: bold; }
+  .skill-barra-fondo { width: 100%; height: 8px; background: #1a1a1a; border-radius: 4px; overflow: hidden; border: 1px solid #222; }
+  .skill-barra-relleno { height: 100%; border-radius: 4px; transition: width 1s ease-out; }
+
+  /* Tarjeta Prestigio Bento */
+  .prestigio-bento h3 { color: #FFD700; font-size: 0.9rem; text-transform: uppercase; margin: 0 0 0.5rem 0; }
+  .prestigio-desc { color: #aaa; font-size: 0.82rem; margin: 0 0 1rem 0; line-height: 1.4; }
+  .btn-prestigio-bento {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  .btn-prestigio-bento.bloqueado { background: #222; color: #555; cursor: not-allowed; border: 1px solid #333; }
+  .btn-prestigio-bento.activo { background: linear-gradient(90deg, #FF8C00, #FFD700); color: #000; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+  .btn-prestigio-bento.activo:hover { transform: scale(1.02); box-shadow: 0 0 25px rgba(255, 215, 0, 0.5); }
+
+  /* Vitrina de Logros */
+  .logros-card h3 { color: #888; font-size: 0.9rem; text-transform: uppercase; margin: 0 0 1.2rem 0; }
+  .logros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  .logro-item {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px dashed #333;
+    padding: 1.2rem 0.8rem;
+    border-radius: 12px;
+    text-align: center;
+    opacity: 0.4;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+  }
+  .logro-item.unlocked {
+    opacity: 1;
+    filter: grayscale(0%);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.05);
+  }
+  .logro-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+  .logro-item h4 { color: #fff; margin: 0 0 0.2rem 0; font-size: 0.9rem; }
+  .logro-item p { color: #666; font-size: 0.72rem; margin: 0; line-height: 1.3; }
 </style>
