@@ -1,42 +1,66 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const apuntesRouting = Object.values(import.meta.glob('./routing-switching/*.md', { eager: true }));
-const apuntesServicios = Object.values(import.meta.glob('./servicios-red/*.md', { eager: true }));
+// Extraemos los apuntes filtrando por la categoría 'redes'
+const todosLosApuntes = await getCollection('apuntes');
+
+const apuntesRouting = todosLosApuntes.filter(apunte => 
+  apunte.data.categoria === 'redes' && 
+  apunte.data.subcategoria === 'routing-switching' && 
+  !apunte.data.draft
+);
+
+const apuntesServicios = todosLosApuntes.filter(apunte => 
+  apunte.data.categoria === 'redes' && 
+  apunte.data.subcategoria === 'servicios-red' && 
+  !apunte.data.draft
+);
 ---
 
-<Layout title="Redes - ApuntesDev">
+<Layout title="Redes de Computadores - ApuntesDev">
   <Header />
   
   <section class="categoria-header">
-    <h1>🌐 Redes y Conectividad</h1>
-    <p>Enrutamiento, conmutación, VLANs, protocolos y servicios de red.</p>
+    <h1>🌐 Redes de Computadores</h1>
+    <p>Configuración de routers, switches, direccionamiento IP, VLANs y servicios de red.</p>
   </section>
 
-  <!-- ACCESOS RÁPIDOS A LAS SUBCARPETAS -->
+  <!-- ACCESOS RÁPIDOS -->
   <div class="sub-nav-grid">
-    <a href="/redes/routing-switching" class="sub-nav-card">
-      <h3>🔌 Routing & Switching</h3>
-      <p>Routers, Switches, VLANs y OSPF</p>
+    <a href="#routing-switching" class="sub-nav-card">
+      <h3>🔀 Routing & Switching</h3>
+      <p>VLANs, enrutamiento, switches y direccionamiento IP</p>
     </a>
-    <a href="/redes/servicios-red" class="sub-nav-card">
-      <h3>🛡️ Servicios de Red</h3>
-      <p>DNS, DHCP, HTTP, FTP y Seguridad</p>
+    <a href="#servicios-red" class="sub-nav-card">
+      <h3>🌍 Servicios de Red</h3>
+      <p>DNS, DHCP, Web, FTP, SSH y seguridad en red</p>
     </a>
   </div>
 
-  <!-- SECCIÓN ROUTING & SWITCHING -->
-  <section class="seccion-bloque">
+  <!-- SECCIÓN ROUTING Y SWITCHING -->
+  <section id="routing-switching" class="seccion-bloque">
     <h2>📂 Apuntes de Routing & Switching</h2>
     <div class="lista-apuntes">
       {apuntesRouting.length > 0 ? (
-        apuntesRouting.map((apunte: any) => (
+        apuntesRouting.map((apunte) => (
           <article class="apunte-card">
-            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
-            <p>{apunte.frontmatter.description || 'Configuración y topologías de red.'}</p>
-            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+            <div class="card-header">
+              <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>
+                {apunte.data.dificultad}
+              </span>
+              <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
+            </div>
+            
+            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <p class="desc">{apunte.data.description}</p>
+            
+            <div class="card-footer">
+              <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+            </div>
           </article>
         ))
       ) : (
@@ -46,15 +70,26 @@ const apuntesServicios = Object.values(import.meta.glob('./servicios-red/*.md', 
   </section>
 
   <!-- SECCIÓN SERVICIOS DE RED -->
-  <section class="seccion-bloque">
+  <section id="servicios-red" class="seccion-bloque">
     <h2>📂 Apuntes de Servicios de Red</h2>
     <div class="lista-apuntes">
       {apuntesServicios.length > 0 ? (
-        apuntesServicios.map((apunte: any) => (
+        apuntesServicios.map((apunte) => (
           <article class="apunte-card">
-            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
-            <p>{apunte.frontmatter.description || 'Administración de servicios en entornos de red.'}</p>
-            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+            <div class="card-header">
+              <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>
+                {apunte.data.dificultad}
+              </span>
+              <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
+            </div>
+            
+            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <p class="desc">{apunte.data.description}</p>
+            
+            <div class="card-footer">
+              <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+            </div>
           </article>
         ))
       ) : (
@@ -69,11 +104,12 @@ const apuntesServicios = Object.values(import.meta.glob('./servicios-red/*.md', 
 <style>
   .categoria-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
   }
   .categoria-header h1 {
     color: var(--accent-color);
     font-size: 2.5rem;
+    margin-bottom: 0.5rem;
   }
   .categoria-header p {
     color: #aaa;
@@ -125,7 +161,7 @@ const apuntesServicios = Object.values(import.meta.glob('./servicios-red/*.md', 
     flex-direction: column;
     gap: 1.5rem;
   }
-
+  
   .sin-apuntes {
     color: #666;
     font-style: italic;
@@ -135,29 +171,84 @@ const apuntesServicios = Object.values(import.meta.glob('./servicios-red/*.md', 
     border: 1px dashed #333;
     text-align: center;
   }
-
+  
   .apunte-card {
     background: #1e1e1e;
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #333;
-    transition: transform 0.2s, border-color 0.2s;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
+  
   .apunte-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
     border-color: var(--accent-color);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15);
   }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .badge-dif {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  
+  .badge-dif.basico { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
+  .badge-dif.intermedio { background: rgba(255, 152, 0, 0.1); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+  .badge-dif.avanzado { background: rgba(244, 67, 54, 0.1); color: #F44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+  .badge-dif.masterclass { background: rgba(255, 215, 0, 0.1); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.3); }
+
+  .recompensa-info {
+    color: var(--accent-color);
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .apunte-card h2 { margin: 0; }
   .apunte-card h2 a {
-    color: var(--text-color);
+    color: #fff;
     text-decoration: none;
+    font-size: 1.4rem;
   }
-  .apunte-card p {
+  
+  .desc {
     color: #aaa;
-    margin-bottom: 1rem;
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
   }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .fecha {
+    color: #666;
+    font-size: 0.85rem;
+  }
+
   .leer-mas {
     color: var(--accent-color);
     text-decoration: none;
     font-weight: bold;
+    font-size: 0.9rem;
   }
 </style>

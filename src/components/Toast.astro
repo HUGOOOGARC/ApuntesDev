@@ -1,0 +1,104 @@
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+  // Escuchar eventos globales de recompensas ganadas
+  window.addEventListener('recompensa-ganada', ((e: CustomEvent) => {
+    const { xp, monedas, titulo } = e.detail;
+    mostrarToast(xp, monedas, titulo);
+  }) as EventListener);
+
+  function mostrarToast(xp: number, monedas: number, titulo?: string) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-item';
+    toast.innerHTML = `
+      <div class="toast-icon">🏆</div>
+      <div class="toast-content">
+        <h4>${titulo || '¡Misión Completada!'}</h4>
+        <p><span class="toast-xp">+${xp} XP</span> · <span class="toast-coins">+${monedas} 🪙</span></p>
+      </div>
+    `;
+
+    container.appendChild(toast);
+
+    // Animación de entrada
+    requestAnimationFrame(() => {
+      toast.classList.add('show');
+    });
+
+    // Desaparecer automáticamente tras 4 segundos
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 400);
+    }, 4000);
+  }
+</script>
+
+<style>
+  .toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    pointer-events: none;
+  }
+
+  :global(.toast-item) {
+    pointer-events: auto;
+    background: rgba(18, 18, 18, 0.95);
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.3), 0 8px 32px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 1.4rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 280px;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+    opacity: 0;
+  }
+
+  :global(.toast-item.show) {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  :global(.toast-icon) {
+    font-size: 1.8rem;
+    animation: pulse 1s infinite alternate;
+  }
+
+  :global(.toast-content h4) {
+    margin: 0 0 0.2rem 0;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: bold;
+  }
+
+  :global(.toast-content p) {
+    margin: 0;
+    font-size: 0.85rem;
+    font-family: monospace;
+    font-weight: bold;
+  }
+
+  :global(.toast-xp) {
+    color: var(--accent-color);
+  }
+
+  :global(.toast-coins) {
+    color: #ffd700;
+  }
+
+  @keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.15); }
+  }
+</style>

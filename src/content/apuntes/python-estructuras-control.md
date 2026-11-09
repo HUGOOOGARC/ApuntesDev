@@ -1,8 +1,13 @@
 ---
-layout: ../../../layouts/Layout.astro
 title: "Masterclass: Estructuras de Control, If, While y For en Python"
 description: "Guía definitiva de nivel experto con un script unificado que integra condiciones, bucles while y for para programación backend."
 date: "2026-03-30"
+categoria: "programacion"
+subcategoria: "backend"
+dificultad: "Masterclass"
+xp_recompensa: 100
+monedas_recompensa: 25
+draft: false
 ---
 
 <div class="masterclass-badge">⚡ CURSO OFICIAL DE BACKEND — NIVEL SMR</div>

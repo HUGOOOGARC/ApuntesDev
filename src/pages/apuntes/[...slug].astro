@@ -1,0 +1,454 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// 1. Generar rutas dinámicas para cada apunte usando apunte.id (Astro 5+)
+export async function getStaticPaths() {
+  const apuntes = await getCollection('apuntes');
+  return apuntes.map(apunte => ({
+    params: { slug: apunte.id },
+    props: { apunte },
+  }));
+}
+
+const { apunte } = Astro.props;
+const apunteId = apunte.id || apunte.slug;
+
+// 2. Renderizar contenido con la nueva API de Astro 5+
+const { Content, headings } = await render(apunte);
+
+// 3. Obtener apuntes hermanos de la misma categoría para la barra lateral izquierda
+const todosLosApuntes = await getCollection('apuntes');
+const apuntesCategoria = todosLosApuntes.filter(
+  a => a.data.categoria === apunte.data.categoria && !a.data.draft
+);
+
+// 4. Filtrar encabezados H2 y H3 para la Tabla de Contenidos (TOC)
+const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+<Layout title={`${apunte.data.title} | ApuntesDev`}>
+  <Header />
+
+  <div class="reader-container">
+    <!-- COLUMNA 1: SIDEBAR DE NAVEGACIÓN (IZQUIERDA) -->
+    <aside class="sidebar-left">
+      <div class="sidebar-sticky">
+        <h3 class="sidebar-title">📌 {apunte.data.categoria.toUpperCase()}</h3>
+        <nav class="sidebar-nav">
+          <ul>
+            {apuntesCategoria.map(item => {
+              const itemId = item.id || item.slug;
+              const isCurrent = itemId === apunteId;
+              return (
+                <li>
+                  <a 
+                    href={`/apuntes/${itemId}`}
+                    class={isCurrent ? 'active' : ''}
+                  >
+                    <span class="nav-icon">{isCurrent ? '👉' : '📄'}</span>
+                    <span class="nav-text">{item.data.title}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- COLUMNA 2: CONTENIDO PRINCIPAL (CENTRO) -->
+    <main class="reader-content">
+      <header class="apunte-header">
+        <div class="badges">
+          <span class="badge-cat">{apunte.data.categoria.toUpperCase()} ❯ {apunte.data.subcategoria.toUpperCase()}</span>
+          <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>⚡ {apunte.data.dificultad}</span>
+        </div>
+        <h1>{apunte.data.title}</h1>
+        <p class="desc">{apunte.data.description}</p>
+        <div class="meta-info">
+          <span>📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          <span>🏆 +{apunte.data.xp_recompensa} XP / +{apunte.data.monedas_recompensa} 🪙</span>
+        </div>
+      </header>
+
+      <article class="markdown-body" id="article-body">
+        <Content />
+      </article>
+
+      <!-- BOTÓN GAMIFICADO GLOBAL -->
+      <div class="recompensa-global">
+        <button 
+          id="btn-completar-global" 
+          class="btn-gamificado"
+          data-id={apunteId}
+          data-xp={apunte.data.xp_recompensa}
+          data-monedas={apunte.data.monedas_recompensa}
+        >
+          ✨ ¡Completar Apunte (+{apunte.data.xp_recompensa} XP y +{apunte.data.monedas_recompensa} 🪙)!
+        </button>
+      </div>
+    </main>
+
+    <!-- COLUMNA 3: TABLA DE CONTENIDOS TOC CON SCROLLSPY (DERECHA) -->
+    <aside class="sidebar-right">
+      {toc.length > 0 && (
+        <div class="toc-sticky">
+          <h3 class="toc-title">En esta página</h3>
+          <nav class="toc-nav">
+            <ul>
+              {toc.map(h => (
+                <li class={`toc-item depth-${h.depth}`}>
+                  <a href={`#${h.slug}`} class="toc-link" data-slug={h.slug}>
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      )}
+    </aside>
+  </div>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { completarApunte, perfilStore } from '../../store/progreso';
+
+  document.addEventListener('astro:page-load', () => {
+    // 1. SISTEMA DE GAMIFICACIÓN
+    const btn = document.getElementById('btn-completar-global');
+    if (btn) {
+      const idApunte = btn.getAttribute('data-id') || '';
+      const xp = parseInt(btn.getAttribute('data-xp') || '0', 10);
+      const monedas = parseInt(btn.getAttribute('data-monedas') || '0', 10);
+      const perfil = perfilStore.get();
+
+      if (perfil.apuntesCompletados && perfil.apuntesCompletados.includes(idApunte)) {
+        btn.textContent = '✅ Apunte Completado (Dominado)';
+        btn.classList.add('dominado');
+        btn.disabled = true;
+      }
+
+      btn.addEventListener('click', async () => {
+        const completado = await completarApunte(idApunte, xp, monedas);
+        if (completado) {
+          btn.textContent = `🎉 ¡Ganado! (+${xp} XP)`;
+          btn.classList.add('dominado');
+          btn.disabled = true;
+
+          window.dispatchEvent(new CustomEvent('recompensa-ganada', {
+            detail: { 
+              xp: xp, 
+              monedas: monedas,
+              titulo: '¡Apunte Dominado!'
+            }
+          }));
+        }
+      });
+    }
+
+    // 2. INYECTOR AUTOMÁTICO DE BOTONES DE COPIAR CÓDIGO
+    const preBlocks = document.querySelectorAll('#article-body pre');
+    preBlocks.forEach((pre) => {
+      if (pre.querySelector('.copy-btn')) return;
+
+      const container = document.createElement('div');
+      container.className = 'code-block-wrapper';
+      pre.parentNode?.insertBefore(container, pre);
+      container.appendChild(pre);
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.innerHTML = '📋 Copiar';
+
+      copyBtn.addEventListener('click', async () => {
+        const codeText = pre.querySelector('code')?.innerText || pre.innerText;
+        await navigator.clipboard.writeText(codeText);
+        copyBtn.innerHTML = '✅ ¡Copiado!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.innerHTML = '📋 Copiar';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      });
+
+      container.appendChild(copyBtn);
+    });
+
+    // 3. SCROLLSPY AUTOMÁTICO PARA LA TABLA DE CONTENIDOS (TOC)
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const headings = document.querySelectorAll('#article-body h2, #article-body h3');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          tocLinks.forEach(link => {
+            if (link.getAttribute('data-slug') === id) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    headings.forEach(heading => observer.observe(heading));
+  });
+</script>
+
+<style>
+  .reader-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    grid-template-columns: 260px 1fr 240px;
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 1100px) {
+    .reader-container {
+      grid-template-columns: 240px 1fr;
+    }
+    .sidebar-right {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .reader-container {
+      grid-template-columns: 1fr;
+    }
+    .sidebar-left {
+      display: none;
+    }
+  }
+
+  .sidebar-sticky, .toc-sticky {
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+
+  .sidebar-title {
+    font-size: 0.85rem;
+    color: #888;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #222;
+    padding-bottom: 0.5rem;
+  }
+  .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .sidebar-nav a:hover {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .sidebar-nav a.active {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--accent-color);
+    font-weight: bold;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+  .nav-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .reader-content {
+    min-width: 0;
+  }
+  .apunte-header {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #2a2a2a;
+    padding-bottom: 1.5rem;
+  }
+  .badges {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    align-items: center;
+  }
+  .badge-cat {
+    color: #888;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+  .badge-dif {
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .badge-dif.basico { color: #4CAF50; border: 1px solid #4CAF50; }
+  .badge-dif.intermedio { color: #FF9800; border: 1px solid #FF9800; }
+  .badge-dif.avanzado { color: #F44336; border: 1px solid #F44336; }
+  .badge-dif.masterclass { color: #FFD700; border: 1px solid #FFD700; background: rgba(255, 215, 0, 0.1); }
+
+  .apunte-header h1 {
+    font-size: 2.4rem;
+    color: #fff;
+    margin-bottom: 0.8rem;
+    line-height: 1.25;
+  }
+  .desc {
+    color: #aaa;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .meta-info {
+    display: flex;
+    gap: 1.5rem;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: bold;
+  }
+
+  .markdown-body {
+    color: #d1d5db;
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  :global(.code-block-wrapper) {
+    position: relative;
+    margin: 1.8rem 0;
+  }
+  :global(.code-block-wrapper pre) {
+    margin: 0 !important;
+    border-radius: 8px;
+    border: 1px solid #333;
+    padding: 1.2rem;
+    background: #0d0d0d !important;
+    overflow-x: auto;
+  }
+  :global(.copy-btn) {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: #1e1e1e;
+    color: #ccc;
+    border: 1px solid #444;
+    padding: 0.35rem 0.7rem;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  :global(.copy-btn:hover) {
+    background: var(--accent-color);
+    color: #000;
+    border-color: var(--accent-color);
+  }
+  :global(.copy-btn.copied) {
+    background: #4CAF50;
+    color: #fff;
+    border-color: #4CAF50;
+  }
+
+  .toc-title {
+    font-size: 0.85rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #222;
+    padding-bottom: 0.5rem;
+  }
+  .toc-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .toc-item.depth-3 {
+    padding-left: 1rem;
+  }
+  .toc-link {
+    color: #777;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    display: block;
+    line-height: 1.4;
+  }
+  .toc-link:hover {
+    color: #bbb;
+  }
+  .toc-link.active {
+    color: var(--accent-color);
+    font-weight: bold;
+    transform: translateX(4px);
+  }
+
+  .recompensa-global {
+    margin-top: 4rem;
+    text-align: center;
+    padding: 3rem 0;
+    border-top: 1px dashed #333;
+  }
+  .btn-gamificado {
+    background: #111;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    padding: 1.2rem 2.5rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.1);
+  }
+  .btn-gamificado:hover {
+    background: var(--accent-color);
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 25px rgba(76, 175, 80, 0.3);
+  }
+  .btn-gamificado.dominado {
+    background: #151515;
+    color: #555;
+    border-color: #333;
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+  }
+</style>

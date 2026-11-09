@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "date": {
+      "type": "string"
+    },
+    "categoria": {
+      "type": "string",
+      "enum": [
+        "sistemas",
+        "programacion",
+        "redes"
+      ]
+    },
+    "subcategoria": {
+      "type": "string",
+      "enum": [
+        "som",
+        "sor",
+        "backend",
+        "frontend",
+        "routing-switching",
+        "servicios-red"
+      ]
+    },
+    "dificultad": {
+      "default": "Basico",
+      "type": "string",
+      "enum": [
+        "Basico",
+        "Intermedio",
+        "Avanzado",
+        "Masterclass"
+      ]
+    },
+    "xp_recompensa": {
+      "default": 50,
+      "type": "number"
+    },
+    "monedas_recompensa": {
+      "default": 10,
+      "type": "number"
+    },
+    "draft": {
+      "default": false,
+      "type": "boolean"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "date",
+    "categoria",
+    "subcategoria"
+  ]
+}

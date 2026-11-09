@@ -1,14 +1,27 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-// Importamos de forma recursiva todos los archivos .md dentro de som/ y sor/
-const apuntesSOM = Object.values(import.meta.glob('./som/*.md', { eager: true }));
-const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true }));
+// 1. Extraemos TODOS los apuntes de la nueva base de datos validada
+const todosLosApuntes = await getCollection('apuntes');
+
+// 2. Filtramos dinámicamente usando la taxonomía estricta de Zod
+const apuntesSOM = todosLosApuntes.filter(apunte => 
+  apunte.data.categoria === 'sistemas' && 
+  apunte.data.subcategoria === 'som' && 
+  !apunte.data.draft // Ocultamos los que estén en borrador
+);
+
+const apuntesSOR = todosLosApuntes.filter(apunte => 
+  apunte.data.categoria === 'sistemas' && 
+  apunte.data.subcategoria === 'sor' && 
+  !apunte.data.draft
+);
 ---
 
-<Layout title="Sistemas Operativos - ApuntesDev">
+<Layout title="Sistemas Informáticos (SMR) - ApuntesDev">
   <Header />
   
   <section class="categoria-header">
@@ -16,7 +29,7 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
     <p>Administración, comandos y configuración de sistemas operativos monopuestos y en red.</p>
   </section>
 
-  <!-- ACCESOS RÁPIDOS A LAS SUBCARPETAS -->
+  <!-- ACCESOS RÁPIDOS -->
   <div class="sub-nav-grid">
     <a href="/sistemas/som" class="sub-nav-card">
       <h3>🖥️ SOM</h3>
@@ -33,11 +46,23 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
     <h2>📂 Apuntes de SOM (Monopuestos)</h2>
     <div class="lista-apuntes">
       {apuntesSOM.length > 0 ? (
-        apuntesSOM.map((apunte: any) => (
+        apuntesSOM.map((apunte) => (
           <article class="apunte-card">
-            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
-            <p>Categoría: SOM | 📅 {apunte.frontmatter.date || 'Reciente'}</p>
-            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+            <div class="card-header">
+              <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>
+                {apunte.data.dificultad}
+              </span>
+              <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
+            </div>
+            
+            <!-- Usamos el slug autogenerado para crear la URL perfecta -->
+            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <p class="desc">{apunte.data.description}</p>
+            
+            <div class="card-footer">
+              <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+            </div>
           </article>
         ))
       ) : (
@@ -51,11 +76,22 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
     <h2>📂 Apuntes de SOR (En Red)</h2>
     <div class="lista-apuntes">
       {apuntesSOR.length > 0 ? (
-        apuntesSOR.map((apunte: any) => (
+        apuntesSOR.map((apunte) => (
           <article class="apunte-card">
-            <h2><a href={apunte.url}>{apunte.frontmatter.title}</a></h2>
-            <p>Categoría: SOR | 📅 {apunte.frontmatter.date || 'Reciente'}</p>
-            <a href={apunte.url} class="leer-mas">Leer apunte →</a>
+            <div class="card-header">
+              <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>
+                {apunte.data.dificultad}
+              </span>
+              <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
+            </div>
+            
+            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <p class="desc">{apunte.data.description}</p>
+            
+            <div class="card-footer">
+              <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+            </div>
           </article>
         ))
       ) : (
@@ -68,6 +104,7 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
 </Layout>
 
 <style>
+  /* ESTILOS OPTIMIZADOS PARA LAS TARJETAS DINÁMICAS */
   .categoria-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -81,7 +118,6 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
     color: #aaa;
   }
 
-  /* Tarjetas de subnavegación SOM / SOR */
   .sub-nav-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -126,7 +162,7 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
   .lista-apuntes {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.5rem;
   }
   
   .sin-apuntes {
@@ -139,46 +175,85 @@ const apuntesSOR = Object.values(import.meta.glob('./sor/*.md', { eager: true })
     text-align: center;
   }
   
-  /* Efecto Glow Hover */
+  /* TARJETAS PREMIUM */
   .apunte-card {
     background: #1e1e1e;
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #333;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
-  .apunte-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.1), transparent);
-    transition: left 0.5s ease;
-  }
+  
   .apunte-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
     border-color: var(--accent-color);
     box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15);
   }
-  .apunte-card:hover::before {
-    left: 100%;
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
   }
-  .apunte-card h2 a {
-    color: var(--text-color);
-    text-decoration: none;
+
+  .badge-dif {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
   }
-  .apunte-card p {
-    color: #aaa;
-    margin-bottom: 1rem;
+  
+  /* Colores de dificultad automatizados por Zod */
+  .badge-dif.basico { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
+  .badge-dif.intermedio { background: rgba(255, 152, 0, 0.1); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+  .badge-dif.avanzado { background: rgba(244, 67, 54, 0.1); color: #F44336; border: 1px solid rgba(244, 67, 54, 0.3); }
+  .badge-dif.masterclass { background: rgba(255, 215, 0, 0.1); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.3); }
+
+  .recompensa-info {
+    color: var(--accent-color);
+    font-family: monospace;
+    font-weight: bold;
     font-size: 0.9rem;
   }
+
+  .apunte-card h2 { margin: 0; }
+  .apunte-card h2 a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.4rem;
+  }
+  
+  .desc {
+    color: #aaa;
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .fecha {
+    color: #666;
+    font-size: 0.85rem;
+  }
+
   .leer-mas {
     color: var(--accent-color);
     text-decoration: none;
     font-weight: bold;
+    font-size: 0.9rem;
   }
 </style>

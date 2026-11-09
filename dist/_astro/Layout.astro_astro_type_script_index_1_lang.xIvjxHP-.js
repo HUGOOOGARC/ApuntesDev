@@ -1,0 +1,1 @@
+import{r as e}from"./progreso.DUKpBF9l.js";import{t}from"./supabase.Cj3_0XfG.js";document.addEventListener(`astro:page-load`,async()=>{let{data:{session:n}}=await t.auth.getSession();n&&await e()});
