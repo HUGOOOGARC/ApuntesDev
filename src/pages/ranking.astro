@@ -4,33 +4,114 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Clasificación Global | ApuntesDev">
+<Layout
+  title="Salón de la Fama & Leaderboard | ApuntesDev"
+  description="Clasificación general de estudiantes de ApuntesDev. Compite por el podio de honor de la academia acumulando XP, niveles, monedas y prestigio."
+>
   <Header />
 
-  <main class="ranking-layout">
-    <div class="ranking-hero">
-      <div class="hero-badge">SALÓN DE LA FAMA</div>
-      <h1>🏆 Leaderboard Global</h1>
-      <p>Los mejores estudiantes de la academia ordenados por nivel, experiencia y prestigio.</p>
+  <main class="ranking-page-container">
+    <!-- HERO DEL SALÓN DE LA FAMA -->
+    <section class="ranking-hero reveal">
+      <div class="hero-aurora"></div>
+      <div class="hero-content">
+        <div class="season-badge">
+          <span class="season-dot"></span>
+          <span>LIGA NACIONAL SMR & DEV • TEMPORADA 2026</span>
+          <span class="season-trophy">🏆</span>
+        </div>
+        <h1 class="hero-title">
+          Salón de la <span class="gold-gradient">Fama Global</span>
+        </h1>
+        <p class="hero-subtitle">
+          Los mejores operadores técnicos y desarrolladores de la academia, clasificados por experiencia acumulada, maestría y prestigio en combate real.
+        </p>
+      </div>
+    </section>
+
+    <!-- BANNER DINÁMICO: TU POSICIÓN PERSONAL (SI ESTÁS LOGUEADO) -->
+    <div id="user-rank-banner" class="user-rank-banner" style="display: none;">
+      <div class="user-rank-info">
+        <span class="user-rank-pos" id="my-rank-pos">#--</span>
+        <div class="user-rank-avatar" id="my-rank-avatar">?</div>
+        <div>
+          <h4 id="my-rank-name">Tu Perfil</h4>
+          <span class="user-rank-title" id="my-rank-title">Cadete Técnico</span>
+        </div>
+      </div>
+      <div class="user-rank-stats">
+        <div class="rank-stat-item">
+          <span class="stat-label">Nivel Actual</span>
+          <strong id="my-rank-level" class="stat-value">--</strong>
+        </div>
+        <div class="rank-stat-item">
+          <span class="stat-label">Experiencia</span>
+          <strong id="my-rank-xp" class="stat-value text-accent">-- XP</strong>
+        </div>
+        <div class="rank-stat-item">
+          <span class="stat-label">Distancia al Top</span>
+          <strong id="my-rank-diff" class="stat-value text-gold">--</strong>
+        </div>
+      </div>
     </div>
 
-    <!-- Contenedor del Ranking -->
-    <section class="ranking-section">
-      <div class="table-container">
-        <table class="ranking-table">
+    <!-- PODIO 3D DE HONOR (TOP 3) -->
+    <section class="podium-section reveal">
+      <div class="podium-container" id="podium-container">
+        <!-- Generado dinámicamente con las 3 cartas de podio -->
+        <div class="podium-skeleton">Cargando el podio de campeones...</div>
+      </div>
+    </section>
+
+    <!-- TABLA PRINCIPAL DE CLASIFICACIÓN -->
+    <section class="leaderboard-section reveal">
+      <!-- Barra de Filtros y Búsqueda -->
+      <div class="table-controls-bar">
+        <div class="filter-tabs">
+          <button type="button" class="tab-btn active" data-sort="level-xp">
+            🏆 Nivel & XP
+          </button>
+          <button type="button" class="tab-btn" data-sort="coins">
+            🪙 Fortuna (Monedas)
+          </button>
+          <button type="button" class="tab-btn" data-sort="prestigio">
+            ⭐ Prestigio
+          </button>
+        </div>
+
+        <div class="search-box-ranking">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="search"
+            id="search-ranking"
+            placeholder="Buscar por alias..."
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <!-- Tabla Estilizada -->
+      <div class="table-wrapper">
+        <table class="elite-table">
           <thead>
             <tr>
-              <th>Posición</th>
-              <th>Estudiante</th>
-              <th>Nivel</th>
-              <th>Experiencia (XP)</th>
+              <th class="th-pos">Puesto</th>
+              <th>Estudiante / Rango</th>
+              <th>Nivel & Progreso</th>
+              <th>Experiencia</th>
               <th>Monedas</th>
               <th>Prestigio</th>
+              <th>Apuntes</th>
             </tr>
           </thead>
-          <tbody id="ranking-table-body">
+          <tbody id="ranking-tbody">
             <tr>
-              <td colspan="6" class="loading-row">Cargando clasificación de la academia...</td>
+              <td colspan="7" class="loading-state">
+                <div class="spinner-small"></div>
+                <span>Sincronizando clasificación con el clúster Supabase...</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -44,202 +125,913 @@ import Footer from '../components/Footer.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
+  interface Profile {
+    id: string;
+    username: string;
+    xp: number;
+    level: number;
+    coins: number;
+    prestigio: number;
+    multiplicador_xp?: number;
+    apuntes_completados?: string[];
+    tema_activo?: string;
+  }
+
+  // Títulos honoríficos basados en nivel
+  function getRankTitle(level: number): { title: string; color: string } {
+    if (level >= 40) return { title: 'Arquitecto de Redes Élite', color: '#f59e0b' };
+    if (level >= 25) return { title: 'Ingeniero DevOps Senior', color: '#a855f7' };
+    if (level >= 15) return { title: 'NetAdmin Junior', color: '#38bdf8' };
+    if (level >= 5)  return { title: 'Técnico de Sistemas SOM', color: '#4ade80' };
+    return { title: 'Cadete SMR', color: '#94a3b8' };
+  }
+
   document.addEventListener('astro:page-load', async () => {
-    const tbody = document.getElementById('ranking-table-body');
-    if (!tbody) return;
+    const tbody = document.getElementById('ranking-tbody');
+    const podiumContainer = document.getElementById('podium-container');
+    const searchInput = document.getElementById('search-ranking') as HTMLInputElement;
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const userRankBanner = document.getElementById('user-rank-banner');
 
-    // Consultamos los perfiles ordenados por Nivel descendente y luego por XP descendente
-    const { data: perfiles, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('level', { ascending: false })
-      .order('xp', { ascending: false });
+    if (!tbody || !podiumContainer) return;
 
-    if (error) {
-      console.error('Error al cargar el ranking:', error);
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #e53935; padding: 2rem;">Error al cargar los datos del leaderboard.</td></tr>`;
+    let todosLosPerfiles: Profile[] = [];
+    let criterioOrden = 'level-xp';
+    let currentUserId: string | null = null;
+
+    // 1. Obtener usuario actual para la tarjeta personal
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        currentUserId = session.user.id;
+      }
+    } catch (e) {
+      console.warn('Error comprobando sesión:', e);
+    }
+
+    // 2. Cargar perfiles de Supabase
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*');
+
+      if (error) throw error;
+      todosLosPerfiles = data || [];
+    } catch (err) {
+      console.error('Error al cargar ranking:', err);
+      tbody.innerHTML = `<tr><td colspan="7" class="error-state">⚠️ Error al conectar con la base de datos de Supabase.</td></tr>`;
+      podiumContainer.innerHTML = '';
       return;
     }
 
-    if (perfiles && perfiles.length > 0) {
+    // 3. Función de ordenación
+    const ordenarPerfiles = (perfiles: Profile[], criterio: string): Profile[] => {
+      const copia = [...perfiles];
+      if (criterio === 'coins') {
+        return copia.sort((a, b) => (b.coins || 0) - (a.coins || 0));
+      }
+      if (criterio === 'prestigio') {
+        return copia.sort((a, b) => (b.prestigio || 0) - (a.prestigio || 0) || (b.xp || 0) - (a.xp || 0));
+      }
+      // Por defecto: Nivel DESC, luego XP DESC
+      return copia.sort((a, b) => (b.level || 1) - (a.level || 1) || (b.xp || 0) - (a.xp || 0));
+    };
+
+    // 4. Renderizar Podio (Top 3)
+    const renderPodium = (top3: Profile[]) => {
+      if (top3.length === 0) {
+        podiumContainer.innerHTML = '<div class="podium-empty">Aún no hay estudiantes en la academia.</div>';
+        return;
+      }
+
+      const p1 = top3[0];
+      const p2 = top3[1];
+      const p3 = top3[2];
+
+      const renderCard = (p: Profile | undefined, puesto: number, claseExtra: string, icono: string, medallaColor: string) => {
+        if (!p) return `<div class="podium-slot-empty">Puesto #${puesto} Disponible</div>`;
+        const initial = (p.username || 'A').charAt(0).toUpperCase();
+        const rank = getRankTitle(p.level || 1);
+        const apuntesCount = Array.isArray(p.apuntes_completados) ? p.apuntes_completados.length : 0;
+
+        return `
+          <div class="podium-card ${claseExtra} tilt-card">
+            <div class="podium-crown">${icono}</div>
+            <div class="podium-avatar-wrapper" style="--podium-glow: ${medallaColor};">
+              <div class="podium-avatar">${initial}</div>
+              <span class="podium-rank-badge">#${puesto}</span>
+            </div>
+
+            <div class="podium-user-info">
+              <h3 class="podium-username">${p.username || 'Estudiante'}</h3>
+              <span class="podium-title" style="color: ${rank.color};">${rank.title}</span>
+            </div>
+
+            <div class="podium-stats-box">
+              <div class="podium-stat">
+                <span class="pstat-val accent">Nvl. ${p.level || 1}</span>
+                <span class="pstat-label">Nivel</span>
+              </div>
+              <div class="podium-stat-sep"></div>
+              <div class="podium-stat">
+                <span class="pstat-val gold">${(p.xp || 0).toLocaleString()}</span>
+                <span class="pstat-label">XP Total</span>
+              </div>
+              <div class="podium-stat-sep"></div>
+              <div class="podium-stat">
+                <span class="pstat-val">🪙 ${(p.coins || 0).toLocaleString()}</span>
+                <span class="pstat-label">Monedas</span>
+              </div>
+            </div>
+
+            <div class="podium-footer-meta">
+              <span>📚 ${apuntesCount} apuntes dominados</span>
+              ${p.prestigio ? `<span>⭐ Prestigio ${p.prestigio}</span>` : ''}
+            </div>
+          </div>
+        `;
+      };
+
+      // Orden visual: 2º (Izquierda) -> 1º (Centro, más alto) -> 3º (Derecha)
+      podiumContainer.innerHTML = `
+        ${renderCard(p2, 2, 'podium-card--second', '🥈', '#cbd5e1')}
+        ${renderCard(p1, 1, 'podium-card--first', '👑', '#fbbf24')}
+        ${renderCard(p3, 3, 'podium-card--third', '🥉', '#f97316')}
+      `;
+    };
+
+    // 5. Renderizar Tabla Completa
+    const renderTable = (perfiles: Profile[]) => {
       tbody.innerHTML = '';
+
+      if (perfiles.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No se encontraron estudiantes con ese nombre.</td></tr>`;
+        return;
+      }
+
       perfiles.forEach((user, index) => {
         const posicion = index + 1;
-        let medalla = '';
-        let clasePodio = '';
+        const initial = (user.username || 'E').charAt(0).toUpperCase();
+        const rank = getRankTitle(user.level || 1);
+        const isCurrentUser = user.id === currentUserId;
+        const apuntesCount = Array.isArray(user.apuntes_completados) ? user.apuntes_completados.length : 0;
 
-        if (posicion === 1) {
-          medalla = '🥇 ';
-          clasePodio = 'podium-1';
-        } else if (posicion === 2) {
-          medalla = '🥈 ';
-          clasePodio = 'podium-2';
-        } else if (posicion === 3) {
-          medalla = '🥉 ';
-          clasePodio = 'podium-3';
-        }
+        let posBadgeClass = 'pos-normal';
+        let posIcon = `#${posicion}`;
+        if (posicion === 1) { posBadgeClass = 'pos-gold'; posIcon = '🥇 #1'; }
+        else if (posicion === 2) { posBadgeClass = 'pos-silver'; posIcon = '🥈 #2'; }
+        else if (posicion === 3) { posBadgeClass = 'pos-bronze'; posIcon = '🥉 #3'; }
 
-        const inicial = (user.username || 'E').charAt(0).toUpperCase();
+        // Cálculo de barra de nivel dentro de la fila
+        const xpProgress = Math.min(((user.xp || 0) % 500) / 500 * 100, 100);
+
         const tr = document.createElement('tr');
-        if (clasePodio) tr.className = clasePodio;
+        if (isCurrentUser) tr.className = 'my-user-row';
 
         tr.innerHTML = `
-          <td class="col-posicion">
-            <span class="posicion-badge">${medalla}#${posicion}</span>
+          <td class="col-pos">
+            <span class="pos-badge ${posBadgeClass}">${posIcon}</span>
           </td>
           <td>
-            <div class="user-cell">
-              <div class="user-avatar">${inicial}</div>
-              <span class="user-name"><strong>${user.username || 'Estudiante Anónimo'}</strong></span>
+            <div class="student-cell">
+              <div class="student-avatar" style="--avatar-color: ${rank.color};">${initial}</div>
+              <div class="student-names">
+                <div class="name-row">
+                  <strong class="student-name">${user.username || 'Anónimo'}</strong>
+                  ${isCurrentUser ? '<span class="you-badge">TÚ</span>' : ''}
+                </div>
+                <span class="student-rank-title" style="color: ${rank.color};">${rank.title}</span>
+              </div>
             </div>
           </td>
-          <td><span class="badge-nivel">Nvl. ${user.level || 1}</span></td>
-          <td><code class="xp-code">${(user.xp || 0).toLocaleString()} XP</code></td>
-          <td class="oro">🪙 ${(user.coins || 0).toLocaleString()}</td>
-          <td>⭐ ${user.prestigio || 0}</td>
+          <td>
+            <div class="level-progress-cell">
+              <span class="level-pill">Nvl. ${user.level || 1}</span>
+              <div class="row-progress-track" title="Progreso de nivel: ${Math.round(xpProgress)}%">
+                <div class="row-progress-bar" style="width: ${xpProgress}%;"></div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="xp-display">${(user.xp || 0).toLocaleString()} <small>XP</small></span>
+          </td>
+          <td>
+            <span class="coins-display">🪙 ${(user.coins || 0).toLocaleString()}</span>
+          </td>
+          <td>
+            <span class="prestige-display">⭐ ${user.prestigio || 0}</span>
+          </td>
+          <td>
+            <span class="apuntes-count-badge">${apuntesCount}</span>
+          </td>
         `;
+
         tbody.appendChild(tr);
       });
-    } else {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #777; padding: 2rem;">No hay estudiantes registrados todavía.</td></tr>`;
-    }
+    };
+
+    // 6. Actualizar Tarjeta Personal
+    const updateMyBanner = (sorted: Profile[]) => {
+      if (!currentUserId || !userRankBanner) return;
+      const myIndex = sorted.findIndex(p => p.id === currentUserId);
+      if (myIndex === -1) return;
+
+      const me = sorted[myIndex];
+      const rankPos = myIndex + 1;
+      const rank = getRankTitle(me.level || 1);
+
+      document.getElementById('my-rank-pos')!.textContent = `#${rankPos}`;
+      document.getElementById('my-rank-avatar')!.textContent = (me.username || 'U').charAt(0).toUpperCase();
+      document.getElementById('my-rank-name')!.textContent = me.username || 'Tu Perfil';
+      document.getElementById('my-rank-title')!.textContent = rank.title;
+      document.getElementById('my-rank-level')!.textContent = `Nvl. ${me.level || 1}`;
+      document.getElementById('my-rank-xp')!.textContent = `${(me.xp || 0).toLocaleString()} XP`;
+
+      if (myIndex > 0) {
+        const userAbove = sorted[myIndex - 1];
+        const diff = (userAbove.xp || 0) - (me.xp || 0);
+        document.getElementById('my-rank-diff')!.textContent = `+${diff.toLocaleString()} XP para #${myIndex}`;
+      } else {
+        document.getElementById('my-rank-diff')!.textContent = '👑 Liderando el Ranking';
+      }
+
+      userRankBanner.style.display = 'flex';
+    };
+
+    // 7. Flujo principal de render
+    const actualizarVista = () => {
+      const ordenados = ordenarPerfiles(todosLosPerfiles, criterioOrden);
+      renderPodium(ordenados.slice(0, 3));
+      updateMyBanner(ordenados);
+
+      const filtroTexto = (searchInput?.value || '').toLowerCase().trim();
+      const filtrados = filtroTexto
+        ? ordenados.filter(p => (p.username || '').toLowerCase().includes(filtroTexto))
+        : ordenados;
+
+      renderTable(filtrados);
+    };
+
+    // Eventos de pestañas de ordenación
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        tabButtons.forEach(b => b.classList.remove('active'));
+        const target = e.currentTarget as HTMLButtonElement;
+        target.classList.add('active');
+        criterioOrden = target.getAttribute('data-sort') || 'level-xp';
+        actualizarVista();
+      });
+    });
+
+    // Evento de búsqueda en vivo
+    searchInput?.addEventListener('input', () => {
+      const filtro = searchInput.value.toLowerCase().trim();
+      const ordenados = ordenarPerfiles(todosLosPerfiles, criterioOrden);
+      const filtrados = filtro
+        ? ordenados.filter(p => (p.username || '').toLowerCase().includes(filtro))
+        : ordenados;
+      renderTable(filtrados);
+    });
+
+    actualizarVista();
   });
 </script>
 
-<style>
-  .ranking-layout {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem;
-  }
-
-  .ranking-hero {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .hero-badge {
-    display: inline-block;
-    background: rgba(255, 215, 0, 0.15);
-    color: #FFD700;
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    padding: 0.25rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 0.75rem;
-  }
-
-  .ranking-hero h1 {
-    color: #fff;
-    font-size: 2.5rem;
-    font-weight: 900;
-    letter-spacing: -1px;
-    margin-bottom: 0.5rem;
-  }
-
-  .ranking-hero p {
-    color: #888;
-    font-size: 1rem;
-  }
-
-  .ranking-section {
-    background: linear-gradient(145deg, #141414, #1a1a1a);
-    border: 1px solid #262626;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  }
-
-  .table-container {
-    overflow-x: auto;
-  }
-
-  .ranking-table {
+<style is:global>
+  /* ══════════════════════════════════════════════
+     ESTILOS: SALÓN DE LA FAMA & LEADERBOARD
+  ══════════════════════════════════════════════ */
+  .ranking-page-container {
+    max-width: 1440px;
     width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 0.95rem;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 6rem;
   }
 
-  .ranking-table th, .ranking-table td {
-    padding: 1.1rem 1rem;
-    border-bottom: 1px solid #222;
+  /* ── HERO ── */
+  .ranking-hero {
+    position: relative;
+    background: linear-gradient(145deg, rgba(20, 23, 34, 0.95) 0%, rgba(10, 12, 18, 0.98) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 28px;
+    padding: 3.5rem 3rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    overflow: hidden;
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.08);
   }
 
-  .ranking-table th {
-    color: #888;
-    background: #0d0d0d;
+  .hero-aurora {
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 140%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.12) 0%, rgba(74, 222, 128, 0.08) 30%, transparent 70%);
+    pointer-events: none;
+    animation: orbFloat 10s ease-in-out infinite alternate;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .season-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    padding: 0.4rem 1.25rem;
+    border-radius: 100px;
     font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: #ffd700;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+  }
+
+  .season-dot {
+    width: 7px;
+    height: 7px;
+    background: #ffd700;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ffd700;
+    animation: pulseDot 2s infinite;
+  }
+
+  .hero-title {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+  }
+
+  .gold-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #ffd700 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: #94a3b8;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* ── BANNER PERSONAL DE USUARIO ── */
+  .user-rank-banner {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(18, 20, 30, 0.95) 100%);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    border-radius: 20px;
+    padding: 1.25rem 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(74, 222, 128, 0.12);
+  }
+
+  .user-rank-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .user-rank-pos {
+    font-size: 2rem;
+    font-weight: 900;
+    font-family: var(--font-mono);
+    color: var(--accent-color);
+  }
+
+  .user-rank-avatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent-color), #059669);
+    color: #060809;
+    font-size: 1.3rem;
+    font-weight: 900;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+
+  .user-rank-info h4 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .user-rank-title {
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  .user-rank-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .rank-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .rank-stat-item .stat-label {
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
+  }
+
+  .rank-stat-item .stat-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #ffffff;
+  }
+
+  .text-accent { color: var(--accent-color) !important; }
+  .text-gold { color: #ffd700 !important; }
+
+  /* ══════════════════════════════════════════════
+     PODIO 3D (TOP 3)
+  ══════════════════════════════════════════════ */
+  .podium-section {
+    margin-bottom: 4rem;
+  }
+
+  .podium-container {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 1.75rem;
+    align-items: end;
+  }
+
+  .podium-card {
+    background: linear-gradient(145deg, rgba(20, 23, 34, 0.95) 0%, rgba(12, 14, 22, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .podium-card:hover {
+    transform: translateY(-8px);
+  }
+
+  /* 🥇 1º Puesto (Centro y Elevado) */
+  .podium-card--first {
+    border-color: rgba(255, 215, 0, 0.45);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 45px rgba(255, 215, 0, 0.18);
+    padding-top: 2.8rem;
+    padding-bottom: 2.8rem;
+  }
+
+  .podium-card--first::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  }
+
+  /* 🥈 2º Puesto (Plata) */
+  .podium-card--second {
+    border-color: rgba(203, 213, 225, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 30px rgba(203, 213, 225, 0.1);
+  }
+
+  /* 🥉 3º Puesto (Bronce) */
+  .podium-card--third {
+    border-color: rgba(249, 115, 22, 0.3);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 30px rgba(249, 115, 22, 0.1);
+  }
+
+  .podium-crown {
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.4));
+  }
+
+  .podium-avatar-wrapper {
+    position: relative;
+    margin-bottom: 1.25rem;
+  }
+
+  .podium-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+    border: 2px solid var(--podium-glow, #ffd700);
+    box-shadow: 0 0 20px var(--podium-glow, #ffd700);
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .podium-card--first .podium-avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2.2rem;
+  }
+
+  .podium-rank-badge {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000000;
+    color: #ffffff;
+    border: 1px solid var(--podium-glow, #ffd700);
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .podium-user-info {
+    margin-bottom: 1.25rem;
+  }
+
+  .podium-username {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin: 0 0 0.25rem;
+  }
+
+  .podium-card--first .podium-username {
+    font-size: 1.55rem;
+  }
+
+  .podium-title {
+    font-size: 0.8rem;
     font-weight: 700;
   }
 
-  .ranking-table tr:hover {
+  .podium-stats-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .podium-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .pstat-val {
+    font-size: 1rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: #ffffff;
+  }
+
+  .pstat-val.accent { color: var(--accent-color); }
+  .pstat-val.gold { color: #ffd700; }
+
+  .pstat-label {
+    font-size: 0.62rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .podium-stat-sep {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .podium-footer-meta {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: flex;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  /* ══════════════════════════════════════════════
+     TABLA PRINCIPAL
+  ══════════════════════════════════════════════ */
+  .leaderboard-section {
+    background: linear-gradient(145deg, rgba(20, 23, 34, 0.9) 0%, rgba(12, 14, 22, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  }
+
+  .table-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0.35rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn:hover {
+    color: #ffffff;
+  }
+
+  .tab-btn.active {
+    background: rgba(255, 215, 0, 0.12);
+    color: #ffd700;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  }
+
+  .search-box-ranking {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-box-ranking svg {
+    position: absolute;
+    left: 1rem;
+    color: #64748b;
+    pointer-events: none;
+  }
+
+  .search-box-ranking input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 100px;
+    padding: 0.55rem 1.25rem 0.55rem 2.5rem;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: #ffffff;
+    width: 240px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .search-box-ranking input:focus {
+    width: 280px;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.12);
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .elite-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+  }
+
+  .elite-table th {
+    background: rgba(0, 0, 0, 0.4);
+    color: #64748b;
+    padding: 1rem 1.25rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .elite-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #94a3b8;
+  }
+
+  .elite-table tr:hover td {
     background: rgba(255, 255, 255, 0.02);
   }
 
-  /* Estilos especiales para el podio (Top 3) */
-  .podium-1 {
-    background: rgba(255, 215, 0, 0.05);
-  }
-  .podium-1:hover { background: rgba(255, 215, 0, 0.08) !important; }
-
-  .podium-2 {
-    background: rgba(192, 192, 192, 0.04);
+  .my-user-row td {
+    background: rgba(74, 222, 128, 0.06) !important;
+    border-color: rgba(74, 222, 128, 0.2);
   }
 
-  .col-posicion {
-    font-weight: bold;
+  .col-pos {
     width: 100px;
   }
 
-  .posicion-badge {
-    font-family: monospace;
-    font-size: 1rem;
+  .pos-badge {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 8px;
+    display: inline-block;
   }
 
-  .user-cell {
+  .pos-gold { background: rgba(255, 215, 0, 0.15); color: #ffd700; border: 1px solid rgba(255, 215, 0, 0.35); }
+  .pos-silver { background: rgba(203, 213, 225, 0.12); color: #cbd5e1; border: 1px solid rgba(203, 213, 225, 0.3); }
+  .pos-bronze { background: rgba(249, 115, 22, 0.12); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); }
+  .pos-normal { background: rgba(255, 255, 255, 0.04); color: #64748b; }
+
+  .student-cell {
     display: flex;
     align-items: center;
     gap: 0.85rem;
   }
 
-  .user-avatar {
+  .student-avatar {
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, var(--accent-color), #2e7d32);
-    color: #000;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid var(--avatar-color, #4ade80);
+    color: #ffffff;
     font-weight: 900;
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    flex-shrink: 0;
   }
 
-  .badge-nivel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #333;
-    padding: 0.25rem 0.6rem;
+  .student-names {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .student-name {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .you-badge {
+    background: var(--accent-color);
+    color: #060809;
+    font-size: 0.6rem;
+    font-weight: 900;
+    padding: 0.1rem 0.4rem;
     border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.85rem;
+    letter-spacing: 0.05em;
   }
 
-  .xp-code {
-    font-family: monospace;
-    color: #aaa;
+  .student-rank-title {
+    font-size: 0.72rem;
+    font-weight: 600;
   }
 
-  .oro { color: #FFD700; font-weight: bold; }
+  .level-progress-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 130px;
+  }
 
-  .loading-row {
+  .level-pill {
+    font-size: 0.78rem;
+    font-family: var(--font-mono);
+    font-weight: 800;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .row-progress-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .row-progress-bar {
+    height: 100%;
+    background: var(--accent-color);
+    border-radius: 10px;
+  }
+
+  .xp-display {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    color: #f1f5f9;
+  }
+
+  .xp-display small {
+    color: #64748b;
+    font-size: 0.75rem;
+  }
+
+  .coins-display {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #ffd700;
+  }
+
+  .prestige-display {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #38bdf8;
+  }
+
+  .apuntes-count-badge {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: #94a3b8;
+  }
+
+  .loading-state, .empty-state, .error-state {
     text-align: center;
-    color: #666;
-    padding: 3rem !important;
+    padding: 4rem 2rem !important;
+    color: #64748b;
     font-style: italic;
+  }
+
+  .error-state { color: #f87171 !important; }
+
+  @media (max-width: 900px) {
+    .podium-container {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    .podium-card--first { order: -1; }
+  }
+
+  @media (max-width: 600px) {
+    .ranking-page-container { padding: 1.5rem 1rem 4rem; }
+    .ranking-hero { padding: 2.5rem 1.5rem; }
+    .user-rank-banner { padding: 1.25rem; flex-direction: column; align-items: flex-start; }
+    .table-controls-bar { flex-direction: column; align-items: stretch; }
+    .search-box-ranking input { width: 100%; }
+    .search-box-ranking input:focus { width: 100%; }
   }
 </style>

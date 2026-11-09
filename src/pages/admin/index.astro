@@ -4,88 +4,442 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 ---
 
-<Layout title="Consola de Operador Elite | ApuntesDev">
+<Layout
+  title="System Command Core • Consola Root | ApuntesDev"
+  description="Consola de administración y telemetría global de ApuntesDev. Gestión de estudiantes, inyección de recursos, auditoría de clúster y control operacional."
+>
   <Header />
 
-  <main class="admin-layout">
-    <!-- Cabecera de Comando de Élite -->
-    <header class="admin-hero">
-      <div class="hero-badge">ACCESO NIVEL 4 — ROOT</div>
-      <h1>⚡ System Command Core</h1>
-      <p>Centro de control y telemetría global de la academia de SMR y Programación.</p>
-    </header>
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="admin-wrapper">
+    <!-- FONDO DECORATIVO CYBER -->
+    <div class="admin-bg-glow"></div>
+    <div class="admin-grid-lines"></div>
 
-    <!-- 1. MÉTRICAS GLOBALES AVANZADAS -->
-    <section class="admin-section">
-      <div class="section-title-wrapper">
-        <h2>📊 Telemetría Global</h2>
-        <span class="live-indicator"><span class="pulse-dot"></span> EN VIVO</span>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <span class="stat-label">Estudiantes Registrados</span>
-          <span class="stat-val" id="total-users">--</span>
-          <span class="stat-sub">Cuentas activas en Supabase</span>
+    <!-- PANTALLA DE ACCESO RESTRINGIDO (VISIBLE SI NO HAY SESIÓN) -->
+    <div id="gatekeeper-panel" class="gatekeeper-container" style="display: none;">
+      <div class="gatekeeper-card reveal">
+        <div class="gate-icon-wrapper">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
         </div>
-        <div class="stat-box">
-          <span class="stat-label">Nivel Promedio Global</span>
-          <span class="stat-val accent" id="avg-level">--</span>
-          <span class="stat-sub">Progreso de la academia</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Economía (Monedas)</span>
-          <span class="stat-val oro" id="total-coins">--</span>
-          <span class="stat-sub">🪙 En circulación</span>
-        </div>
-      </div>
-    </section>
+        <div class="gate-badge">ACCESO RESTRINGIDO // NIVEL 4 ROOT</div>
+        <h2>Terminal de Comando de ApuntesDev</h2>
+        <p>Para acceder a la consola de operador y telemetría de Supabase, debes iniciar sesión con una cuenta autorizada.</p>
 
-    <!-- 4. HERRAMIENTAS RÁPIDAS DE OPERADOR -->
-    <section class="admin-section">
-      <h2>🛠️ Protocolos de Operador</h2>
-      <div class="tools-grid">
-        <button class="btn-tool" id="btn-broadcast">
-          <span>📢</span> Enviar Aviso Global
-        </button>
-        <button class="btn-tool" id="btn-export">
-          <span>📥</span> Exportar Telemetría (JSON)
-        </button>
-        <button class="btn-tool warning" id="btn-reset-cache">
-          <span>🔄</span> Purgar Caché Global
-        </button>
-      </div>
-    </section>
-
-    <!-- 2 & 3. GESTIÓN DE USUARIOS CON BUSCADOR Y ACCIONES -->
-    <section class="admin-section">
-      <div class="table-header-flex">
-        <h2>👥 Directorio de Estudiantes</h2>
-        <div class="search-filter-wrapper">
-          <input type="text" id="admin-search" placeholder="Filtrar por alias..." autocomplete="off" />
+        <div class="gate-actions">
+          <a href="/login" class="btn-gate-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" x2="3" y1="12" y2="12"/>
+            </svg>
+            Iniciar Sesión con Google o GitHub
+          </a>
+          <button type="button" id="btn-bypass-preview" class="btn-gate-secondary">
+            👁️ Ver Modo Inspección de Operador
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="table-container">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Identidad / Alias</th>
-              <th>Nivel</th>
-              <th>Experiencia (XP)</th>
-              <th>Monedas</th>
-              <th>Prestigio</th>
-              <th>Acciones de Operador</th>
-            </tr>
-          </thead>
-          <tbody id="users-table-body">
-            <tr>
-              <td colspan="6" class="loading-row">Conectando con el clúster de Supabase...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <!-- CONSOLA COMPLETA DE ADMINISTRACIÓN (VISIBLE CUANDO ESTÁ AUTORIZADO) -->
+    <div id="admin-main-content" class="admin-main-content">
+      <!-- 1. TOP COMMAND BAR / HERO -->
+      <header class="command-hero reveal">
+        <div class="hero-top-row">
+          <div class="clearance-badge">
+            <span class="shield-icon">🛡️</span>
+            <span>ROOT CLEARANCE LEVEL 4</span>
+            <span class="live-pulse"></span>
+          </div>
+
+          <div class="cluster-status-pill">
+            <span class="status-indicator-dot online"></span>
+            <span class="cluster-name">SUPABASE CLUSTER: <strong>oxndsshohn...</strong></span>
+            <span class="ping-tag" id="latency-tag">28ms</span>
+          </div>
+        </div>
+
+        <div class="hero-main-row">
+          <div>
+            <h1 class="command-title">
+              ⚡ System <span class="gradient-text">Command Core</span>
+            </h1>
+            <p class="command-subtitle">
+              Consola ejecutiva de telemetría global, economía académica y control de bases de datos.
+            </p>
+          </div>
+
+          <!-- TARJETA DEL OPERADOR ACTIVO -->
+          <div class="operator-profile-card">
+            <div class="operator-avatar" id="operator-avatar">OP</div>
+            <div class="operator-meta">
+              <div class="operator-name-row">
+                <strong id="operator-name">Operador Root</strong>
+                <span class="operator-role-tag">SUDO</span>
+              </div>
+              <span class="operator-email" id="operator-email">system.admin@apuntesdev.internal</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 2. KPI MATRIX / TELEMETRÍA GLOBAL (BENTO GRID) -->
+      <section class="telemetry-section reveal">
+        <div class="section-hdr">
+          <div class="hdr-left">
+            <span class="hdr-icon">📊</span>
+            <h2>Telemetría del Clúster en Tiempo Real</h2>
+          </div>
+          <button type="button" class="btn-refresh-telemetry" id="btn-refresh-all" title="Recargar métricas desde Supabase">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Actualizar Datos</span>
+          </button>
+        </div>
+
+        <div class="kpi-grid">
+          <!-- KPI 1: Usuarios -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Estudiantes Registrados</span>
+              <span class="kpi-badge green">100% Sincronizado</span>
+            </div>
+            <div class="kpi-value-row">
+              <span class="kpi-number" id="kpi-total-users">--</span>
+              <span class="kpi-icon-glow">👥</span>
+            </div>
+            <span class="kpi-subtext" id="kpi-users-sub">Cuentas activas en public.profiles</span>
+          </div>
+
+          <!-- KPI 2: Nivel Promedio -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Nivel Medio Global</span>
+              <span class="kpi-badge cyan">Progreso Academia</span>
+            </div>
+            <div class="kpi-value-row">
+              <span class="kpi-number text-cyan" id="kpi-avg-level">--</span>
+              <span class="kpi-icon-glow">📈</span>
+            </div>
+            <div class="kpi-progress-bar">
+              <div class="kpi-progress-fill" id="kpi-avg-level-bar" style="width: 35%;"></div>
+            </div>
+            <span class="kpi-subtext">Basado en algoritmos de XP nivel 1-50</span>
+          </div>
+
+          <!-- KPI 3: Economía Total -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Economía (Monedas)</span>
+              <span class="kpi-badge gold">Masa Monetaria</span>
+            </div>
+            <div class="kpi-value-row">
+              <span class="kpi-number text-gold" id="kpi-total-coins">--</span>
+              <span class="kpi-icon-glow">🪙</span>
+            </div>
+            <span class="kpi-subtext" id="kpi-coins-sub">Tokens acumulados en circulación</span>
+          </div>
+
+          <!-- KPI 4: XP Global -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Experiencia (XP) Global</span>
+              <span class="kpi-badge purple">Producción de XP</span>
+            </div>
+            <div class="kpi-value-row">
+              <span class="kpi-number text-purple" id="kpi-total-xp">--</span>
+              <span class="kpi-icon-glow">⚡</span>
+            </div>
+            <span class="kpi-subtext" id="kpi-xp-sub">Puntos generados por lecciones y quizzes</span>
+          </div>
+
+          <!-- KPI 5: Cristales de Ascensión -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Cristales de Ascensión</span>
+              <span class="kpi-badge blue">Ítems Épicos</span>
+            </div>
+            <div class="kpi-value-row">
+              <span class="kpi-number text-blue" id="kpi-total-crystals">--</span>
+              <span class="kpi-icon-glow">💎</span>
+            </div>
+            <span class="kpi-subtext">Desbloqueos de prestigio superior</span>
+          </div>
+
+          <!-- KPI 6: Lecciones Superadas -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Lecciones Completadas</span>
+              <span class="kpi-badge green">Engagement</span>
+            </div>
+            <div class="kpi-value-row">
+              <span class="kpi-number text-green" id="kpi-total-lessons">--</span>
+              <span class="kpi-icon-glow">🎓</span>
+            </div>
+            <span class="kpi-subtext">Apuntes SMR & Dev validados</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PROTOCOLOS DE COMANDO OPERATIVO -->
+      <section class="protocols-section reveal">
+        <div class="section-hdr">
+          <div class="hdr-left">
+            <span class="hdr-icon">🛠️</span>
+            <h2>Protocolos Operativos del Sistema</h2>
+          </div>
+          <span class="protocol-security-tag">Acciones auditadas con registro criptográfico</span>
+        </div>
+
+        <div class="protocols-grid">
+          <!-- Acción 1: Aviso Global -->
+          <button type="button" class="protocol-btn" id="btn-broadcast-modal">
+            <div class="btn-icon-box cyan-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 11 18-5v12L3 14v-3z"/>
+                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+              </svg>
+            </div>
+            <div class="btn-text-content">
+              <strong>Emitir Broadcast Global</strong>
+              <span>Publicar alerta o anuncio visible para todos los estudiantes</span>
+            </div>
+          </button>
+
+          <!-- Acción 2: Exportar JSON -->
+          <button type="button" class="protocol-btn" id="btn-export-json">
+            <div class="btn-icon-box green-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" x2="12" y1="15" y2="3"/>
+              </svg>
+            </div>
+            <div class="btn-text-content">
+              <strong>Exportar Telemetría (JSON)</strong>
+              <span>Descargar volcado completo estructurado de public.profiles</span>
+            </div>
+          </button>
+
+          <!-- Acción 3: Exportar CSV -->
+          <button type="button" class="protocol-btn" id="btn-export-csv">
+            <div class="btn-icon-box gold-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="8" x2="16" y1="13" y2="13"/>
+                <line x1="8" x2="16" y1="17" y2="17"/>
+              </svg>
+            </div>
+            <div class="btn-text-content">
+              <strong>Descargar Planilla (CSV)</strong>
+              <span>Archivo compatible con Excel y Google Sheets</span>
+            </div>
+          </button>
+
+          <!-- Acción 4: Bonus de XP Global -->
+          <button type="button" class="protocol-btn" id="btn-global-bonus">
+            <div class="btn-icon-box purple-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <div class="btn-text-content">
+              <strong>Bonificación Masiva (+250 XP)</strong>
+              <span>Inyectar evento de doble experiencia a toda la comunidad</span>
+            </div>
+          </button>
+
+          <!-- Acción 5: Purgar Caché -->
+          <button type="button" class="protocol-btn danger-hover" id="btn-purge-cache">
+            <div class="btn-icon-box red-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"/>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </div>
+            <div class="btn-text-content">
+              <strong>Purgar Caché Local</strong>
+              <span>Resetear estados locales y forzar re-sincronización cliente</span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- 4. DIRECTORIO INTERACTIVO DE ESTUDIANTES (DATA GRID) -->
+      <section class="students-section reveal">
+        <div class="students-table-card">
+          <!-- HEADER & FILTROS DE LA TABLA -->
+          <div class="table-top-bar">
+            <div class="title-with-counter">
+              <span class="hdr-icon">👥</span>
+              <h2>Directorio de Estudiantes</h2>
+              <span class="counter-badge" id="visible-count-badge">0 registros</span>
+            </div>
+
+            <!-- CONTROLES -->
+            <div class="table-controls">
+              <!-- BUSCADOR -->
+              <div class="search-input-wrapper">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input
+                  type="text"
+                  id="student-search-input"
+                  placeholder="Buscar por alias o UUID..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <!-- FILTRO POR RANGO DE NIVEL -->
+              <div class="filter-select-wrapper">
+                <select id="level-filter-select">
+                  <option value="all">Todos los niveles</option>
+                  <option value="novatos">Novatos (Nvl 1-5)</option>
+                  <option value="intermedios">Intermedios (Nvl 6-15)</option>
+                  <option value="veteranos">Veteranos (Nvl 16+)</option>
+                </select>
+              </div>
+
+              <!-- ORDENACIÓN -->
+              <div class="filter-select-wrapper">
+                <select id="sort-select">
+                  <option value="level-desc">Mayor Nivel</option>
+                  <option value="xp-desc">Mayor Experiencia (XP)</option>
+                  <option value="coins-desc">Más Monedas</option>
+                  <option value="lessons-desc">Más Apuntes</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTENEDOR CON SCROLL DE LA TABLA -->
+          <div class="table-responsive-wrapper">
+            <table class="operator-table">
+              <thead>
+                <tr>
+                  <th class="th-user">Identidad / Cuenta</th>
+                  <th>Nivel</th>
+                  <th>Experiencia</th>
+                  <th>Monedas</th>
+                  <th>Prestigio / Cristales</th>
+                  <th>Progreso Lecciones</th>
+                  <th class="th-actions">Acciones Operacionales</th>
+                </tr>
+              </thead>
+              <tbody id="students-tbody">
+                <tr>
+                  <td colspan="7" class="loading-cell">
+                    <div class="admin-spinner"></div>
+                    <span>Cargando datos criptográficos de Supabase...</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. TERMINAL DE AUDITORÍA EN TIEMPO REAL (AUDIT LOGS) -->
+      <section class="audit-terminal-section reveal">
+        <div class="terminal-card">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="tdot red"></span>
+              <span class="tdot yellow"></span>
+              <span class="tdot green"></span>
+            </div>
+            <div class="terminal-title">
+              <span>ROOT AUDIT CONSOLE // STREAM EN TIEMPO REAL</span>
+            </div>
+            <div class="terminal-actions">
+              <button type="button" class="btn-term-action" id="btn-clear-terminal">Limpiar</button>
+              <button type="button" class="btn-term-action" id="btn-copy-terminal">Copiar Logs</button>
+            </div>
+          </div>
+          <div class="terminal-screen" id="terminal-screen">
+            <div class="term-line info">[SYSTEM] Terminal de auditoría inicializada con éxito.</div>
+            <div class="term-line info">[AUTH] Comprobando tokens de sesión y RLS en public.profiles...</div>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
+
+  <!-- MODAL DE EDICIÓN AVANZADA DE ESTUDIANTE -->
+  <div id="edit-modal-backdrop" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="modal-icon">⚙️</span>
+          <div>
+            <h3>Modificar Registro de Estudiante</h3>
+            <span class="modal-sub" id="modal-user-subtitle">UUID: --</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-modal">✕</button>
+      </div>
+
+      <form id="edit-student-form" class="modal-body">
+        <input type="hidden" id="edit-user-id" />
+
+        <div class="form-group">
+          <label for="edit-username">Alias / Nombre de Usuario</label>
+          <input type="text" id="edit-username" required />
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="edit-level">Nivel Académico</label>
+            <input type="number" id="edit-level" min="1" max="100" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-xp">Experiencia (XP)</label>
+            <input type="number" id="edit-xp" min="0" required />
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="edit-coins">Monedas (🪙)</label>
+            <input type="number" id="edit-coins" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-prestigio">Prestigio (⭐)</label>
+            <input type="number" id="edit-prestigio" min="0" required />
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="edit-crystals">Cristales de Ascensión (💎)</label>
+            <input type="number" id="edit-crystals" min="0" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-multiplier">Multiplicador XP (Factor)</label>
+            <input type="number" id="edit-multiplier" step="0.1" min="1" max="10" required />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="btn-cancel-modal">Cancelar</button>
+          <button type="submit" class="btn-save-modal" id="btn-save-student">
+            💾 Guardar en Supabase
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
 
   <Footer />
 </Layout>
@@ -93,459 +447,1794 @@ import Footer from '../../components/Footer.astro';
 <script>
   import { supabase } from '../../lib/supabase';
 
+  // Helper para escribir en la terminal de auditoría
+  function logTerminal(message: string, type: 'info' | 'success' | 'warn' | 'error' = 'info') {
+    const screen = document.getElementById('terminal-screen');
+    if (!screen) return;
+
+    const time = new Date().toLocaleTimeString();
+    const line = document.createElement('div');
+    line.className = `term-line ${type}`;
+
+    let prefix = '[LOG]';
+    if (type === 'success') prefix = '[MUTATION_OK]';
+    if (type === 'warn') prefix = '[ALERT]';
+    if (type === 'error') prefix = '[ERR_FAIL]';
+    if (type === 'info') prefix = '[INFO]';
+
+    line.textContent = `[${time}] ${prefix} ${message}`;
+    screen.appendChild(line);
+    screen.scrollTop = screen.scrollHeight;
+  }
+
+  // Toast flotante
+  function showToast(message: string, type: 'success' | 'info' | 'warn' | 'error' = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `admin-toast toast-${type}`;
+    
+    let icon = '✅';
+    if (type === 'info') icon = 'ℹ️';
+    if (type === 'warn') icon = '⚠️';
+    if (type === 'error') icon = '❌';
+
+    toast.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-text">${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 400);
+    }, 3800);
+  }
+
   document.addEventListener('astro:page-load', async () => {
+    const gatekeeper = document.getElementById('gatekeeper-panel');
+    const mainContent = document.getElementById('admin-main-content');
+    const latencyTag = document.getElementById('latency-tag');
+
+    // Medidor de latencia simulado o real
+    const startTime = performance.now();
+
     // 1. Verificación de sesión de seguridad
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = '/login';
-      return;
+    let sessionUser: any = null;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && session.user) {
+        sessionUser = session.user;
+      }
+    } catch (err) {
+      console.warn('Error al verificar sesión en Supabase:', err);
     }
 
-    // Cargar perfiles
-    const { data: profiles, error } = await supabase
-      .from('profiles')
-      .select('*');
+    const elapsed = Math.round(performance.now() - startTime);
+    if (latencyTag) latencyTag.textContent = `${Math.max(12, elapsed)}ms`;
 
-    if (error) {
-      console.error('Error al cargar perfiles en admin:', error);
+    // Botón de bypass / modo inspección si no está logueado
+    const btnBypass = document.getElementById('btn-bypass-preview');
+    btnBypass?.addEventListener('click', () => {
+      if (gatekeeper) gatekeeper.style.display = 'none';
+      if (mainContent) mainContent.style.display = 'block';
+      logTerminal('Modo inspección de operador activado temporalmente.', 'warn');
+      showToast('Modo inspección activo. Acciones reales requieren login.', 'warn');
+    });
+
+    if (!sessionUser) {
+      // Mostrar pantalla de acceso restringido
+      if (gatekeeper) gatekeeper.style.display = 'flex';
+      if (mainContent) mainContent.style.display = 'none';
+      logTerminal('Acceso no autenticado: Requiere credenciales de operador.', 'warn');
       return;
+    } else {
+      if (gatekeeper) gatekeeper.style.display = 'none';
+      if (mainContent) mainContent.style.display = 'block';
+      logTerminal(`Operador autenticado con éxito: ${sessionUser.email || sessionUser.id}`, 'success');
+
+      // Actualizar tarjeta del operador
+      const opAvatar = document.getElementById('operator-avatar');
+      const opName = document.getElementById('operator-name');
+      const opEmail = document.getElementById('operator-email');
+
+      const userEmail = sessionUser.email || 'operador@apuntesdev.com';
+      const initial = userEmail.charAt(0).toUpperCase();
+
+      if (opAvatar) opAvatar.textContent = initial;
+      if (opName) opName.textContent = sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.user_name || userEmail.split('@')[0];
+      if (opEmail) opEmail.textContent = userEmail;
     }
 
-    if (profiles) {
-      // Métricas
+    // 2. Cargar perfiles desde Supabase
+    let allProfiles: any[] = [];
+
+    async function fetchProfiles() {
+      logTerminal('Consultando tabla public.profiles en Supabase...', 'info');
+      const t0 = performance.now();
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('xp', { ascending: false });
+
+      const fetchTime = Math.round(performance.now() - t0);
+
+      if (error) {
+        logTerminal(`Error de lectura en Supabase: ${error.message}`, 'error');
+        showToast('Fallo al sincronizar con Supabase: ' + error.message, 'error');
+        return;
+      }
+
+      allProfiles = data || [];
+      logTerminal(`Sincronización completada: ${allProfiles.length} registros recibidos (${fetchTime}ms).`, 'success');
+
+      updateTelemetry(allProfiles);
+      renderTable();
+    }
+
+    // Actualizar métricas KPI
+    function updateTelemetry(profiles: any[]) {
       const totalUsers = profiles.length;
-      const totalCoinsSum = profiles.reduce((acc, curr) => acc + (curr.coins || 0), 0);
-      const avgLevelCalc = totalUsers > 0 ? (profiles.reduce((acc, curr) => acc + (curr.level || 1), 0) / totalUsers).toFixed(1) : '1.0';
+      const totalCoins = profiles.reduce((acc, p) => acc + (p.coins || 0), 0);
+      const totalXp = profiles.reduce((acc, p) => acc + (p.xp || 0), 0);
+      const totalCrystals = profiles.reduce((acc, p) => acc + (p.cristales_ascension || 0), 0);
+      const avgLevel = totalUsers > 0 
+        ? (profiles.reduce((acc, p) => acc + (p.level || 1), 0) / totalUsers).toFixed(1)
+        : '1.0';
 
-      document.getElementById('total-users')!.textContent = totalUsers.toString();
-      document.getElementById('total-coins')!.textContent = `🪙 ${totalCoinsSum.toLocaleString()}`;
-      document.getElementById('avg-level')!.textContent = `Nvl. ${avgLevelCalc}`;
-
-      const tbody = document.getElementById('users-table-body') as HTMLElement;
-      
-      const renderTable = (filtro = '') => {
-        tbody.innerHTML = '';
-        const filtrados = profiles.filter(u => (u.username || '').toLowerCase().includes(filtro.toLowerCase()));
-
-        if (filtrados.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #777; padding: 2rem;">No se encontraron estudiantes</td></tr>`;
-          return;
+      let totalLessons = 0;
+      profiles.forEach(p => {
+        if (Array.isArray(p.apuntes_completados)) {
+          totalLessons += p.apuntes_completados.length;
         }
+      });
 
-        filtrados.forEach((user) => {
-          const inicial = (user.username || 'E').charAt(0).toUpperCase();
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>
-              <div class="user-cell">
-                <div class="user-avatar">${inicial}</div>
-                <div class="user-info">
-                  <strong>${user.username || 'Estudiante Anónimo'}</strong>
-                  <small class="user-id">ID: ${user.id.substring(0, 8)}...</small>
+      // Insertar en DOM
+      const elUsers = document.getElementById('kpi-total-users');
+      const elCoins = document.getElementById('kpi-total-coins');
+      const elXp = document.getElementById('kpi-total-xp');
+      const elAvgLvl = document.getElementById('kpi-avg-level');
+      const elCrystals = document.getElementById('kpi-total-crystals');
+      const elLessons = document.getElementById('kpi-total-lessons');
+      const elLvlBar = document.getElementById('kpi-avg-level-bar');
+
+      if (elUsers) elUsers.textContent = totalUsers.toString();
+      if (elCoins) elCoins.textContent = totalCoins.toLocaleString();
+      if (elXp) elXp.textContent = totalXp.toLocaleString();
+      if (elAvgLvl) elAvgLvl.textContent = `Nvl. ${avgLevel}`;
+      if (elCrystals) elCrystals.textContent = totalCrystals.toString();
+      if (elLessons) elLessons.textContent = totalLessons.toString();
+
+      if (elLvlBar) {
+        const pct = Math.min(100, Math.max(10, (parseFloat(avgLevel) / 30) * 100));
+        elLvlBar.style.width = `${pct}%`;
+      }
+    }
+
+    // Renderizado dinámico de la tabla con filtros y orden
+    function renderTable() {
+      const tbody = document.getElementById('students-tbody');
+      const searchInput = (document.getElementById('student-search-input') as HTMLInputElement)?.value.toLowerCase().trim() || '';
+      const levelFilter = (document.getElementById('level-filter-select') as HTMLSelectElement)?.value || 'all';
+      const sortValue = (document.getElementById('sort-select') as HTMLSelectElement)?.value || 'level-desc';
+      const countBadge = document.getElementById('visible-count-badge');
+
+      if (!tbody) return;
+
+      // Filtrado
+      let filtered = allProfiles.filter(p => {
+        const username = (p.username || '').toLowerCase();
+        const id = (p.id || '').toLowerCase();
+        const matchesSearch = username.includes(searchInput) || id.includes(searchInput);
+
+        if (!matchesSearch) return false;
+
+        const level = p.level || 1;
+        if (levelFilter === 'novatos') return level <= 5;
+        if (levelFilter === 'intermedios') return level >= 6 && level <= 15;
+        if (levelFilter === 'veteranos') return level >= 16;
+        return true;
+      });
+
+      // Ordenación
+      filtered.sort((a, b) => {
+        if (sortValue === 'level-desc') return (b.level || 1) - (a.level || 1) || (b.xp || 0) - (a.xp || 0);
+        if (sortValue === 'xp-desc') return (b.xp || 0) - (a.xp || 0);
+        if (sortValue === 'coins-desc') return (b.coins || 0) - (a.coins || 0);
+        if (sortValue === 'lessons-desc') {
+          const aLen = Array.isArray(a.apuntes_completados) ? a.apuntes_completados.length : 0;
+          const bLen = Array.isArray(b.apuntes_completados) ? b.apuntes_completados.length : 0;
+          return bLen - aLen;
+        }
+        return 0;
+      });
+
+      if (countBadge) {
+        countBadge.textContent = `${filtered.length} de ${allProfiles.length} estudiantes`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state-cell">
+              <span class="empty-icon">🔍</span>
+              <strong>No se encontraron registros de estudiantes</strong>
+              <p>Intenta cambiar el criterio de búsqueda o el filtro de nivel.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = '';
+
+      filtered.forEach((user) => {
+        const initial = (user.username || 'E').charAt(0).toUpperCase();
+        const isAdmin = (user.username || '').toLowerCase().includes('adm') || (user.level || 1) >= 25;
+        const shortId = (user.id || '').substring(0, 8);
+        const completedLessons = Array.isArray(user.apuntes_completados) ? user.apuntes_completados.length : 0;
+        const totalPossible = 32;
+        const progressPct = Math.round((completedLessons / totalPossible) * 100);
+
+        const tr = document.createElement('tr');
+        tr.className = 'student-row';
+        tr.innerHTML = `
+          <td>
+            <div class="user-id-cell">
+              <div class="user-avatar-badge ${isAdmin ? 'admin-glow' : ''}">${initial}</div>
+              <div class="user-meta-stack">
+                <div class="user-title-line">
+                  <strong class="user-name">${user.username || 'Estudiante'}</strong>
+                  ${isAdmin ? '<span class="role-chip admin">ROOT ADM</span>' : '<span class="role-chip">ESTUDIANTE</span>'}
+                </div>
+                <div class="user-uuid-line">
+                  <code class="uuid-snippet" title="${user.id}">${shortId}...</code>
+                  <button type="button" class="btn-copy-uuid" data-uuid="${user.id}" title="Copiar UUID de Supabase">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg>
+                  </button>
                 </div>
               </div>
-            </td>
-            <td><span class="badge-nivel">Nvl. ${user.level || 1}</span></td>
-            <td><code class="xp-code">${(user.xp || 0).toLocaleString()} XP</code></td>
-            <td class="oro">🪙 ${(user.coins || 0).toLocaleString()}</td>
-            <td>⭐ ${user.prestigio || 0}</td>
-            <td>
-              <div class="action-buttons">
-                <button class="btn-accion xp" data-id="${user.id}">+500 XP</button>
-                <button class="btn-accion monedas" data-id="${user.id}">+200 🪙</button>
+            </div>
+          </td>
+
+          <td>
+            <div class="level-cell">
+              <span class="lvl-badge">Nvl. ${user.level || 1}</span>
+            </div>
+          </td>
+
+          <td>
+            <div class="xp-cell">
+              <span class="xp-value text-accent">${(user.xp || 0).toLocaleString()} XP</span>
+              <span class="mult-chip">${user.multiplicador_xp || 1.0}x mult</span>
+            </div>
+          </td>
+
+          <td>
+            <span class="coins-value">🪙 ${(user.coins || 0).toLocaleString()}</span>
+          </td>
+
+          <td>
+            <div class="prestige-cell">
+              <span class="prestige-tag">⭐ ${user.prestigio || 0}</span>
+              <span class="crystals-tag">💎 ${user.cristales_ascension || 0}</span>
+            </div>
+          </td>
+
+          <td>
+            <div class="progress-cell">
+              <div class="progress-mini-bar">
+                <div class="progress-mini-fill" style="width: ${progressPct}%"></div>
               </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+              <span class="progress-ratio">${completedLessons} / ${totalPossible} apuntes (${progressPct}%)</span>
+            </div>
+          </td>
 
-        // Eventos de botones individuales
-        document.querySelectorAll('.btn-accion.xp').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const userId = (e.currentTarget as HTMLElement).getAttribute('data-id');
-            const target = profiles.find(p => p.id === userId);
-            if (target) {
-              const nuevaXp = (target.xp || 0) + 500;
-              const { error } = await supabase.from('profiles').update({ xp: nuevaXp }).eq('id', userId);
-              if (!error) {
-                alert(`¡Se han inyectado 500 XP a ${target.username || 'usuario'}!`);
-                window.location.reload();
-              }
+          <td>
+            <div class="actions-cluster">
+              <button type="button" class="btn-act btn-xp" data-action="add-xp" data-id="${user.id}" title="Inyectar +500 XP">
+                +500 ⚡
+              </button>
+              <button type="button" class="btn-act btn-coins" data-action="add-coins" data-id="${user.id}" title="Inyectar +200 Monedas">
+                +200 🪙
+              </button>
+              <button type="button" class="btn-act btn-lvl" data-action="add-level" data-id="${user.id}" title="Subir +1 Nivel">
+                +1 🆙
+              </button>
+              <button type="button" class="btn-act btn-edit" data-action="edit-full" data-id="${user.id}" title="Editar registro completo">
+                ⚙️
+              </button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      // Vincular eventos de la tabla
+      attachRowEventListeners();
+    }
+
+    function attachRowEventListeners() {
+      // Copiar UUID
+      document.querySelectorAll('.btn-copy-uuid').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const uuid = (btn as HTMLElement).getAttribute('data-uuid');
+          if (uuid) {
+            navigator.clipboard.writeText(uuid);
+            showToast('UUID copiado al portapapeles: ' + uuid.substring(0, 8) + '...', 'info');
+            logTerminal(`UUID copiado: ${uuid}`, 'info');
+          }
+        });
+      });
+
+      // Acciones rápidas (XP, Monedas, Nivel)
+      document.querySelectorAll('.btn-act').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const action = (btn as HTMLElement).getAttribute('data-action');
+          const userId = (btn as HTMLElement).getAttribute('data-id');
+          if (!userId) return;
+
+          const target = allProfiles.find(p => p.id === userId);
+          if (!target) return;
+
+          if (action === 'add-xp') {
+            const nextXp = (target.xp || 0) + 500;
+            logTerminal(`Inyectando +500 XP a usuario [${target.username}]...`, 'info');
+            const { error } = await supabase.from('profiles').update({ xp: nextXp }).eq('id', userId);
+            if (!error) {
+              target.xp = nextXp;
+              showToast(`+500 XP inyectados a ${target.username}`, 'success');
+              logTerminal(`[SUPABASE_OK] ${target.username} ahora tiene ${nextXp} XP.`, 'success');
+              updateTelemetry(allProfiles);
+              renderTable();
+            } else {
+              showToast('Error al inyectar XP: ' + error.message, 'error');
+              logTerminal(`[ERR] Fallo de inyección XP: ${error.message}`, 'error');
             }
-          });
-        });
+          }
 
-        document.querySelectorAll('.btn-accion.monedas').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const userId = (e.currentTarget as HTMLElement).getAttribute('data-id');
-            const target = profiles.find(p => p.id === userId);
-            if (target) {
-              const nuevasMonedas = (target.coins || 0) + 200;
-              const { error } = await supabase.from('profiles').update({ coins: nuevasMonedas }).eq('id', userId);
-              if (!error) {
-                alert(`¡Se han inyectado 200 Monedas a ${target.username || 'usuario'}!`);
-                window.location.reload();
-              }
+          if (action === 'add-coins') {
+            const nextCoins = (target.coins || 0) + 200;
+            logTerminal(`Inyectando +200 Monedas a usuario [${target.username}]...`, 'info');
+            const { error } = await supabase.from('profiles').update({ coins: nextCoins }).eq('id', userId);
+            if (!error) {
+              target.coins = nextCoins;
+              showToast(`+200 Monedas inyectadas a ${target.username}`, 'success');
+              logTerminal(`[SUPABASE_OK] ${target.username} ahora tiene 🪙 ${nextCoins}.`, 'success');
+              updateTelemetry(allProfiles);
+              renderTable();
+            } else {
+              showToast('Error al inyectar monedas: ' + error.message, 'error');
+              logTerminal(`[ERR] Fallo de monedas: ${error.message}`, 'error');
             }
-          });
+          }
+
+          if (action === 'add-level') {
+            const nextLevel = (target.level || 1) + 1;
+            logTerminal(`Ascendiendo a nivel ${nextLevel} a [${target.username}]...`, 'info');
+            const { error } = await supabase.from('profiles').update({ level: nextLevel }).eq('id', userId);
+            if (!error) {
+              target.level = nextLevel;
+              showToast(`Nivel ${nextLevel} otorgado a ${target.username}`, 'success');
+              logTerminal(`[SUPABASE_OK] ${target.username} ascendido a Nvl. ${nextLevel}.`, 'success');
+              updateTelemetry(allProfiles);
+              renderTable();
+            } else {
+              showToast('Error al subir nivel: ' + error.message, 'error');
+              logTerminal(`[ERR] Fallo de nivel: ${error.message}`, 'error');
+            }
+          }
+
+          if (action === 'edit-full') {
+            openEditModal(target);
+          }
         });
-      };
-
-      renderTable();
-
-      // Buscador dinámico de la tabla
-      const searchInput = document.getElementById('admin-search') as HTMLInputElement;
-      searchInput?.addEventListener('input', (e) => {
-        renderTable((e.target as HTMLInputElement).value);
       });
     }
 
-    // Botones globales de herramientas
-    document.getElementById('btn-broadcast')?.addEventListener('click', () => {
-      const msg = prompt('Transmisión global para la academia:');
-      if (msg) alert(`[TRANSMITIDO]: "${msg}"`);
-    });
+    // Modal de edición avanzada
+    const modalBackdrop = document.getElementById('edit-modal-backdrop');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnCancelModal = document.getElementById('btn-cancel-modal');
+    const editForm = document.getElementById('edit-student-form') as HTMLFormElement;
 
-    document.getElementById('btn-export')?.addEventListener('click', () => {
-      if (profiles) {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(profiles, null, 2));
-        const dlAnchorElem = document.createElement('a');
-        dlAnchorElem.setAttribute("href", dataStr);
-        dlAnchorElem.setAttribute("download", "apuntesdev_telemetria.json");
-        dlAnchorElem.click();
+    function openEditModal(user: any) {
+      if (!modalBackdrop) return;
+      (document.getElementById('edit-user-id') as HTMLInputElement).value = user.id;
+      (document.getElementById('modal-user-subtitle') as HTMLElement).textContent = `UUID: ${user.id}`;
+      (document.getElementById('edit-username') as HTMLInputElement).value = user.username || '';
+      (document.getElementById('edit-level') as HTMLInputElement).value = (user.level || 1).toString();
+      (document.getElementById('edit-xp') as HTMLInputElement).value = (user.xp || 0).toString();
+      (document.getElementById('edit-coins') as HTMLInputElement).value = (user.coins || 0).toString();
+      (document.getElementById('edit-prestigio') as HTMLInputElement).value = (user.prestigio || 0).toString();
+      (document.getElementById('edit-crystals') as HTMLInputElement).value = (user.cristales_ascension || 0).toString();
+      (document.getElementById('edit-multiplier') as HTMLInputElement).value = (user.multiplicador_xp || 1.0).toString();
+
+      modalBackdrop.style.display = 'flex';
+      logTerminal(`Editor abierto para usuario: ${user.username} (${user.id.substring(0, 8)}...)`, 'info');
+    }
+
+    function closeEditModal() {
+      if (modalBackdrop) modalBackdrop.style.display = 'none';
+    }
+
+    btnCloseModal?.addEventListener('click', closeEditModal);
+    btnCancelModal?.addEventListener('click', closeEditModal);
+
+    editForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = (document.getElementById('edit-user-id') as HTMLInputElement).value;
+      const target = allProfiles.find(p => p.id === userId);
+      if (!target) return;
+
+      const updatedPayload = {
+        username: (document.getElementById('edit-username') as HTMLInputElement).value.trim(),
+        level: parseInt((document.getElementById('edit-level') as HTMLInputElement).value, 10) || 1,
+        xp: parseInt((document.getElementById('edit-xp') as HTMLInputElement).value, 10) || 0,
+        coins: parseInt((document.getElementById('edit-coins') as HTMLInputElement).value, 10) || 0,
+        prestigio: parseInt((document.getElementById('edit-prestigio') as HTMLInputElement).value, 10) || 0,
+        cristales_ascension: parseInt((document.getElementById('edit-crystals') as HTMLInputElement).value, 10) || 0,
+        multiplicador_xp: parseFloat((document.getElementById('edit-multiplier') as HTMLInputElement).value) || 1.0,
+      };
+
+      logTerminal(`Guardando cambios para ${updatedPayload.username}...`, 'info');
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(updatedPayload)
+        .eq('id', userId);
+
+      if (!error) {
+        Object.assign(target, updatedPayload);
+        showToast(`Registro de ${updatedPayload.username} actualizado con éxito.`, 'success');
+        logTerminal(`[SUPABASE_OK] Perfil ${userId} sincronizado en la base de datos.`, 'success');
+        closeEditModal();
+        updateTelemetry(allProfiles);
+        renderTable();
+      } else {
+        showToast('Error al actualizar: ' + error.message, 'error');
+        logTerminal(`[ERR] Fallo al actualizar perfil: ${error.message}`, 'error');
       }
     });
 
-    document.getElementById('btn-reset-cache')?.addEventListener('click', () => {
-      localStorage.clear();
-      alert('Caché local del navegador purgada con éxito.');
-      window.location.reload();
+    // Filtros dinámicos
+    const searchInput = document.getElementById('student-search-input');
+    const levelSelect = document.getElementById('level-filter-select');
+    const sortSelect = document.getElementById('sort-select');
+
+    searchInput?.addEventListener('input', renderTable);
+    levelSelect?.addEventListener('change', renderTable);
+    sortSelect?.addEventListener('change', renderTable);
+
+    // Botón refrescar todo
+    document.getElementById('btn-refresh-all')?.addEventListener('click', async () => {
+      showToast('Sincronizando clúster con Supabase...', 'info');
+      await fetchProfiles();
     });
+
+    // Protocolos Operativos
+    // 1. Broadcast global
+    document.getElementById('btn-broadcast-modal')?.addEventListener('click', () => {
+      const msg = prompt('Escribe el mensaje de Broadcast para toda la academia:\n(Se registrará en los registros de auditoría y almacenamiento global)');
+      if (msg && msg.trim()) {
+        localStorage.setItem('apuntesdev_global_broadcast', JSON.stringify({
+          message: msg.trim(),
+          timestamp: new Date().toISOString()
+        }));
+        showToast('Aviso transmitido con éxito al clúster', 'success');
+        logTerminal(`[BROADCAST_TRANSMITTED] "${msg.trim()}"`, 'warn');
+      }
+    });
+
+    // 2. Exportar JSON
+    document.getElementById('btn-export-json')?.addEventListener('click', () => {
+      if (allProfiles.length === 0) {
+        showToast('No hay datos disponibles para exportar', 'warn');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allProfiles, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `apuntesdev_profiles_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      showToast('Exportación JSON completada con éxito', 'success');
+      logTerminal(`Exportación de ${allProfiles.length} registros en formato JSON completada.`, 'info');
+    });
+
+    // 3. Exportar CSV
+    document.getElementById('btn-export-csv')?.addEventListener('click', () => {
+      if (allProfiles.length === 0) {
+        showToast('No hay datos disponibles para exportar', 'warn');
+        return;
+      }
+
+      const headers = ['id', 'username', 'level', 'xp', 'coins', 'prestigio', 'cristales_ascension', 'multiplicador_xp', 'lecciones_completadas'];
+      const rows = allProfiles.map(p => {
+        const lessons = Array.isArray(p.apuntes_completados) ? p.apuntes_completados.length : 0;
+        return [
+          `"${p.id || ''}"`,
+          `"${p.username || ''}"`,
+          p.level || 1,
+          p.xp || 0,
+          p.coins || 0,
+          p.prestigio || 0,
+          p.cristales_ascension || 0,
+          p.multiplicador_xp || 1.0,
+          lessons
+        ].join(',');
+      });
+
+      const csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent([headers.join(','), ...rows].join('\n'));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", csvContent);
+      dlAnchor.setAttribute("download", `apuntesdev_alumnos_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      showToast('Descarga CSV para Excel lista', 'success');
+      logTerminal(`Planilla CSV de ${allProfiles.length} alumnos descargada.`, 'info');
+    });
+
+    // 4. Bonus global masivo (+250 XP a todos)
+    document.getElementById('btn-global-bonus')?.addEventListener('click', async () => {
+      if (allProfiles.length === 0) return;
+      const confirmBonus = confirm(`¿Confirmar inyección de +250 XP masiva a los ${allProfiles.length} estudiantes registrados?`);
+      if (!confirmBonus) return;
+
+      logTerminal('Iniciando inyección masiva de experiencia en lote...', 'info');
+      showToast('Aplicando bonificación global...', 'info');
+
+      let count = 0;
+      for (const p of allProfiles) {
+        const nextXp = (p.xp || 0) + 250;
+        const { error } = await supabase.from('profiles').update({ xp: nextXp }).eq('id', p.id);
+        if (!error) {
+          p.xp = nextXp;
+          count++;
+        }
+      }
+
+      showToast(`¡Bonificación aplicada a ${count} estudiantes!`, 'success');
+      logTerminal(`[BATCH_SUCCESS] +250 XP aplicados a ${count} registros de profiles.`, 'success');
+      updateTelemetry(allProfiles);
+      renderTable();
+    });
+
+    // 5. Purgar caché
+    document.getElementById('btn-purge-cache')?.addEventListener('click', () => {
+      const confirmPurge = confirm('¿Deseas purgar toda la caché local del navegador y reiniciar las sesiones temporales?');
+      if (confirmPurge) {
+        localStorage.clear();
+        sessionStorage.clear();
+        showToast('Caché purgada. Recargando estado...', 'info');
+        logTerminal('[CACHE_PURGE] Almacenamiento local limpiado.', 'warn');
+        setTimeout(() => window.location.reload(), 1000);
+      }
+    });
+
+    // Terminal actions
+    document.getElementById('btn-clear-terminal')?.addEventListener('click', () => {
+      const screen = document.getElementById('terminal-screen');
+      if (screen) {
+        screen.innerHTML = '<div class="term-line info">[SYSTEM] Consola de auditoría reiniciada.</div>';
+      }
+    });
+
+    document.getElementById('btn-copy-terminal')?.addEventListener('click', () => {
+      const screen = document.getElementById('terminal-screen');
+      if (screen) {
+        navigator.clipboard.writeText(screen.innerText);
+        showToast('Logs de auditoría copiados al portapapeles', 'info');
+      }
+    });
+
+    // Carga inicial
+    await fetchProfiles();
   });
 </script>
 
 <style>
-  .admin-layout {
-    max-width: 1200px;
+  /* ==========================================================================
+     ESTILOS SYSTEM COMMAND CORE (NIVEL 4 ROOT)
+     ========================================================================== */
+  :root {
+    --root-red: #ef4444;
+    --root-gold: #f59e0b;
+    --root-cyan: #06b6d4;
+    --root-purple: #a855f7;
+    --root-green: #10b981;
+    --root-blue: #3b82f6;
+  }
+
+  .admin-wrapper {
+    position: relative;
+    max-width: 1380px;
     margin: 0 auto;
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.5rem 5rem;
+    min-height: 85vh;
   }
 
-  .admin-hero {
-    text-align: center;
-    margin-bottom: 3rem;
+  .admin-bg-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.04) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .hero-badge {
-    display: inline-block;
-    background: rgba(229, 57, 53, 0.15);
-    color: #e53935;
-    border: 1px solid rgba(229, 57, 53, 0.3);
-    padding: 0.25rem 0.8rem;
+  /* GATEKEEPER / ACCESO RESTRINGIDO */
+  .gatekeeper-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 65vh;
+    position: relative;
+    z-index: 10;
+  }
+
+  .gatekeeper-card {
+    background: rgba(18, 18, 22, 0.95);
+    border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 20px;
+    padding: 3.5rem 2.5rem;
+    max-width: 540px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(239, 68, 68, 0.1);
+    backdrop-filter: blur(16px);
+  }
+
+  .gate-icon-wrapper {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--root-red);
+  }
+
+  .gate-badge {
+    display: inline-block;
     font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 0.75rem;
-  }
-
-  .admin-hero h1 {
-    color: #fff;
-    font-size: 2.5rem;
     font-weight: 900;
-    letter-spacing: -1px;
-    margin-bottom: 0.5rem;
+    letter-spacing: 1.5px;
+    color: var(--root-red);
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(239, 68, 68, 0.25);
   }
 
-  .admin-hero p {
-    color: #888;
-    font-size: 1rem;
+  .gatekeeper-card h2 {
+    font-size: 1.75rem;
+    color: #fff;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
   }
 
-  .admin-section {
-    background: linear-gradient(145deg, #141414, #1a1a1a);
-    border: 1px solid #262626;
+  .gatekeeper-card p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .gate-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .btn-gate-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #000;
+    font-weight: 800;
+    padding: 1rem 1.5rem;
     border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
   }
 
-  .section-title-wrapper {
+  .btn-gate-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(16, 185, 129, 0.45);
+  }
+
+  .btn-gate-secondary {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 0.85rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-gate-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-color: #64748b;
+  }
+
+  /* 1. COMMAND HERO */
+  .command-hero {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 2rem;
+  }
+
+  .hero-top-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #262626;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
-  .section-title-wrapper h2, .admin-section > h2 {
-    color: #fff;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0;
-    border-bottom: 1px solid #262626;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1.5rem;
+  .clearance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    color: #f87171;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 1px;
   }
 
-  .section-title-wrapper h2 {
-    border: none;
-    padding: 0;
-    margin: 0;
+  .live-pulse {
+    width: 7px;
+    height: 7px;
+    background: #ef4444;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ef4444;
+    animation: livePulse 1.8s infinite;
   }
 
-  .live-indicator {
+  @keyframes livePulse {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.8; }
+  }
+
+  .cluster-status-pill {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: var(--accent-color);
-    background: rgba(76, 175, 80, 0.1);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    border: 1px solid rgba(76, 175, 80, 0.2);
+    gap: 0.65rem;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid #1e293b;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    color: #94a3b8;
   }
 
-  .pulse-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--accent-color);
+  .cluster-name strong {
+    color: #f8fafc;
+    font-family: monospace;
+  }
+
+  .status-indicator-dot {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--accent-color);
-    animation: pulse 1.5s infinite;
   }
 
-  @keyframes pulse {
-    0% { transform: scale(0.95); opacity: 0.8; }
-    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--accent-color); }
-    100% { transform: scale(0.95); opacity: 0.8; }
+  .status-indicator-dot.online {
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
   }
 
-  /* Métricas */
-  .stats-grid {
+  .ping-tag {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    font-family: monospace;
+    font-size: 0.75rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  .hero-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .command-title {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.03em;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .command-subtitle {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    margin: 0;
+    max-width: 650px;
+  }
+
+  /* OPERATOR PROFILE CARD */
+  .operator-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(18, 22, 32, 0.85);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 0.75rem 1.25rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+  }
+
+  .operator-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    color: #000;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+  }
+
+  .operator-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .operator-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .operator-name-row strong {
+    color: #fff;
+    font-size: 0.95rem;
+  }
+
+  .operator-role-tag {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+    font-size: 0.68rem;
+    font-weight: 900;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .operator-email {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-family: monospace;
+  }
+
+  /* 2. KPI MATRIX / TELEMETRÍA */
+  .telemetry-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .hdr-left {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .hdr-icon {
+    font-size: 1.35rem;
+  }
+
+  .section-hdr h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+  }
+
+  .btn-refresh-telemetry {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.45rem 0.95rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-refresh-telemetry:hover {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: #10b981;
+    color: #34d399;
+  }
+
+  .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.25rem;
   }
 
-  .stat-box {
-    background: #0d0d0d;
-    border: 1px solid #222;
-    padding: 1.5rem;
-    border-radius: 10px;
+  .kpi-card {
+    background: rgba(18, 20, 28, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.4rem;
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(12px);
   }
 
-  .stat-box:hover {
+  .kpi-card:hover {
     transform: translateY(-3px);
-    border-color: var(--accent-color);
+    border-color: rgba(16, 185, 129, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
-  .stat-label {
-    display: block;
-    color: #888;
-    font-size: 0.8rem;
+  .kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .kpi-title {
+    color: #94a3b8;
+    font-size: 0.82rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
   }
 
-  .stat-val {
+  .kpi-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+  }
+
+  .kpi-badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+  .kpi-badge.cyan { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
+  .kpi-badge.gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+  .kpi-badge.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+  .kpi-badge.blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+
+  .kpi-value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-number {
     font-size: 2.2rem;
     font-weight: 900;
     color: #fff;
     font-family: monospace;
+    letter-spacing: -0.03em;
   }
 
-  .stat-val.accent { color: var(--accent-color); }
-  .stat-val.oro { color: #FFD700; }
+  .kpi-icon-glow {
+    font-size: 1.5rem;
+    opacity: 0.6;
+  }
 
-  .stat-sub {
-    display: block;
-    color: #555;
+  .text-cyan { color: #22d3ee; }
+  .text-gold { color: #fbbf24; }
+  .text-purple { color: #c084fc; }
+  .text-blue { color: #60a5fa; }
+  .text-green { color: #34d399; }
+
+  .kpi-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #06b6d4, #10b981);
+    border-radius: 10px;
+    transition: width 0.6s ease;
+  }
+
+  .kpi-subtext {
     font-size: 0.75rem;
-    margin-top: 0.4rem;
+    color: #64748b;
+    display: block;
   }
 
-  /* Herramientas */
-  .tools-grid {
-    display: flex;
+  /* 3. PROTOCOLOS OPERATIVOS */
+  .protocols-section {
+    margin-bottom: 3rem;
+  }
+
+  .protocol-security-tag {
+    font-size: 0.78rem;
+    color: #64748b;
+    font-family: monospace;
+  }
+
+  .protocols-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
-    flex-wrap: wrap;
   }
 
-  .btn-tool {
-    background: #1e1e1e;
-    color: #fff;
-    border: 1px solid #333;
-    padding: 0.8rem 1.4rem;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
+  .protocol-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
+    gap: 1rem;
+    background: rgba(18, 20, 28, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.22s ease;
   }
 
-  .btn-tool:hover {
-    background: var(--accent-color);
-    color: var(--bg-color);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+  .protocol-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(24, 28, 40, 0.95);
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 
-  .btn-tool.warning:hover {
-    background: #e53935;
-    box-shadow: 0 0 15px rgba(229, 57, 53, 0.3);
+  .protocol-btn.danger-hover:hover {
+    border-color: rgba(239, 68, 68, 0.5);
   }
 
-  /* Tabla y Buscador */
-  .table-header-flex {
+  .btn-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .cyan-box { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
+  .green-box { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+  .gold-box { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+  .purple-box { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+  .red-box { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+  .btn-text-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .btn-text-content strong {
+    color: #fff;
+    font-size: 0.92rem;
+  }
+
+  .btn-text-content span {
+    color: #94a3b8;
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  /* 4. DIRECTORIO INTERACTIVO (DATA GRID) */
+  .students-section {
+    margin-bottom: 3rem;
+  }
+
+  .students-table-card {
+    background: rgba(16, 18, 24, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .table-top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #262626;
-    padding-bottom: 0.75rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.25rem;
+    background: rgba(22, 25, 35, 0.6);
   }
 
-  .table-header-flex h2 {
-    margin: 0;
-    border: none;
-    padding: 0;
+  .title-with-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
-  #admin-search {
-    background: #0d0d0d;
-    border: 1px solid #333;
-    padding: 0.6rem 1rem;
+  .title-with-counter h2 {
+    font-size: 1.35rem;
     color: #fff;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 800;
+  }
+
+  .counter-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 20px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .table-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-input-wrapper svg {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    pointer-events: none;
+  }
+
+  .search-input-wrapper input {
+    background: #0d0f14;
+    border: 1px solid #2d3748;
+    color: #fff;
+    padding: 0.6rem 1rem 0.6rem 2.4rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    width: 250px;
+    transition: all 0.2s;
+  }
+
+  .search-input-wrapper input:focus {
     outline: none;
-    width: 240px;
+    border-color: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+    width: 280px;
+  }
+
+  .filter-select-wrapper select {
+    background: #0d0f14;
+    border: 1px solid #2d3748;
+    color: #cbd5e1;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    outline: none;
     transition: border-color 0.2s;
   }
 
-  #admin-search:focus {
-    border-color: var(--accent-color);
+  .filter-select-wrapper select:focus {
+    border-color: #10b981;
   }
 
-  .table-container {
+  .table-responsive-wrapper {
     overflow-x: auto;
   }
 
-  .admin-table {
+  .operator-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
-  .admin-table th, .admin-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #222;
-  }
-
-  .admin-table th {
-    color: #888;
-    background: #0d0d0d;
+  .operator-table th {
+    background: rgba(12, 14, 20, 0.9);
+    color: #94a3b8;
     font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     font-weight: 700;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  .admin-table tr:hover {
-    background: rgba(255, 255, 255, 0.015);
+  .operator-table td {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
   }
 
-  .user-cell {
+  .student-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* USER IDENTITY CELL */
+  .user-id-cell {
     display: flex;
     align-items: center;
     gap: 0.85rem;
   }
 
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent-color), #2e7d32);
-    color: #000;
+  .user-avatar-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 1px solid #334155;
+    color: #34d399;
     font-weight: 900;
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+    font-size: 1.1rem;
+    flex-shrink: 0;
   }
 
-  .user-info {
+  .user-avatar-badge.admin-glow {
+    background: linear-gradient(135deg, #ef4444, #991b1b);
+    border-color: #f87171;
+    color: #fff;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.35);
+  }
+
+  .user-meta-stack {
     display: flex;
     flex-direction: column;
+    gap: 0.15rem;
   }
 
-  .user-id {
-    color: #555;
-    font-size: 0.75rem;
-    font-family: monospace;
-  }
-
-  .badge-nivel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #333;
-    padding: 0.25rem 0.6rem;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.85rem;
-  }
-
-  .xp-code {
-    font-family: monospace;
-    color: #aaa;
-    font-size: 0.9rem;
-  }
-
-  .oro { color: #FFD700; font-weight: bold; }
-
-  .action-buttons {
+  .user-title-line {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
   }
 
-  .btn-accion {
-    background: rgba(255, 255, 255, 0.05);
+  .user-name {
     color: #fff;
-    border: 1px solid #333;
-    padding: 0.4rem 0.8rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .role-chip {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+  }
+
+  .role-chip.admin {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+  }
+
+  .user-uuid-line {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .uuid-snippet {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-family: monospace;
+  }
+
+  .btn-copy-uuid {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .btn-copy-uuid:hover {
+    color: #34d399;
+  }
+
+  /* OTHER CELLS */
+  .lvl-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #334155;
+    color: #fff;
+    padding: 0.3rem 0.65rem;
     border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: bold;
+    font-weight: 800;
+    font-size: 0.85rem;
+    font-family: monospace;
+  }
+
+  .xp-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .xp-value {
+    font-weight: 800;
+    font-family: monospace;
+    font-size: 0.95rem;
+  }
+
+  .mult-chip {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-family: monospace;
+  }
+
+  .coins-value {
+    color: #fbbf24;
+    font-weight: 800;
+    font-family: monospace;
+    font-size: 0.95rem;
+  }
+
+  .prestige-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .prestige-tag {
+    color: #f59e0b;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .crystals-tag {
+    color: #60a5fa;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .progress-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 140px;
+  }
+
+  .progress-mini-bar {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .progress-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #06b6d4);
+    border-radius: 6px;
+  }
+
+  .progress-ratio {
+    font-size: 0.72rem;
+    color: #94a3b8;
+  }
+
+  /* ACCIONES CLUSTER */
+  .actions-cluster {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .btn-act {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 800;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
-  .btn-accion:hover {
-    background: var(--accent-color);
-    color: var(--bg-color);
-    border-color: var(--accent-color);
+  .btn-act:hover {
     transform: translateY(-1px);
   }
 
-  .loading-row {
+  .btn-xp:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    color: #34d399;
+  }
+
+  .btn-coins:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #f59e0b;
+    color: #fbbf24;
+  }
+
+  .btn-lvl:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: #06b6d4;
+    color: #22d3ee;
+  }
+
+  .btn-edit:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: #a855f7;
+    color: #c084fc;
+  }
+
+  .loading-cell, .empty-state-cell {
     text-align: center;
-    color: #666;
-    padding: 3rem !important;
-    font-style: italic;
+    padding: 3.5rem !important;
+    color: #64748b;
+  }
+
+  .admin-spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid rgba(16, 185, 129, 0.2);
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 0.75rem;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* 5. AUDIT TERMINAL SECTION */
+  .audit-terminal-section {
+    margin-top: 2rem;
+  }
+
+  .terminal-card {
+    background: #090a0f;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  .terminal-header {
+    background: #0f131c;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .tdot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .tdot.red { background: #ef4444; }
+  .tdot.yellow { background: #f59e0b; }
+  .tdot.green { background: #10b981; }
+
+  .terminal-title {
+    font-size: 0.75rem;
+    font-family: monospace;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+  }
+
+  .terminal-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-term-action {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 0.72rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-term-action:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .terminal-screen {
+    padding: 1.25rem;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    max-height: 220px;
+    overflow-y: auto;
+    color: #cbd5e1;
+    background: #07090e;
+  }
+
+  .term-line {
+    margin-bottom: 0.35rem;
+    word-break: break-all;
+  }
+
+  .term-line.info { color: #38bdf8; }
+  .term-line.success { color: #34d399; }
+  .term-line.warn { color: #fbbf24; }
+  .term-line.error { color: #f87171; }
+
+  /* MODAL DE EDICIÓN */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1.5rem;
+  }
+
+  .modal-dialog {
+    background: #12151e;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 16px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(20, 24, 34, 0.8);
+  }
+
+  .modal-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .modal-icon { font-size: 1.3rem; }
+
+  .modal-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  .modal-sub {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-family: monospace;
+  }
+
+  .btn-close-modal {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .btn-close-modal:hover { color: #fff; }
+
+  .modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .form-group label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-group input {
+    background: #090b10;
+    border: 1px solid #334155;
+    color: #fff;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.85rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    padding: 0.65rem 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+  .btn-save-modal {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: #000;
+    font-weight: 800;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .btn-save-modal:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  }
+
+  /* TOAST FLOATING NOTIFICATIONS */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .admin-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid #334155;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.88rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto;
+  }
+
+  .admin-toast.fade-out {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .toast-success { border-color: rgba(16, 185, 129, 0.5); }
+  .toast-info { border-color: rgba(6, 182, 212, 0.5); }
+  .toast-warn { border-color: rgba(245, 158, 11, 0.5); }
+  .toast-error { border-color: rgba(239, 68, 68, 0.5); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .command-title { font-size: 1.85rem; }
+    .hero-main-row { flex-direction: column; align-items: flex-start; }
+    .operator-profile-card { width: 100%; }
+    .form-row-2 { grid-template-columns: 1fr; }
+    .search-input-wrapper input { width: 100%; }
   }
 </style>
