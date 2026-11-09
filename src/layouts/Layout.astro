@@ -581,4 +581,182 @@ const socialImageURL = image.startsWith('http')
     from { transform: translateY(-20px) scale(0.98); opacity: 0; } 
     to { transform: translateY(0) scale(1); opacity: 1; } 
   }
+  /* ==========================================================================
+   ANIVERSARIO VISUAL X999: EFECTOS CINEMATOGRÁFICOS Y DEGRADADOS PRO
+   ========================================================================== */
+
+/* 1. Animaciones Globales de Entrada y Dinámicas */
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.96) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 15px rgba(255, 255, 255, 0.05); }
+  50% { box-shadow: 0 0 30px var(--accent-color), inset 0 0 25px var(--accent-glow); }
+}
+
+@keyframes floatElement {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+/* 2. Aplicación General de Transiciones Suaves en la UI */
+body {
+  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 3. Tarjetas Bento y Contenedores con Efecto Glassmorphism Avanzado */
+.bento-card, .altar-card, .tienda-container, .tema-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(25, 25, 30, 0.7) 0%, rgba(15, 15, 18, 0.85) 100%) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* Efecto de brillo sutil en el borde al hacer hover */
+.bento-card:hover, .tema-card:hover {
+  border-color: var(--accent-color) !important;
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 25px var(--accent-glow);
+}
+
+/* Línea de luz superior decorativa en las tarjetas Pro */
+.bento-card::before, .altar-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.bento-card:hover::before {
+  opacity: 1;
+}
+
+/* 4. Títulos con Degradados de Texto Dinámicos */
+h1, h2, .dashboard-header h1 {
+  background: linear-gradient(135deg, #ffffff 30%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 5px 25px var(--accent-glow);
+}
+
+/* 5. Barras de Progreso Cibernéticas Animadas */
+.barra-relleno, .altar-barra-relleno, .skill-barra-relleno {
+  background: linear-gradient(90deg, var(--accent-color), #ffffff, var(--accent-color)) !important;
+  background-size: 200% 100% !important;
+  animation: gradientShift 4s ease infinite;
+  box-shadow: 0 0 12px var(--accent-color);
+  position: relative;
+}
+
+/* Efecto de brillo móvil sobre las barras */
+.barra-relleno::after, .altar-barra-relleno::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: scanline 2s linear infinite;
+}
+
+/* 6. Insignias (Badges) con Efectos de Neón */
+.nivel-badge, .monedas-badge, .cristales-badge {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.nivel-badge:hover, .monedas-badge:hover {
+  transform: scale(1.05);
+  animation: neonPulse 1.5s infinite;
+}
+
+/* 7. Botones Interactivos Épicos */
+button:not(:disabled), .btn-completar, .btn-ascension.activo, .btn-comprar, .btn-equipar {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--accent-glow);
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+/* Efecto de destello al hacer clic (Ripple simulado) */
+button::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out;
+}
+
+button:active::after {
+  width: 300px;
+  height: 300px;
+  opacity: 0;
+  transition: 0s;
+}
+
+/* 8. Estética de Logros e Ítems Desbloqueados */
+.logro-item {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logro-item.unlocked {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border-color: var(--accent-color);
+  animation: floatElement 4s ease-in-out infinite;
+}
+
+.logro-item.unlocked .logro-icon {
+  filter: drop-shadow(0 0 12px var(--accent-color));
+  transform: scale(1.1);
+}
+
+/* 9. Scrollbar Personalizada Cyberpunk */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+}
 </style>
