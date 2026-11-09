@@ -3,255 +3,51 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import SeccionApuntes from '../../components/SeccionApuntes.astro';
 
-// 1. Extraemos TODOS los apuntes de la nueva base de datos validada
 const todosLosApuntes = await getCollection('apuntes');
 
-// 2. Filtramos dinámicamente usando la taxonomía estricta de Zod
-const apuntesSOM = todosLosApuntes.filter(apunte => 
-  apunte.data.categoria === 'sistemas' && 
-  apunte.data.subcategoria === 'som' && 
-  !apunte.data.draft
+const apuntesSOM = todosLosApuntes.filter(a =>
+  a.data.categoria === 'sistemas' && a.data.subcategoria === 'som' && !a.data.draft
+);
+const apuntesSOR = todosLosApuntes.filter(a =>
+  a.data.categoria === 'sistemas' && a.data.subcategoria === 'sor' && !a.data.draft
 );
 
-const apuntesSOR = todosLosApuntes.filter(apunte => 
-  apunte.data.categoria === 'sistemas' && 
-  apunte.data.subcategoria === 'sor' && 
-  !apunte.data.draft
-);
+const totalApuntes = apuntesSOM.length + apuntesSOR.length;
 ---
 
-<Layout title="Sistemas Informáticos (SMR) - ApuntesDev">
+<Layout
+  title="Sistemas Informáticos (SMR) — ApuntesDev"
+  description="Apuntes de Sistemas Operativos Monopuestos (SOM) y en Red (SOR). Administración, virtualización y comandos de terminal."
+>
   <Header />
-  
-  <section class="categoria-header">
-    <h1>🖥️ Sistemas Informáticos (SMR)</h1>
-    <p>Administración, comandos y configuración de sistemas operativos monopuestos y en red.</p>
-  </section>
 
-  <!-- ACCESOS RÁPIDOS (Corregidos con anclas id) -->
-  <div class="sub-nav-grid">
-    <a href="#som" class="sub-nav-card">
-      <h3>🖥️ SOM</h3>
-      <p>Sistemas Operativos Monopuestos</p>
-    </a>
-    <a href="#sor" class="sub-nav-card">
-      <h3>🌐 SOR</h3>
-      <p>Sistemas Operativos en Red</p>
-    </a>
-  </div>
-
-  <!-- SECCIÓN SOM -->
-  <section id="som" class="seccion-bloque">
-    <h2>📂 Apuntes de SOM (Monopuestos)</h2>
-    <div class="lista-apuntes">
-      {apuntesSOM.length > 0 ? (
-        apuntesSOM.map((apunte) => (
-          <article class="apunte-card">
-            <div class="card-header">
-              <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>
-                {apunte.data.dificultad}
-              </span>
-              <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
-            </div>
-            
-            <!-- CORRECCIÓN: apunte.id en vez de apunte.slug -->
-            <h2><a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a></h2>
-            <p class="desc">{apunte.data.description}</p>
-            
-            <div class="card-footer">
-              <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <a href={`/apuntes/${apunte.id}`} class="leer-mas">Leer apunte →</a>
-            </div>
-          </article>
-        ))
-      ) : (
-        <p class="sin-apuntes">Próximamente subiremos apuntes de SOM...</p>
-      )}
-    </div>
-  </section>
-
-  <!-- SECCIÓN SOR -->
-  <section id="sor" class="seccion-bloque">
-    <h2>📂 Apuntes de SOR (En Red)</h2>
-    <div class="lista-apuntes">
-      {apuntesSOR.length > 0 ? (
-        apuntesSOR.map((apunte) => (
-          <article class="apunte-card">
-            <div class="card-header">
-              <span class={`badge-dif ${apunte.data.dificultad.toLowerCase()}`}>
-                {apunte.data.dificultad}
-              </span>
-              <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
-            </div>
-            
-            <!-- CORRECCIÓN: apunte.id en vez de apunte.slug -->
-            <h2><a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a></h2>
-            <p class="desc">{apunte.data.description}</p>
-            
-            <div class="card-footer">
-              <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <a href={`/apuntes/${apunte.id}`} class="leer-mas">Leer apunte →</a>
-            </div>
-          </article>
-        ))
-      ) : (
-        <p class="sin-apuntes">Próximamente subiremos apuntes de SOR...</p>
-      )}
-    </div>
-  </section>
+  <SeccionApuntes
+    icono="🖥️"
+    titulo="Sistemas Informáticos"
+    descripcion="Administración, virtualización, comandos de terminal y configuración de sistemas operativos monopuestos y en red."
+    color="sistemas"
+    totalApuntes={totalApuntes}
+    secciones={[
+      {
+        id: 'som',
+        icono: '💻',
+        titulo: 'SOM — Sistemas Operativos Monopuestos',
+        descripcion: 'Instalación, configuración y administración de sistemas operativos de escritorio.',
+        apuntes: apuntesSOM,
+        mensajeVacio: 'Pronto subiremos apuntes de SOM. ¡Vuelve en breve!',
+      },
+      {
+        id: 'sor',
+        icono: '🌐',
+        titulo: 'SOR — Sistemas Operativos en Red',
+        descripcion: 'Active Directory, gestión de usuarios, servidores y administración remota.',
+        apuntes: apuntesSOR,
+        mensajeVacio: 'Pronto subiremos apuntes de SOR. ¡Vuelve en breve!',
+      },
+    ]}
+  />
 
   <Footer />
 </Layout>
-
-<style>
-  .categoria-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  .categoria-header h1 {
-    color: var(--accent-color);
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .categoria-header p {
-    color: #aaa;
-  }
-
-  .sub-nav-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-  .sub-nav-card {
-    background: #181818;
-    border: 1px solid #333;
-    padding: 1.2rem;
-    border-radius: 8px;
-    text-decoration: none;
-    color: inherit;
-    text-align: center;
-    transition: all 0.2s ease;
-  }
-  .sub-nav-card:hover {
-    border-color: var(--accent-color);
-    transform: translateY(-3px);
-  }
-  .sub-nav-card h3 {
-    margin: 0 0 0.4rem 0;
-    color: #fff;
-  }
-  .sub-nav-card p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #888;
-  }
-
-  .seccion-bloque {
-    margin-bottom: 3rem;
-  }
-  .seccion-bloque h2 {
-    color: #fff;
-    font-size: 1.3rem;
-    border-bottom: 1px solid #333;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .lista-apuntes {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  
-  .sin-apuntes {
-    color: #666;
-    font-style: italic;
-    background: #151515;
-    padding: 1rem;
-    border-radius: 6px;
-    border: 1px dashed #333;
-    text-align: center;
-  }
-  
-  .apunte-card {
-    background: #1e1e1e;
-    padding: 1.5rem;
-    border-radius: 10px;
-    border: 1px solid #333;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-  
-  .apunte-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-color);
-    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15);
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .badge-dif {
-    font-size: 0.75rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-  }
-  
-  .badge-dif.basico { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
-  .badge-dif.intermedio { background: rgba(255, 152, 0, 0.1); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
-  .badge-dif.avanzado { background: rgba(244, 67, 54, 0.1); color: #F44336; border: 1px solid rgba(244, 67, 54, 0.3); }
-  .badge-dif.masterclass { background: rgba(255, 215, 0, 0.1); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.3); }
-
-  .recompensa-info {
-    color: var(--accent-color);
-    font-family: monospace;
-    font-weight: bold;
-    font-size: 0.9rem;
-  }
-
-  .apunte-card h2 { margin: 0; }
-  .apunte-card h2 a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.4rem;
-  }
-  
-  .desc {
-    color: #aaa;
-    margin: 0;
-    line-height: 1.5;
-    font-size: 0.95rem;
-  }
-
-  .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid #2a2a2a;
-  }
-
-  .fecha {
-    color: #666;
-    font-size: 0.85rem;
-  }
-
-  .leer-mas {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 0.9rem;
-  }
-</style>

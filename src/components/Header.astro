@@ -1,25 +1,71 @@
 ---
+import BarraProgreso from './BarraProgreso.tsx';
 ---
-<header>
-  <div class="header-container">
+
+<header class="main-header">
+  <div class="header-inner">
     
-    <!-- Enlace del logo que lleva a la página principal -->
-    <a href="/" class="logo-link">
-      <img src="/logo.png" alt="Logo ApuntesDev" class="logo-img" />
+    <!-- Logo & Brand -->
+    <a href="/" class="brand-link" aria-label="Ir a Inicio de ApuntesDev">
+      <div class="logo-wrapper">
+        <img src="/logo.png" alt="Logo ApuntesDev" class="logo-img" />
+      </div>
+      <div class="brand-info">
+        <span class="brand-name">Apuntes<span class="brand-accent">Dev</span></span>
+        <span class="brand-tag">SMR & CODE</span>
+      </div>
     </a>
 
-   <nav>
-    <a href="/sistemas">Sistemas</a>
-    <a href="/programacion">Programación</a>
-    <a href="/ranking">🏆 Leaderboard</a>
-    <a href="/perfil" class="link-perfil" id="link-perfil">👤 <span id="nav-username">Mi Perfil</span></a>
-   </nav>
+    <!-- Menú de Navegación Central -->
+    <nav class="nav-links" aria-label="Navegación principal">
+      <a href="/sistemas" class="nav-pill">
+        <span class="pill-icon">🖥️</span>
+        <span>Sistemas</span>
+      </a>
+      <a href="/redes" class="nav-pill">
+        <span class="pill-icon">🌐</span>
+        <span>Redes</span>
+      </a>
+      <a href="/programacion" class="nav-pill">
+        <span class="pill-icon">💻</span>
+        <span>Programación</span>
+      </a>
+      <a href="/ranking" class="nav-pill nav-pill--ranking">
+        <span class="pill-icon">🏆</span>
+        <span>Leaderboard</span>
+      </a>
+    </nav>
 
-    <!-- La barra de búsqueda que ya tenías -->
-    <form action="/buscar" method="GET" class="buscador-form">
-      <input type="search" name="q" placeholder="Buscar apuntes..." required autocomplete="off" />
-      <button type="submit">🔍</button>
-    </form>
+    <!-- Acciones Derecha: Buscador + HUD XP + Perfil -->
+    <div class="header-actions">
+      <!-- Buscador Compacto -->
+      <form action="/buscar" method="GET" class="search-box">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input 
+          type="search" 
+          name="q" 
+          placeholder="Buscar... (Ctrl+K)" 
+          required 
+          autocomplete="off" 
+          aria-label="Buscar apuntes"
+        />
+        <span class="search-shortcut">⌘K</span>
+      </form>
+
+      <!-- HUD Gamificado Integrado -->
+      <div class="header-hud">
+        <BarraProgreso client:load />
+      </div>
+
+      <!-- Botón de Perfil con Avatar -->
+      <a href="/perfil" class="profile-card" id="link-perfil" title="Ver mi Perfil y Rango">
+        <span class="profile-icon">👨‍💻</span>
+        <span id="nav-username" class="profile-alias">Mi Perfil</span>
+      </a>
+    </div>
+
   </div>
 </header>
 
@@ -54,64 +100,283 @@
 </script>
 
 <style>
-  header {
-    background-color: #1e1e1e;
-    border-bottom: 2px solid var(--accent-color);
-    margin-bottom: 2rem;
-    padding: 1rem 2rem;
+  /* ── HEADER CONTAINER A ANCHO COMPLETO (100% FULL-BLEED) ── */
+  .main-header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(9, 10, 15, 0.82);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
   }
-  .header-container {
-    max-width: 1000px;
+
+  /* Línea cibernética animada en el borde inferior */
+  .main-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg, 
+      transparent 0%, 
+      rgba(74, 222, 128, 0.2) 20%, 
+      var(--accent-color) 50%, 
+      rgba(56, 189, 248, 0.2) 80%, 
+      transparent 100%
+    );
+    opacity: 0.7;
+    animation: scanGlow 6s linear infinite;
+  }
+
+  @keyframes scanGlow {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* ── CONTENEDOR INTERNO ANCHO Y CENTRADO ── */
+  .header-inner {
+    max-width: 1560px;
+    width: 100%;
     margin: 0 auto;
+    padding: 0.75rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  
-  /* Nuevos estilos para el logo */
-  .logo-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-  }
-  .logo-img {
-    height: 40px; /* Ajusta este valor si lo ves muy grande o pequeño */
-    width: auto;
-    transition: transform 0.2s ease;
-  }
-  .logo-link:hover .logo-img {
-    transform: scale(1.05);
+    gap: 1.5rem;
   }
 
-  nav {
+  /* ── MARCA / LOGO ── */
+  .brand-link {
     display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    flex-grow: 1; /* Empuja la barra de búsqueda a la derecha */
-    margin-left: 1rem;
-  }
-  nav a {
-    color: var(--text-color);
+    align-items: center;
+    gap: 0.85rem;
     text-decoration: none;
-    font-weight: bold;
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .brand-link:hover {
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  .logo-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-img {
+    height: 40px;
+    width: auto;
+    filter: drop-shadow(0 0 12px var(--accent-glow));
+    transition: filter 0.3s ease;
+  }
+
+  .brand-link:hover .logo-img {
+    filter: drop-shadow(0 0 20px var(--accent-color));
+  }
+
+  .brand-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+  }
+
+  .brand-accent {
+    color: var(--accent-color);
+    text-shadow: 0 0 16px var(--accent-glow);
+  }
+
+  .brand-tag {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    font-family: var(--font-mono);
+  }
+
+  /* ── NAVEGACIÓN CENTRAL ── */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.35rem 0.6rem;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+
+  .nav-pill:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .nav-pill--ranking {
+    color: #ffd700;
+  }
+
+  .nav-pill--ranking:hover {
+    background: rgba(255, 215, 0, 0.12);
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.2);
+  }
+
+  .pill-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* ── ACCIONES DERECHA ── */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* ── BUSCADOR ── */
+  .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 0.9rem;
+    color: var(--text-muted);
+    pointer-events: none;
     transition: color 0.2s;
   }
-  nav a:hover {
+
+  .search-box:focus-within .search-icon {
     color: var(--accent-color);
   }
 
-  /* Estilo especial para resaltar el botón de perfil con el nombre */
-  .link-perfil {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
+  .search-box input {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: 0.5rem 2.8rem 0.5rem 2.4rem;
+    border-radius: 100px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    width: 200px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
   }
 
-  /* Estilos del buscador (los mismos que tenías) */
-  .buscador-form { display: flex; gap: 0.5rem; }
-  .buscador-form input { background: var(--bg-color); border: 1px solid #444; color: #fff; padding: 0.4rem 0.8rem; border-radius: 4px; font-family: inherit; }
-  .buscador-form input:focus { outline: none; border-color: var(--accent-color); }
-  .buscador-form button { background: var(--accent-color); border: none; border-radius: 4px; cursor: pointer; padding: 0.4rem 0.8rem; }
+  .search-box input:focus {
+    width: 250px;
+    background: rgba(15, 17, 25, 0.95);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15), 0 0 20px var(--accent-glow);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-shortcut {
+    position: absolute;
+    right: 0.75rem;
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* ── HUD GAMIFICADO INLINE ── */
+  .header-hud {
+    display: flex;
+    align-items: center;
+  }
+
+  /* ── PERFIL PILL ── */
+  .profile-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .profile-card:hover {
+    border-color: var(--accent-color);
+    background: rgba(74, 222, 128, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px var(--accent-glow);
+    color: var(--accent-color);
+  }
+
+  .profile-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .profile-alias {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .header-hud { display: none; }
+  }
+
+  @media (max-width: 860px) {
+    .nav-links { display: none; }
+    .search-box input { width: 140px; }
+    .search-box input:focus { width: 180px; }
+  }
+
+  @media (max-width: 540px) {
+    .header-inner { padding: 0.6rem 1rem; }
+    .brand-info { display: none; }
+    .search-shortcut { display: none; }
+    .search-box input { width: 120px; }
+  }
 </style>

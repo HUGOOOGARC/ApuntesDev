@@ -1,49 +1,248 @@
 ---
 const anio = new Date().getFullYear();
 ---
-<footer>
-  <div class="footer-content">
-    <p>&copy; {anio} ApuntesDev. Proyecto educativo de SMR y Programación.</p>
-    <nav class="legal-links">
-      <a href="/privacidad">Política de Privacidad</a>
-      <a href="/cookies">Política de Cookies</a>
-      <a href="/aviso-legal">Aviso Legal</a>
-      <a href="/contacto">Contacto</a>
-      <a href="/sobre-mi">Sobre mí</a>
-    </nav>
+
+<footer class="main-footer">
+  <!-- Línea decorativa superior -->
+  <div class="footer-glow-line"></div>
+
+  <div class="footer-container">
+    <div class="footer-top">
+      
+      <!-- Brand & Mission -->
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <img src="/logo.png" alt="ApuntesDev Logo" class="footer-logo-img" />
+          <span class="footer-title">Apuntes<span class="footer-accent">Dev</span></span>
+        </a>
+        <p class="footer-desc">
+          Plataforma educativa de alto rendimiento para estudiantes de SMR y futuros desarrolladores. Aprende sistemas, redes y código con gamificación real y sin rodeos.
+        </p>
+        <div class="footer-status-pill">
+          <span class="status-dot"></span>
+          <span>Sistemas Operativos 100% Online</span>
+        </div>
+      </div>
+
+      <!-- Links Column 1: Rutas -->
+      <div class="footer-col">
+        <h4>Rutas Troncales</h4>
+        <ul>
+          <li><a href="/sistemas">🖥️ Sistemas (SOM / SOR)</a></li>
+          <li><a href="/redes">🌐 Redes & Telecom</a></li>
+          <li><a href="/programacion">💻 Desarrollo & Python</a></li>
+          <li><a href="/ranking">🏆 Leaderboard Global</a></li>
+        </ul>
+      </div>
+
+      <!-- Links Column 2: Plataforma -->
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <ul>
+          <li><a href="/perfil">👤 Mi Perfil & Estadísticas</a></li>
+          <li><a href="/buscar">🔍 Buscador de Apuntes</a></li>
+          <li><a href="/sobre-mi">👨‍🏫 Sobre el Proyecto</a></li>
+          <li><a href="/contacto">✉️ Contacto & Sugerencias</a></li>
+        </ul>
+      </div>
+
+      <!-- Links Column 3: Legal -->
+      <div class="footer-col">
+        <h4>Legal & Privacidad</h4>
+        <ul>
+          <li><a href="/privacidad">Política de Privacidad</a></li>
+          <li><a href="/cookies">Política de Cookies</a></li>
+          <li><a href="/aviso-legal">Aviso Legal</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {anio} ApuntesDev • Diseñado con pasión para estudiantes de SMR y Código.</p>
+      <div class="footer-bottom-badge">
+        <span>⚡ Astro 5 + Preact</span>
+      </div>
+    </div>
   </div>
 </footer>
 
 <style>
-  footer {
-    background-color: #1a1a1a;
-    border-top: 1px solid #333;
-    padding: 2rem;
-    margin-top: 4rem;
-    text-align: center;
+  .main-footer {
+    width: 100%;
+    position: relative;
+    background: #06070a;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 6rem;
+    overflow: hidden;
   }
-  .footer-content {
-    max-width: 800px;
+
+  .footer-glow-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 900px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .footer-container {
+    max-width: 1560px;
+    width: 100%;
     margin: 0 auto;
+    padding: 4.5rem 2rem 2.5rem;
   }
-  p {
-    color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3.5rem;
   }
-  .legal-links {
+
+  .footer-brand {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 380px;
   }
-  .legal-links a {
-    color: #b3b3b3;
+
+  .footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
     text-decoration: none;
-    font-size: 0.85rem;
-    transition: color 0.2s;
   }
-  .legal-links a:hover {
+
+  .footer-logo-img {
+    height: 36px;
+    width: auto;
+    filter: drop-shadow(0 0 10px var(--accent-glow));
+  }
+
+  .footer-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .footer-accent {
     color: var(--accent-color);
+  }
+
+  .footer-desc {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .footer-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(74, 222, 128, 0.06);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    padding: 0.35rem 0.8rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    width: fit-content;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-color);
+    animation: pulseDot 2s infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .footer-col h4 {
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 0 0 1.25rem 0;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .footer-col a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: all 0.2s ease;
+  }
+
+  .footer-col a:hover {
+    color: var(--accent-color);
+    transform: translateX(4px);
+    display: inline-block;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-bottom p {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin: 0;
+  }
+
+  .footer-bottom-badge span {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  @media (max-width: 900px) {
+    .footer-top {
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .footer-top {
+      grid-template-columns: 1fr;
+    }
+    .footer-container {
+      padding: 3rem 1.5rem 2rem;
+    }
   }
 </style>

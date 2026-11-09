@@ -17,13 +17,13 @@ export default function PerfilDashboard() {
 
   // Cálculos para el radar de habilidades basados en los apuntes completados
   const totalApuntes = perfil.apuntesCompletados ? perfil.apuntesCompletados.length : 0;
-  const countSom = perfil.apuntesCompletados.filter(id => id.includes('som') || id.includes('sor')).length;
-  const countProg = perfil.apuntesCompletados.filter(id => id.includes('python') || id.includes('backend') || id.includes('frontend')).length;
-  const countRedes = perfil.apuntesCompletados.filter(id => id.includes('redes') || id.includes('routing')).length;
+  const countSom = perfil.apuntesCompletados.filter(id => id.includes('som') || id.includes('sor') || id.includes('linux') || id.includes('active-directory') || id.includes('sistemas')).length;
+  const countRedes = perfil.apuntesCompletados.filter(id => id.includes('redes') || id.includes('routing') || id.includes('vlan') || id.includes('subnetting') || id.includes('dhcp') || id.includes('dns') || id.includes('cisco') || id.includes('switch') || id.includes('servicios-red')).length;
+  const countProg = perfil.apuntesCompletados.filter(id => id.includes('python') || id.includes('backend') || id.includes('frontend') || id.includes('programacion')).length;
 
-  const statsSistemas = Math.min((countSom * 20), 100);
-  const statsProg = Math.min((countProg * 20), 100);
-  const statsRedes = Math.min((countRedes * 20), 100);
+  const statsSistemas = Math.min((countSom * 25), 100);
+  const statsRedes = Math.min((countRedes * 25), 100);
+  const statsProg = Math.min((countProg * 25), 100);
 
   useEffect(() => {
     async function cargarUsername() {
@@ -140,23 +140,38 @@ export default function PerfilDashboard() {
           <h3>Radar de Habilidades</h3>
           
           <div className="skill-row">
-            <div className="skill-label">Sistemas (SOM/SOR) — {countSom} leídos</div>
-            <div className="skill-barra-fondo">
-              <div className="skill-barra-relleno" style={{ width: `${statsSistemas}%`, background: '#4CAF50' }}></div>
+            <div className="skill-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+              <a href="/sistemas" style={{ color: 'var(--text-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                <span>🖥️</span> <span>Sistemas (SOM/SOR)</span>
+              </a>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{countSom} leídos</span>
             </div>
-          </div>
-          
-          <div className="skill-row">
-            <div className="skill-label">Programación — {countProg} leídos</div>
             <div className="skill-barra-fondo">
-              <div className="skill-barra-relleno" style={{ width: `${statsProg}%`, background: '#2196F3' }}></div>
+              <div className="skill-barra-relleno" style={{ width: `${statsSistemas}%`, background: '#4ade80' }}></div>
             </div>
           </div>
 
-          <div className="skill-row">
-            <div className="skill-label">Redes & Ciber — {countRedes} leídos</div>
+          <div className="skill-row" style={{ marginTop: '1rem' }}>
+            <div className="skill-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+              <a href="/redes" style={{ color: 'var(--text-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                <span>🌐</span> <span>Redes & Telecom</span>
+              </a>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{countRedes} leídos</span>
+            </div>
             <div className="skill-barra-fondo">
-              <div className="skill-barra-relleno" style={{ width: `${statsRedes}%`, background: '#FF9800' }}></div>
+              <div className="skill-barra-relleno" style={{ width: `${statsRedes}%`, background: '#38bdf8' }}></div>
+            </div>
+          </div>
+          
+          <div className="skill-row" style={{ marginTop: '1rem' }}>
+            <div className="skill-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+              <a href="/programacion" style={{ color: 'var(--text-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                <span>💻</span> <span>Programación & Web</span>
+              </a>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>{countProg} leídos</span>
+            </div>
+            <div className="skill-barra-fondo">
+              <div className="skill-barra-relleno" style={{ width: `${statsProg}%`, background: '#a78bfa' }}></div>
             </div>
           </div>
         </article>
@@ -183,6 +198,11 @@ export default function PerfilDashboard() {
               <h4>Primeros Pasos</h4>
               <p>Completa tu primer apunte.</p>
             </div>
+            <div className={`logro-item ${countRedes >= 1 ? 'unlocked' : ''}`}>
+              <div className="logro-icon">🌐</div>
+              <h4>NetAdmin Junior</h4>
+              <p>Domina tu primer apunte de redes.</p>
+            </div>
             <div className={`logro-item ${perfil.nivel >= 5 ? 'unlocked' : ''}`}>
               <div className="logro-icon">⚡</div>
               <h4>Operador Nivel 5</h4>
@@ -192,11 +212,6 @@ export default function PerfilDashboard() {
               <div className="logro-icon">🧠</div>
               <h4>Cerebro Máquina</h4>
               <p>Domina 10 apuntes en total.</p>
-            </div>
-            <div className={`logro-item ${perfil.prestigio > 0 ? 'unlocked' : ''}`}>
-              <div className="logro-icon">👑</div>
-              <h4>Prestigio I</h4>
-              <p>Alcanza el renacimiento.</p>
             </div>
           </div>
         </article>

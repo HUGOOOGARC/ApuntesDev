@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Fondo oscuro con bordes redondeados -->
+  <rect width="128" height="128" rx="24" fill="#121212" />
+  <!-- Símbolo de código < / > en verde acento -->
+  <path d="M46 44 L26 64 L46 84 M82 44 L102 64 L82 84 M70 34 L58 94" stroke="#4CAF50" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+</svg>

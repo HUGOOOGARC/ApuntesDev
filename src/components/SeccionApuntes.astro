@@ -1,0 +1,498 @@
+---
+// Componente reutilizable para páginas de categoría (Sistemas, Redes, Programación)
+
+interface SubSeccion {
+  id: string;
+  icono: string;
+  titulo: string;
+  descripcion: string;
+  apuntes: any[];
+  mensajeVacio: string;
+}
+
+interface Props {
+  icono: string;
+  titulo: string;
+  descripcion: string;
+  color?: string; // clase de color temático: 'sistemas' | 'redes' | 'programacion'
+  secciones: SubSeccion[];
+  totalApuntes?: number;
+}
+
+const {
+  icono,
+  titulo,
+  descripcion,
+  color = 'default',
+  secciones,
+  totalApuntes = 0,
+} = Astro.props;
+---
+
+<main class="cat-page-container">
+<!-- HERO DE CATEGORÍA -->
+<section class={`cat-hero cat-hero--${color}`}>
+  <div class="cat-hero-bg"></div>
+  <div class="cat-hero-content">
+    <span class="cat-icono">{icono}</span>
+    <div>
+      <h1>{titulo}</h1>
+      <p class="cat-desc">{descripcion}</p>
+    </div>
+  </div>
+  <div class="cat-meta">
+    <span class="cat-stat">
+      <span class="cat-stat-num">{totalApuntes}</span>
+      <span class="cat-stat-label">apuntes</span>
+    </span>
+    <span class="cat-stat">
+      <span class="cat-stat-num">{totalApuntes * 50}</span>
+      <span class="cat-stat-label">XP disponibles</span>
+    </span>
+  </div>
+</section>
+
+<!-- NAVEGACIÓN POR SUBSECCIONES -->
+<nav class="sub-nav" aria-label="Subsecciones">
+  {secciones.map(s => (
+    <a href={`#${s.id}`} class="sub-nav-pill">
+      <span class="sub-nav-icono">{s.icono}</span>
+      <span class="sub-nav-texto">
+        <strong>{s.titulo}</strong>
+        <small>{s.apuntes.length} apunte{s.apuntes.length !== 1 ? 's' : ''}</small>
+      </span>
+    </a>
+  ))}
+</nav>
+
+<!-- SECCIONES DE APUNTES -->
+{secciones.map(s => (
+  <section id={s.id} class="seccion-bloque">
+    <div class="seccion-titulo">
+      <span class="seccion-icono">{s.icono}</span>
+      <div>
+        <h2>{s.titulo}</h2>
+        <p class="seccion-subtitulo">{s.descripcion}</p>
+      </div>
+    </div>
+
+    {s.apuntes.length > 0 ? (
+      <div class="lista-apuntes">
+        {s.apuntes.map((apunte: any) => (
+          <article class="apunte-card">
+            <div class="card-top">
+              <div class="card-badges">
+                <span class={`badge-dif badge-dif--${apunte.data.dificultad.toLowerCase()}`}>
+                  {apunte.data.dificultad}
+                </span>
+                <span class="badge-xp">+{apunte.data.xp_recompensa} XP</span>
+              </div>
+              <span class="card-fecha">
+                {apunte.data.date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            </div>
+
+            <div class="card-body">
+              <h3>
+                <a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a>
+              </h3>
+              <p class="card-desc">{apunte.data.description}</p>
+            </div>
+
+            <a href={`/apuntes/${apunte.id}`} class="card-cta">
+              Leer apunte
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="sin-apuntes">
+        <span class="sin-apuntes-icono">📝</span>
+        <p>{s.mensajeVacio}</p>
+        <span class="sin-apuntes-badge">Próximamente</span>
+      </div>
+    )}
+  </section>
+))}
+</main>
+
+<style>
+  .cat-page-container {
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+  /* ── HERO ── */
+  .cat-hero {
+    position: relative;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .cat-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 90% 50%, var(--cat-glow, rgba(74,222,128,0.07)), transparent);
+    pointer-events: none;
+  }
+
+  /* Color temático por sección */
+  .cat-hero--sistemas { --cat-glow: rgba(74, 222, 128, 0.08); }
+  .cat-hero--redes    { --cat-glow: rgba(56, 189, 248, 0.08); }
+  .cat-hero--programacion { --cat-glow: rgba(167, 139, 250, 0.08); }
+
+  .cat-hero-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cat-icono {
+    font-size: 3rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 16px var(--accent-glow));
+  }
+
+  .cat-hero h1 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.3rem;
+    line-height: 1.1;
+  }
+
+  .cat-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  .cat-meta {
+    display: flex;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cat-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.1rem;
+  }
+
+  .cat-stat-num {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--accent-color);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    -webkit-text-fill-color: var(--accent-color);
+    background: none;
+  }
+
+  .cat-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── SUB-NAV ── */
+  .sub-nav {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sub-nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.65rem 1.1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .sub-nav-pill:hover {
+    border-color: var(--accent-color);
+    background: rgba(74, 222, 128, 0.05);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm), 0 0 12px var(--accent-glow);
+  }
+
+  .sub-nav-icono {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .sub-nav-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .sub-nav-texto strong {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .sub-nav-texto small {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  /* ── SECCIÓN ── */
+  .seccion-bloque {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .seccion-titulo {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .seccion-icono {
+    font-size: 1.75rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+  }
+
+  .seccion-titulo h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin: 0 0 0.2rem;
+    color: var(--text-color);
+    -webkit-text-fill-color: var(--text-color);
+    background: none;
+  }
+
+  .seccion-subtitulo {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  /* ── LISTA DE APUNTES ── */
+  .lista-apuntes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.1rem;
+  }
+
+  /* ── CARD ── */
+  .apunte-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .apunte-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .apunte-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-md), 0 0 20px rgba(74, 222, 128, 0.07);
+  }
+
+  .apunte-card:hover::before {
+    opacity: 0.5;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .badge-dif {
+    font-size: 0.68rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 100px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-dif--basico      { background: rgba(74,222,128,0.1);  color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
+  .badge-dif--intermedio  { background: rgba(251,146,60,0.1);  color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+  .badge-dif--avanzado    { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+  .badge-dif--masterclass { background: rgba(250,204,21,0.1);  color: #facc15; border: 1px solid rgba(250,204,21,0.25); }
+
+  .badge-xp {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--accent-color);
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+    letter-spacing: 0.03em;
+  }
+
+  .card-fecha {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+  .card-body {
+    flex: 1;
+  }
+
+  .card-body h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  .card-body h3 a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    transition: color 0.2s;
+    -webkit-text-fill-color: var(--text-color);
+    background: none;
+  }
+
+  .card-body h3 a:hover {
+    color: var(--accent-color);
+    -webkit-text-fill-color: var(--accent-color);
+  }
+
+  .card-desc {
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.6;
+    font-size: 0.875rem;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-sm);
+    background: rgba(74, 222, 128, 0.07);
+    border: 1px solid rgba(74, 222, 128, 0.15);
+    transition: all 0.2s ease;
+    align-self: flex-start;
+  }
+
+  .card-cta:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+    gap: 0.6rem;
+  }
+
+  /* ── VACÍO ── */
+  .sin-apuntes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 3rem 2rem;
+    background: var(--bg-elevated);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .sin-apuntes-icono {
+    font-size: 2rem;
+    opacity: 0.4;
+  }
+
+  .sin-apuntes p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .sin-apuntes-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    padding: 0.2rem 0.75rem;
+    border-radius: 100px;
+  }
+
+  @media (max-width: 640px) {
+    .cat-hero { padding: 1.75rem 1.25rem; }
+    .cat-meta { display: none; }
+    .lista-apuntes { grid-template-columns: 1fr; }
+    .sub-nav-pill { min-width: 0; }
+  }
+</style>

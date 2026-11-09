@@ -1,6 +1,5 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import BarraProgreso from '../components/BarraProgreso.tsx';
 import CommandPalette from '../components/CommandPalette.tsx';
 import Toast from '../components/Toast.astro';
 
@@ -67,6 +66,7 @@ const socialImageURL = image.startsWith('http')
   <!-- Preloads para rendimiento (Opcional, ajusta la ruta si usas fuentes locales) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <!-- Enrutador SPA de Astro (ViewTransitions) -->
   <ClientRouter />
@@ -100,17 +100,10 @@ const socialImageURL = image.startsWith('http')
   <!-- Paleta de comandos rápida (Ctrl + K) -->
   <CommandPalette client:load />
 
-  <!-- HUD Superior Gamificado -->
-  <header class="hud-wrapper">
-    <div class="hud-container">
-      <BarraProgreso client:load />
-    </div>
-  </header>
-
-  <!-- Contenido principal renderizado -->
-  <main id="main-content" tabindex="-1">
-    <slot /> 
-  </main>
+  <!-- Contenedor Principal a Pantalla Completa (Full-Width) -->
+  <div id="site-root" class="site-root">
+    <slot />
+  </div>
 
   <!-- Sistema Flotante de Notificaciones (Toasts Cyberpunk) -->
   <Toast />
@@ -180,59 +173,83 @@ const socialImageURL = image.startsWith('http')
      VARIABLES GLOBALES Y SISTEMA DE TEMAS
      ========================================= */
   :root {
-    --bg-color: #121212;
-    --bg-surface: #1a1a1a;
-    --text-color: #e0e0e0;
-    --text-muted: #a0a0a0;
-    --accent-color: #4CAF50; 
-    --accent-glow: rgba(76, 175, 80, 0.4);
-    --code-bg: #1e1e1e;
-    --border-color: #333333;
+    --bg-color: #0a0a0f;
+    --bg-surface: #111118;
+    --bg-elevated: #18181f;
+    --text-color: #e8e8f0;
+    --text-muted: #8888a0;
+    --accent-color: #4ade80;
+    --accent-dark: #22c55e;
+    --accent-glow: rgba(74, 222, 128, 0.35);
+    --code-bg: #0d0d14;
+    --border-color: #2a2a38;
+    --border-subtle: #1e1e28;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
     
-    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+    --shadow-glow: 0 0 24px var(--accent-glow);
   }
 
   /* Temas de la Tienda Endgame */
   [data-theme="kali"] {
-    --bg-color: #0d0d0d;
-    --bg-surface: #141414;
-    --accent-color: #e53935;
-    --accent-glow: rgba(229, 57, 53, 0.4);
-    --border-color: #3f1a1a;
+    --bg-color: #0a0005;
+    --bg-surface: #120008;
+    --bg-elevated: #1a000d;
+    --accent-color: #f43f5e;
+    --accent-dark: #e11d48;
+    --accent-glow: rgba(244, 63, 94, 0.35);
+    --border-color: #3f0a1a;
+    --border-subtle: #2a0510;
   }
 
   [data-theme="dracula"] {
-    --bg-color: #282a36;
-    --bg-surface: #383a59;
+    --bg-color: #1e1f2b;
+    --bg-surface: #252637;
+    --bg-elevated: #2d2e45;
     --text-color: #f8f8f2;
     --text-muted: #6272a4;
     --accent-color: #bd93f9;
-    --accent-glow: rgba(189, 147, 249, 0.4);
-    --code-bg: #21222c;
-    --border-color: #44475a;
+    --accent-dark: #a580f7;
+    --accent-glow: rgba(189, 147, 249, 0.35);
+    --code-bg: #191a27;
+    --border-color: #3a3c58;
+    --border-subtle: #2d2e45;
   }
 
   [data-theme="matrix"] {
     --bg-color: #000000;
-    --bg-surface: #0a0a0a;
-    --text-color: #00ff00;
-    --text-muted: #008800;
-    --accent-color: #00ff00;
-    --accent-glow: rgba(0, 255, 0, 0.5);
-    --code-bg: #050505;
-    --border-color: #004400;
+    --bg-surface: #050805;
+    --bg-elevated: #0a110a;
+    --text-color: #00e676;
+    --text-muted: #00701a;
+    --accent-color: #00ff41;
+    --accent-dark: #00cc33;
+    --accent-glow: rgba(0, 255, 65, 0.4);
+    --code-bg: #020302;
+    --border-color: #004d10;
+    --border-subtle: #002a08;
   }
   
   [data-theme="cyberpunk"] {
-    --bg-color: #090a0f;
-    --bg-surface: #12141f;
-    --text-color: #00ffff;
-    --text-muted: #ff0055;
-    --accent-color: #fcee0a;
-    --accent-glow: rgba(252, 238, 10, 0.4);
-    --code-bg: #050608;
-    --border-color: #ff0055;
+    --bg-color: #05050f;
+    --bg-surface: #0c0c1e;
+    --bg-elevated: #121228;
+    --text-color: #e0e0ff;
+    --text-muted: #8080c0;
+    --accent-color: #f9e800;
+    --accent-dark: #d4c200;
+    --accent-glow: rgba(249, 232, 0, 0.35);
+    --code-bg: #030308;
+    --border-color: #2a2a60;
+    --border-subtle: #1a1a40;
   }
 
   /* =========================================
@@ -254,6 +271,8 @@ const socialImageURL = image.startsWith('http')
     line-height: 1.6;
     scroll-behavior: smooth;
     transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 16px;
+    letter-spacing: -0.01em;
   }
 
   body {
@@ -262,6 +281,10 @@ const socialImageURL = image.startsWith('http')
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(74, 222, 128, 0.07), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(74, 222, 128, 0.04), transparent);
+    background-attachment: fixed;
   }
 
   /* Mejora de accesibilidad para el salto al contenido */
@@ -269,39 +292,45 @@ const socialImageURL = image.startsWith('http')
     outline: none;
   }
 
-  main {
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem 1.5rem;
+  .site-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     width: 100%;
-    max-width: 1100px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  main {
     flex-grow: 1;
-    animation: fade-in 0.4s ease-out;
+    width: 100%;
   }
 
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   /* =========================================
-     ESTILOS TYPOGRAPHY Y CÓDIGO
+     TYPOGRAPHY Y CÓDIGO
      ========================================= */
   code {
     font-family: var(--font-mono);
-    background-color: var(--code-bg);
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    font-size: 0.9em;
+    background-color: var(--bg-elevated);
+    padding: 0.18em 0.45em;
+    border-radius: var(--radius-sm);
+    font-size: 0.88em;
     color: var(--accent-color);
+    border: 1px solid var(--border-color);
   }
 
   pre {
     background-color: var(--code-bg) !important;
     padding: 3rem 1.5rem 1.5rem 1.5rem !important; 
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     overflow-x: auto;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.03);
   }
 
   pre code {
@@ -309,33 +338,37 @@ const socialImageURL = image.startsWith('http')
     padding: 0;
     border-radius: 0;
     color: inherit;
+    border: none;
   }
 
   .boton-copiar {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.6rem;
+    right: 0.6rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    background-color: var(--bg-surface);
-    color: var(--text-color);
+    background-color: var(--bg-elevated);
+    color: var(--text-muted);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 0.3rem 0.8rem;
-    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
     font-family: var(--font-sans);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
   }
 
   .boton-copiar:hover {
     background-color: var(--accent-color);
     color: var(--bg-color);
     border-color: var(--accent-color);
-    box-shadow: 0 0 10px var(--accent-glow);
+    box-shadow: 0 0 12px var(--accent-glow);
+    transform: translateY(-1px);
   }
 
   .boton-copiar.copiado {
@@ -351,112 +384,120 @@ const socialImageURL = image.startsWith('http')
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(18, 18, 18, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 10, 15, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.03), var(--shadow-sm);
   }
 
   .hud-container { 
-    max-width: 1100px; 
+    max-width: 1140px; 
     width: 100%;
     margin: 0 auto; 
     display: flex; 
     justify-content: flex-end; 
-    padding: 0.8rem 1.5rem; 
+    padding: 0.65rem 1.5rem; 
   }
 
   .xp-hud { 
     display: flex; 
     align-items: center; 
-    gap: 12px; 
-    background: var(--bg-surface); 
-    padding: 0.5rem 1rem; 
-    border-radius: 12px; 
+    gap: 10px; 
+    background: var(--bg-elevated); 
+    padding: 0.45rem 1rem; 
+    border-radius: var(--radius-lg); 
     border: 1px solid var(--border-color); 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-    transition: border-color 0.3s ease;
+    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .xp-hud:hover {
     border-color: var(--accent-color);
+    box-shadow: var(--shadow-sm), 0 0 16px var(--accent-glow);
   }
 
   .nivel-badge { 
     font-weight: 800; 
     color: var(--bg-color); 
     background: var(--accent-color); 
-    padding: 0.2rem 0.6rem; 
-    border-radius: 6px; 
-    font-size: 0.9rem; 
+    padding: 0.2rem 0.65rem; 
+    border-radius: var(--radius-sm); 
+    font-size: 0.82rem; 
     display: flex; 
     align-items: center; 
     gap: 4px;
-    box-shadow: 0 0 8px var(--accent-glow); 
-  }
-
-  .prestigio-estrella { font-size: 0.8rem; filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.8)); }
+    box-shadow: 0 0 10px var(--accent-glow);
+    letter-spacing: 0.03em;
+  }\n
+  .prestigio-estrella { font-size: 0.75rem; filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.9)); }
   
   .xp-barra-fondo { 
-    width: 150px; 
-    height: 10px; 
+    width: 130px; 
+    height: 6px; 
     background: rgba(0,0,0,0.5); 
     border-radius: 10px; 
     overflow: hidden; 
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-subtle);
   }
   
   .xp-barra-relleno { 
     height: 100%; 
-    background: var(--accent-color); 
+    background: linear-gradient(90deg, var(--accent-dark), var(--accent-color));
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-    box-shadow: 0 0 10px var(--accent-glow); 
+    box-shadow: 0 0 8px var(--accent-glow); 
+    border-radius: 10px;
   }
   
   .xp-texto { 
-    font-size: 0.8rem; 
+    font-size: 0.75rem; 
     color: var(--text-muted); 
     font-family: var(--font-mono); 
     font-weight: 600; 
-    width: 80px; 
-    text-align: right; 
+    width: 75px; 
+    text-align: right;
+    letter-spacing: 0.02em;
   }
   
   .monedas-badge { 
-    background: rgba(0,0,0,0.3); 
+    background: rgba(255, 215, 0, 0.08); 
     color: #FFD700; 
     padding: 0.2rem 0.6rem; 
-    border-radius: 6px; 
-    font-weight: bold; 
+    border-radius: var(--radius-sm); 
+    font-weight: 700; 
     font-family: var(--font-mono); 
-    border: 1px solid rgba(255, 215, 0, 0.3); 
+    font-size: 0.82rem;
+    border: 1px solid rgba(255, 215, 0, 0.2); 
+    letter-spacing: 0.03em;
   }
 
   .cristales-badge { 
-    background: rgba(0,0,0,0.3); 
-    color: #00ffff; 
+    background: rgba(0, 220, 255, 0.08); 
+    color: #00dcff; 
     padding: 0.2rem 0.6rem; 
-    border-radius: 6px; 
-    font-weight: bold; 
+    border-radius: var(--radius-sm); 
+    font-weight: 700; 
     font-family: var(--font-mono); 
-    border: 1px solid rgba(0, 255, 255, 0.3); 
+    font-size: 0.82rem;
+    border: 1px solid rgba(0, 220, 255, 0.2); 
+    letter-spacing: 0.03em;
   }
 
   /* =========================================
      BOTONES GAMIFICADOS
      ========================================= */
   .btn-completar { 
-    background: var(--bg-surface); 
-    color: var(--text-color); 
+    background: transparent; 
+    color: var(--accent-color); 
     border: 2px solid var(--accent-color); 
-    padding: 1.2rem 2.5rem; 
-    font-size: 1.1rem; 
-    border-radius: 12px; 
+    padding: 1rem 2.5rem; 
+    font-size: 1rem; 
+    border-radius: var(--radius-md); 
     cursor: pointer; 
-    font-weight: 800; 
-    letter-spacing: 0.5px;
+    font-weight: 700; 
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
     margin-top: 3rem; 
     display: flex; 
     align-items: center;
@@ -465,21 +506,21 @@ const socialImageURL = image.startsWith('http')
     width: 100%; 
     max-width: 400px; 
     margin-inline: auto; 
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 0 0 0 var(--accent-glow);
   }
 
   .btn-completar:hover:not(:disabled) { 
     background: var(--accent-color); 
     color: var(--bg-color); 
-    transform: translateY(-3px); 
-    box-shadow: 0 10px 20px var(--accent-glow);
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 24px var(--accent-glow);
   }
   
   .btn-completar.dominado { 
-    background: var(--bg-surface); 
+    background: rgba(74, 222, 128, 0.08);
     color: var(--accent-color); 
     border-color: var(--border-color);
-    opacity: 0.8; 
+    opacity: 0.75; 
     cursor: default; 
     transform: none; 
     box-shadow: none;
@@ -491,24 +532,24 @@ const socialImageURL = image.startsWith('http')
   .cmd-backdrop {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
     z-index: 100000;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 12vh;
-    animation: fadeIn 0.2s ease-out;
+    padding-top: 10vh;
+    animation: fadeIn 0.15s ease-out;
   }
   
   .cmd-modal {
     width: 100%;
-    max-width: 650px;
-    background: var(--bg-surface);
+    max-width: 620px;
+    background: var(--bg-elevated);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent-glow);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(74, 222, 128, 0.1);
     overflow: hidden;
     animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -516,9 +557,10 @@ const socialImageURL = image.startsWith('http')
   .cmd-header {
     display: flex;
     align-items: center;
-    padding: 1.2rem 1.5rem;
+    padding: 1.1rem 1.4rem;
     border-bottom: 1px solid var(--border-color);
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.25);
+    gap: 0.75rem;
   }
 
   .cmd-input {
@@ -526,68 +568,72 @@ const socialImageURL = image.startsWith('http')
     background: transparent;
     border: none;
     color: var(--text-color);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     outline: none;
     font-family: var(--font-sans);
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
   
   .cmd-input::placeholder { color: var(--text-muted); }
 
   .cmd-esc {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
-    background: var(--bg-color);
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
+    background: var(--bg-surface);
+    padding: 0.25rem 0.55rem;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .cmd-results {
-    max-height: 450px;
+    max-height: 420px;
     overflow-y: auto;
-    padding: 0.8rem;
+    padding: 0.6rem;
   }
 
   .cmd-item {
     display: flex;
     align-items: center;
-    padding: 1rem 1.2rem;
+    padding: 0.85rem 1.1rem;
     color: var(--text-color);
     text-decoration: none;
-    border-radius: 10px;
-    transition: all 0.15s ease;
-    margin-bottom: 0.4rem;
+    border-radius: var(--radius-md);
+    transition: all 0.12s ease;
+    margin-bottom: 0.25rem;
     border: 1px solid transparent;
+    font-size: 0.95rem;
+    font-weight: 500;
   }
 
   .cmd-item:hover, .cmd-item[aria-selected="true"] {
-    background: var(--accent-glow);
+    background: rgba(74, 222, 128, 0.08);
     color: var(--text-color);
-    border-color: var(--accent-color);
+    border-color: var(--border-color);
   }
 
   .cmd-empty {
     padding: 3rem 2rem;
     text-align: center;
     color: var(--text-muted);
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slideDown { 
-    from { transform: translateY(-20px) scale(0.98); opacity: 0; } 
+    from { transform: translateY(-16px) scale(0.97); opacity: 0; } 
     to { transform: translateY(0) scale(1); opacity: 1; } 
   }
   /* ==========================================================================
-   ANIVERSARIO VISUAL X999: EFECTOS CINEMATOGRÁFICOS Y DEGRADADOS PRO
+   EFECTOS VISUALES Y ANIMACIONES GLOBALES
    ========================================================================== */
 
-/* 1. Animaciones Globales de Entrada y Dinámicas */
+/* 1. Animaciones Globales */
 @keyframes fadeInScale {
-  0% { opacity: 0; transform: scale(0.96) translateY(10px); }
+  0% { opacity: 0; transform: scale(0.97) translateY(8px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
@@ -598,54 +644,53 @@ const socialImageURL = image.startsWith('http')
 }
 
 @keyframes neonPulse {
-  0%, 100% { box-shadow: 0 0 15px var(--accent-glow), inset 0 0 15px rgba(255, 255, 255, 0.05); }
-  50% { box-shadow: 0 0 30px var(--accent-color), inset 0 0 25px var(--accent-glow); }
+  0%, 100% { box-shadow: 0 0 10px var(--accent-glow); }
+  50% { box-shadow: 0 0 24px var(--accent-color), 0 0 48px var(--accent-glow); }
 }
 
 @keyframes floatElement {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-5px); }
 }
 
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(1000%); }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
-/* 2. Aplicación General de Transiciones Suaves en la UI */
+/* 2. Entrada suave del cuerpo */
 body {
-  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInScale 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 3. Tarjetas Bento y Contenedores con Efecto Glassmorphism Avanzado */
+/* 3. Tarjetas con Glassmorphism */
 .bento-card, .altar-card, .tienda-container, .tema-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(25, 25, 30, 0.7) 0%, rgba(15, 15, 18, 0.85) 100%) !important;
+  background: linear-gradient(145deg, var(--bg-elevated) 0%, var(--bg-surface) 100%) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 
-/* Efecto de brillo sutil en el borde al hacer hover */
 .bento-card:hover, .tema-card:hover {
   border-color: var(--accent-color) !important;
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 25px var(--accent-glow);
+  transform: translateY(-3px) scale(1.005);
+  box-shadow: var(--shadow-lg), 0 0 20px var(--accent-glow);
 }
 
-/* Línea de luz superior decorativa en las tarjetas Pro */
+/* Línea decorativa superior en las tarjetas */
 .bento-card::before, .altar-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-  opacity: 0.6;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent-color) 50%, transparent 100%);
+  opacity: 0.5;
   transition: opacity 0.3s ease;
 }
 
@@ -653,110 +698,109 @@ body {
   opacity: 1;
 }
 
-/* 4. Títulos con Degradados de Texto Dinámicos */
+/* 4. Títulos con gradiente de texto */
 h1, h2, .dashboard-header h1 {
-  background: linear-gradient(135deg, #ffffff 30%, var(--accent-color) 100%);
+  background: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 5px 25px var(--accent-glow);
+  background-clip: text;
 }
 
-/* 5. Barras de Progreso Cibernéticas Animadas */
+/* 5. Barras de progreso animadas */
 .barra-relleno, .altar-barra-relleno, .skill-barra-relleno {
-  background: linear-gradient(90deg, var(--accent-color), #ffffff, var(--accent-color)) !important;
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent-color), var(--accent-dark)) !important;
   background-size: 200% 100% !important;
-  animation: gradientShift 4s ease infinite;
-  box-shadow: 0 0 12px var(--accent-color);
+  animation: gradientShift 3s ease infinite;
+  box-shadow: 0 0 10px var(--accent-glow);
   position: relative;
+  overflow: hidden;
 }
 
-/* Efecto de brillo móvil sobre las barras */
 .barra-relleno::after, .altar-barra-relleno::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-  animation: scanline 2s linear infinite;
+  top: 0; bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2.5s linear infinite;
 }
 
-/* 6. Insignias (Badges) con Efectos de Neón */
+/* 6. Badges con efectos */
 .nivel-badge, .monedas-badge, .cristales-badge {
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nivel-badge:hover, .monedas-badge:hover {
   transform: scale(1.05);
-  animation: neonPulse 1.5s infinite;
 }
 
-/* 7. Botones Interactivos Épicos */
+/* 7. Botones interactivos */
 button:not(:disabled), .btn-completar, .btn-ascension.activo, .btn-comprar, .btn-equipar {
   position: relative;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px var(--accent-glow);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--accent-glow);
 }
 
 button:not(:disabled):active {
   transform: translateY(1px);
 }
 
-/* Efecto de destello al hacer clic (Ripple simulado) */
+/* Ripple al hacer clic */
 button::after {
   content: '';
   position: absolute;
   top: 50%; left: 50%;
   width: 0; height: 0;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out;
+  transition: width 0.5s ease-out, height 0.5s ease-out, opacity 0.5s ease-out;
 }
 
 button:active::after {
-  width: 300px;
-  height: 300px;
+  width: 280px;
+  height: 280px;
   opacity: 0;
   transition: 0s;
 }
 
-/* 8. Estética de Logros e Ítems Desbloqueados */
+/* 8. Logros */
 .logro-item {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .logro-item.unlocked {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(0, 0, 0, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.07) 0%, transparent 100%);
   border-color: var(--accent-color);
-  animation: floatElement 4s ease-in-out infinite;
+  animation: floatElement 5s ease-in-out infinite;
 }
 
 .logro-item.unlocked .logro-icon {
-  filter: drop-shadow(0 0 12px var(--accent-color));
+  filter: drop-shadow(0 0 10px var(--accent-color));
   transform: scale(1.1);
 }
 
-/* 9. Scrollbar Personalizada Cyberpunk */
+/* 9. Scrollbar personalizada */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-color);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--border-color);
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-color);
-  box-shadow: 0 0 10px var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 </style>
