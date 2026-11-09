@@ -3,6 +3,8 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import Quiz from '../../components/Quiz.tsx';
+import { quizzes } from '../../data/quizzes';
 
 // 1. Generar rutas dinámicas para cada apunte usando apunte.id (Astro 5+)
 export async function getStaticPaths() {
@@ -15,6 +17,7 @@ export async function getStaticPaths() {
 
 const { apunte } = Astro.props;
 const apunteId = apunte.id || apunte.slug;
+const quizItem = quizzes[apunteId];
 
 // 2. Renderizar contenido con la nueva API de Astro 5+
 const { Content, headings } = await render(apunte);
@@ -77,6 +80,10 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
       <article class="markdown-body" id="article-body">
         <Content />
       </article>
+
+      {quizItem && (
+        <Quiz client:load apunteId={apunteId} quiz={quizItem} />
+      )}
 
       <!-- BOTÓN GAMIFICADO GLOBAL -->
       <div class="recompensa-global">

@@ -1,0 +1,324 @@
+export interface QuizItem {
+  pregunta: string;
+  opciones: string[];
+  respuestaCorrecta: string;
+  explicacion: string;
+  xpBonus: number;
+}
+
+export const quizzes: Record<string, QuizItem> = {
+  // ── SISTEMAS SOM (BÁSICO A AVANZADO) ──
+  'comandos-linux-basicos': {
+    pregunta: '¿Qué comando de Linux muestra los archivos ocultos y los permisos detallados en formato largo?',
+    opciones: ['ls -la', 'dir /all', 'show -p', 'cat -list'],
+    respuestaCorrecta: 'ls -la',
+    explicacion: 'El modificador -l activa el formato largo con permisos y propietarios, y -a (all) incluye los archivos ocultos que empiezan por punto.',
+    xpBonus: 25,
+  },
+  'estructura-directorios-linux-fhs': {
+    pregunta: '¿En qué directorio del FHS se almacenan los archivos de configuración globales de todo el sistema operativo y servicios?',
+    opciones: ['/etc', '/var', '/bin', '/sys'],
+    respuestaCorrecta: '/etc',
+    explicacion: '/etc contiene los archivos de configuración de todo el sistema (como passwd, fstab, hosts o configuraciones de servicios web y red).',
+    xpBonus: 25,
+  },
+  'gestion-paquetes-repositorios-linux': {
+    pregunta: '¿Qué comando de APT desinstala un programa eliminando también de forma completa sus archivos de configuración?',
+    opciones: ['sudo apt purge paquete', 'sudo apt remove paquete', 'sudo apt delete paquete', 'sudo apt erase paquete'],
+    respuestaCorrecta: 'sudo apt purge paquete',
+    explicacion: 'apt remove conserva las configuraciones para reinstalaciones futuras; apt purge elimina tanto los binarios como sus configuraciones en /etc.',
+    xpBonus: 25,
+  },
+  'permisos-linux-chmod-chown': {
+    pregunta: '¿Qué comando asigna permisos rwxr-xr-- a un archivo mediante notación numérica octal?',
+    opciones: ['chmod 754 archivo', 'chmod 644 archivo', 'chmod 777 archivo', 'chmod 755 archivo'],
+    respuestaCorrecta: 'chmod 754 archivo',
+    explicacion: 'rwx = 4+2+1 = 7 (usuario), r-x = 4+0+1 = 5 (grupo), r-- = 4+0+0 = 4 (otros). Resultado: 754.',
+    xpBonus: 25,
+  },
+  'particionado-discos-sistemas-archivos-fstab': {
+    pregunta: '¿Por qué se recomienda utilizar el identificador UUID en /etc/fstab en lugar de nombres como /dev/sdb1?',
+    opciones: [
+      'Porque el UUID nunca cambia aunque cambie el orden de conexión física de los discos',
+      'Porque el UUID hace que el disco lea al doble de velocidad',
+      'Porque MBR no soporta nombres con letras',
+      'Porque /etc/fstab no admite caracteres alfabéticos'
+    ],
+    respuestaCorrecta: 'Porque el UUID nunca cambia aunque cambie el orden de conexión física de los discos',
+    explicacion: 'Los identificadores UUID son globalmente únicos y persisten invariables, garantizando que el sistema siempre monte la partición correcta en el arranque.',
+    xpBonus: 25,
+  },
+  'gestion-procesos-servicios-systemd-linux': {
+    pregunta: '¿Qué señal de proceso enviada por kill realiza un cierre forzado inmediato directamente ejecutado por el kernel?',
+    opciones: ['SIGKILL (9)', 'SIGTERM (15)', 'SIGHUP (1)', 'SIGINT (2)'],
+    respuestaCorrecta: 'SIGKILL (9)',
+    explicacion: 'SIGKILL (señal 9) no puede ser interceptada ni ignorada por el proceso; el kernel termina la ejecución inmediatamente.',
+    xpBonus: 25,
+  },
+  'scripting-bash-automatizacion-tareas-cron': {
+    pregunta: 'En un script de Bash, ¿qué variable especial almacena el código de salida (exit status) del último comando ejecutado?',
+    opciones: ['$?', '$#', '$0', '$$'],
+    respuestaCorrecta: '$?',
+    explicacion: '$? devuelve 0 si el comando previo finalizó con éxito, o un valor distinto de 0 (ej. 1, 127) si ocurrió un error.',
+    xpBonus: 25,
+  },
+
+  // ── SISTEMAS SOR (RED & ACTIVE DIRECTORY) ──
+  'introduccion-active-directory': {
+    pregunta: '¿Cuál es el protocolo estándar de red utilizado por Active Directory para autenticar usuarios en el dominio?',
+    opciones: ['Kerberos', 'HTTP Digest', 'PAP', 'FTP'],
+    respuestaCorrecta: 'Kerberos',
+    explicacion: 'Active Directory utiliza Kerberos v5 como protocolo principal de autenticación segura basado en tickets cifrados.',
+    xpBonus: 25,
+  },
+  'usuarios-grupos-active-directory-powershell': {
+    pregunta: '¿Qué cmdlet de PowerShell se utiliza para crear una nueva Unidad Organizativa en Active Directory?',
+    opciones: ['New-ADOrganizationalUnit', 'Create-ADUnit', 'Add-ADDirectory', 'New-OUContainer'],
+    respuestaCorrecta: 'New-ADOrganizationalUnit',
+    explicacion: 'New-ADOrganizationalUnit permite crear OUs indicando el nombre y el parámetro -Path en el árbol del dominio.',
+    xpBonus: 25,
+  },
+  'directivas-grupo-gpo-windows-server': {
+    pregunta: 'Según el orden de aplicación LSDOU en Windows Server, ¿qué nivel de GPO tiene mayor prioridad al sobrescribir conflictos?',
+    opciones: ['Unidad Organizativa (OU)', 'Dominio', 'Sitio (Site)', 'Local'],
+    respuestaCorrecta: 'Unidad Organizativa (OU)',
+    explicacion: 'Las directivas se aplican en orden Local -> Sitio -> Dominio -> Unidad Organizativa. Como la OU se aplica al final, sus configuraciones sobrescriben a las anteriores.',
+    xpBonus: 25,
+  },
+
+  // ── REDES: FUNDAMENTOS Y ENLACE DE DATOS ──
+  'modelo-osi-tcp-ip-protocolos': {
+    pregunta: '¿En qué capa del Modelo OSI operan los protocolos TCP y UDP para gestionar puertos y flujos de conexión extremo a extremo?',
+    opciones: ['Capa 4 (Transporte)', 'Capa 3 (Red)', 'Capa 2 (Enlace de Datos)', 'Capa 7 (Aplicación)'],
+    respuestaCorrecta: 'Capa 4 (Transporte)',
+    explicacion: 'La Capa 4 de Transporte se encarga de la multiplexación mediante puertos (sockets) y de la fiabilidad de la entrega (TCP con ACKs vs UDP sin conexión).',
+    xpBonus: 25,
+  },
+  'cableado-estructurado-ethernet-arp': {
+    pregunta: '¿Cuál es la función del protocolo ARP (Address Resolution Protocol)?',
+    opciones: [
+      'Resolver la dirección física MAC a partir de una dirección lógica IPv4 conocida',
+      'Asignar una dirección IP pública a un router automáticamente',
+      'Traducir nombres de dominio legibles en direcciones IP',
+      'Cifrar las tramas Ethernet mediante claves simétricas'
+    ],
+    respuestaCorrecta: 'Resolver la dirección física MAC a partir de una dirección lógica IPv4 conocida',
+    explicacion: 'ARP emite una petición broadcast ("¿Quién tiene la IP 192.168.1.5?") para que el host destino responda con su dirección MAC física y poder encapsular la trama en Capa 2.',
+    xpBonus: 25,
+  },
+
+  // ── REDES: DIRECCIONAMIENTO IP ──
+  'fundamentos-subnetting-ipv4': {
+    pregunta: 'En una red con máscara /26 (255.255.255.192), ¿cuántas direcciones IP útiles para hosts hay en cada subred?',
+    opciones: ['62 hosts', '64 hosts', '128 hosts', '30 hosts'],
+    respuestaCorrecta: '62 hosts',
+    explicacion: 'Quedan 6 bits de host (32 - 26 = 6). La fórmula es 2^6 - 2 = 64 - 2 = 62 hosts útiles (restando ID de red y dirección de broadcast).',
+    xpBonus: 25,
+  },
+  'direccionamiento-ipv6-subredes-slaac': {
+    pregunta: '¿Qué mecanismo de autoconfiguración en IPv6 permite a un cliente obtener su dirección IP sin necesidad de un servidor DHCP tradicional?',
+    opciones: [
+      'SLAAC (Stateless Address Autoconfiguration)',
+      'NAT64 Dinámico',
+      'ARPv6 Solicitation',
+      'RARP Multicast'
+    ],
+    respuestaCorrecta: 'SLAAC (Stateless Address Autoconfiguration)',
+    explicacion: 'Mediante mensajes ICMPv6 Router Solicitation (RS) y Router Advertisement (RA), el router anuncia el prefijo /64 y el host genera su ID de interfaz automáticamente.',
+    xpBonus: 25,
+  },
+
+  // ── REDES: ROUTING & SWITCHING ──
+  'configuracion-vlans-trunking-cisco': {
+    pregunta: '¿Qué estándar de la industria añade una etiqueta de 4 bytes a la trama Ethernet para identificar la VLAN en enlaces troncales?',
+    opciones: ['IEEE 802.1Q', 'IEEE 802.3ad', 'IEEE 802.11ax', 'Cisco ISL'],
+    respuestaCorrecta: 'IEEE 802.1Q',
+    explicacion: 'IEEE 802.1Q (dot1q) es el estándar internacional abierto para el etiquetado de tramas VLAN en enlaces trunk.',
+    xpBonus: 25,
+  },
+  'enrutamiento-inter-vlan-router-on-a-stick': {
+    pregunta: 'En la arquitectura Router-on-a-Stick, ¿qué comando de Cisco asocia una subinterfaz lógica a una VLAN específica con etiquetado 802.1Q?',
+    opciones: [
+      'encapsulation dot1Q <vlan-id>',
+      'switchport mode trunk <vlan-id>',
+      'vlan trunk allow <vlan-id>',
+      'ip route vlan <vlan-id>'
+    ],
+    respuestaCorrecta: 'encapsulation dot1Q <vlan-id>',
+    explicacion: 'El comando encapsulation dot1Q <vlan-id> le indica al router qué etiqueta 802.1Q debe leer y generar para esa subinterfaz.',
+    xpBonus: 25,
+  },
+  'enrutamiento-dinamico-ospf-cisco': {
+    pregunta: '¿Qué algoritmo de estado de enlace utiliza el protocolo OSPF para calcular la ruta más corta libre de bucles?',
+    opciones: ['Dijkstra (Shortest Path First)', 'Bellman-Ford', 'DUAL de EIGRP', 'Floyd-Warshall'],
+    respuestaCorrecta: 'Dijkstra (Shortest Path First)',
+    explicacion: 'OSPF utiliza el algoritmo Dijkstra (SPF) sobre la base de datos de estado de enlace (LSDB) para construir el árbol de rutas con menor coste métrico acumulado.',
+    xpBonus: 25,
+  },
+
+  // ── REDES: SERVICIOS Y SEGURIDAD ──
+  'servidor-dhcp-dns-linux': {
+    pregunta: '¿Cuál es la secuencia correcta de los cuatro mensajes en el proceso de asignación de una IP por DHCP?',
+    opciones: [
+      'Discover -> Offer -> Request -> Acknowledge (DORA)',
+      'Request -> Offer -> Discover -> Accept',
+      'Ping -> ARP -> SYN -> ACK',
+      'Hello -> Init -> Assign -> Confirm'
+    ],
+    respuestaCorrecta: 'Discover -> Offer -> Request -> Acknowledge (DORA)',
+    explicacion: 'El ciclo DHCP estándar se conoce como DORA: Discover (cliente busca), Offer (servidor ofrece), Request (cliente solicita) y Acknowledge (servidor confirma).',
+    xpBonus: 25,
+  },
+  'servidor-web-seguro-apache-nginx-ssl': {
+    pregunta: '¿Qué directiva de configuración en Nginx define el nombre de dominio atendido por un bloque de servidor (Virtual Host)?',
+    opciones: ['server_name', 'ServerAlias', 'VirtualDomain', 'host_match'],
+    respuestaCorrecta: 'server_name',
+    explicacion: 'En Nginx, server_name especifica los dominios que atenderá ese bloque server { ... }, equivalente a ServerName en Apache.',
+    xpBonus: 25,
+  },
+  'seguridad-cortafuegos-ufw-iptables-nat': {
+    pregunta: 'En iptables, ¿en qué tabla y cadena se debe aplicar una regla de Port Forwarding (DNAT) para redirigir tráfico entrante a una IP interna?',
+    opciones: [
+      'Tabla nat, Cadena PREROUTING',
+      'Tabla filter, Cadena INPUT',
+      'Tabla nat, Cadena POSTROUTING',
+      'Tabla raw, Cadena OUTPUT'
+    ],
+    respuestaCorrecta: 'Tabla nat, Cadena PREROUTING',
+    explicacion: 'DNAT debe aplicarse en la cadena PREROUTING de la tabla nat, antes de que el kernel tome la decisión de enrutamiento hacia la IP destino final.',
+    xpBonus: 25,
+  },
+  'acceso-remoto-seguro-ssh-vpn-wireguard': {
+    pregunta: '¿Qué directiva en /etc/ssh/sshd_config bloquea completamente los ataques de fuerza bruta basados en diccionarios de claves?',
+    opciones: [
+      'PasswordAuthentication no',
+      'PermitRootLogin yes',
+      'MaxAuthTries 10',
+      'X11Forwarding yes'
+    ],
+    respuestaCorrecta: 'PasswordAuthentication no',
+    explicacion: 'Al deshabilitar PasswordAuthentication, el servidor únicamente acepta conexiones autenticadas con pares de llaves criptográficas (como Ed25519).',
+    xpBonus: 25,
+  },
+
+  // ── PROGRAMACIÓN FRONTEND ──
+  'html5-css3-moderno-flexbox-grid': {
+    pregunta: 'En Flexbox, ¿qué propiedad alinea los elementos hijos a lo largo del eje secundario (cross axis)?',
+    opciones: ['align-items', 'justify-content', 'flex-direction', 'grid-template'],
+    respuestaCorrecta: 'align-items',
+    explicacion: 'justify-content alinea en el eje principal (main axis), mientras que align-items alinea en el eje perpendicular/secundario.',
+    xpBonus: 25,
+  },
+  'formularios-accesibilidad-css-animaciones': {
+    pregunta: '¿Por qué se desaconseja sustituir una etiqueta <label> por un simple atributo placeholder en formularios web?',
+    opciones: [
+      'Porque el placeholder desaparece al escribir y provoca pérdida de contexto para lectores de pantalla',
+      'Porque el placeholder consume el doble de memoria RAM en el navegador',
+      'Porque HTML5 prohíbe el uso de placeholders en campos de tipo text',
+      'Porque los navegadores móviles no admiten campos con placeholder'
+    ],
+    respuestaCorrecta: 'Porque el placeholder desaparece al escribir y provoca pérdida de contexto para lectores de pantalla',
+    explicacion: 'La etiqueta <label> mantiene la descripción siempre visible y permite a los lectores de pantalla (tecnologías de asistencia) asociar el propósito del campo de forma unívoca.',
+    xpBonus: 25,
+  },
+  'javascript-dom-eventos': {
+    pregunta: '¿Qué método del objeto Event previene que un formulario recargue la página completa al hacer submit?',
+    opciones: ['event.preventDefault()', 'event.stopReload()', 'document.cancel()', 'event.pause()'],
+    respuestaCorrecta: 'event.preventDefault()',
+    explicacion: 'event.preventDefault() anula el comportamiento nativo por defecto del navegador para el evento disparado.',
+    xpBonus: 25,
+  },
+  'javascript-asincrono-fetch-promesas-api': {
+    pregunta: '¿Qué condición debe cumplirse para que la función nativa fetch() rechace su Promesa en el bloque .catch()?',
+    opciones: [
+      'Un error físico de red que impida enviar o recibir la petición (ej. desconexión o fallo DNS)',
+      'Cualquier código de estado HTTP 404 (Not Found)',
+      'Cualquier código de estado HTTP 500 (Internal Server Error)',
+      'Que el servidor devuelva una respuesta con cuerpo JSON vacío'
+    ],
+    respuestaCorrecta: 'Un error físico de red que impida enviar o recibir la petición (ej. desconexión o fallo DNS)',
+    explicacion: 'fetch() solo rechaza la promesa si ocurre un fallo de red a nivel de socket; ante respuestas de error como 404 o 500 resuelve con éxito pero con response.ok = false.',
+    xpBonus: 25,
+  },
+  'componentes-web-react-preact-estados': {
+    pregunta: '¿Por qué en React/Preact se debe actualizar el estado mediante la función setter en lugar de mutar la variable directamente?',
+    opciones: [
+      'Porque el framework solo detecta cambios y planifica el re-renderizado del DOM al invocar la función setter',
+      'Porque modificar variables normales en JavaScript está prohibido en modo estricto',
+      'Porque las variables en componentes funcionales son de solo lectura a nivel de kernel',
+      'Porque el navegador bloquea la memoria si no se llama a una función asíncrona'
+    ],
+    respuestaCorrecta: 'Porque el framework solo detecta cambios y planifica el re-renderizado del DOM al invocar la función setter',
+    explicacion: 'React/Preact sigue el principio de inmutabilidad: la función setter notifica al reconciliador que el estado cambió para comparar el Virtual DOM y actualizar la interfaz.',
+    xpBonus: 25,
+  },
+
+  // ── PROGRAMACIÓN BACKEND ──
+  'python-variables-tipos-datos-operadores': {
+    pregunta: '¿Cuál es la diferencia principal entre una lista (list) y una tupla (tuple) en Python?',
+    opciones: [
+      'Las listas son mutables (se pueden modificar) mientras que las tuplas son inmutables',
+      'Las listas solo admiten números y las tuplas solo admiten cadenas de texto',
+      'Las tuplas no tienen índice ni orden de elementos',
+      'Las listas consumen menos memoria que las tuplas equivalentes'
+    ],
+    respuestaCorrecta: 'Las listas son mutables (se pueden modificar) mientras que las tuplas son inmutables',
+    explicacion: 'Una vez creada, una tupla no puede modificar su longitud ni reasignar sus elementos, lo que aporta seguridad para datos constantes y menor consumo en memoria.',
+    xpBonus: 25,
+  },
+  'python-estructuras-control': {
+    pregunta: '¿Qué estructura de bucle en Python se utiliza para iterar sobre un rango de números del 0 al 4?',
+    opciones: ['for i in range(5):', 'loop i from 0 to 4:', 'repeat (5) times:', 'foreach (0..4) as i:'],
+    respuestaCorrecta: 'for i in range(5):',
+    explicacion: 'range(5) genera una secuencia de enteros que comienza en 0 y termina en 4 (el límite superior es excluyente).',
+    xpBonus: 25,
+  },
+  'python-funciones-modulos-excepciones': {
+    pregunta: 'En una estructura de control de excepciones try...except...else...finally en Python, ¿cuándo se ejecuta el bloque else?',
+    opciones: [
+      'Únicamente si el bloque try finalizó sin lanzar ninguna excepción',
+      'Siempre que ocurra una excepción no capturada por el except',
+      'Justo antes de que el recolector de basura destruya las variables locales',
+      'Solo si la función devuelve False explícitamente'
+    ],
+    respuestaCorrecta: 'Únicamente si el bloque try finalizó sin lanzar ninguna excepción',
+    explicacion: 'El bloque else es ideal para colocar código que solo debe ejecutarse si la operación del try fue completamente exitosa, separándolo del finally que se ejecuta siempre.',
+    xpBonus: 25,
+  },
+  'programacion-orientada-a-objetos-python': {
+    pregunta: '¿Qué función cumple el parámetro self en los métodos de una clase en Python?',
+    opciones: [
+      'Hace referencia a la instancia específica del objeto sobre la que se está ejecutando el método',
+      'Declara una variable global accesible por todos los hilos del proceso',
+      'Fuerza la ejecución del método en modo seguro multi-hilo',
+      'Es una palabra reservada obligatoria para definir funciones lambda'
+    ],
+    respuestaCorrecta: 'Hace referencia a la instancia específica del objeto sobre la que se está ejecutando el método',
+    explicacion: 'A través de self el método puede leer y modificar los atributos propios y el estado de la instancia concreta que lo invocó.',
+    xpBonus: 25,
+  },
+  'bases-de-datos-relacionales-sql-sqlite-python': {
+    pregunta: '¿Por qué es fundamental utilizar consultas SQL parametrizadas (con placeholders ?) al interactuar con bases de datos en Python?',
+    opciones: [
+      'Para prevenir vulnerabilidades críticas de Inyección SQL (SQLi) escapando datos de usuario',
+      'Porque SQLite no admite cadenas de texto en formato UTF-8 sin parámetros',
+      'Porque las consultas directas sin parámetros se ejecutan al 50% de velocidad',
+      'Para evitar que el archivo de base de datos se fragmente en el disco duro'
+    ],
+    respuestaCorrecta: 'Para prevenir vulnerabilidades críticas de Inyección SQL (SQLi) escapando datos de usuario',
+    explicacion: 'Los parámetros vinculados tratan cualquier entrada como un valor literal de dato, imposibilitando que código malicioso inyectado altere la estructura de la consulta SQL.',
+    xpBonus: 25,
+  },
+  'creacion-apis-rest-fastapi-python': {
+    pregunta: '¿En qué ruta genera FastAPI de forma automática la documentación interactiva Swagger UI para probar los endpoints en vivo?',
+    opciones: [
+      '/docs',
+      '/api/test',
+      '/swagger.json',
+      '/admin/explorer'
+    ],
+    respuestaCorrecta: '/docs',
+    explicacion: 'FastAPI incluye por defecto la interfaz gráfica de Swagger UI en la ruta /docs y la alternativa ReDoc en /redoc sin necesidad de configuración adicional.',
+    xpBonus: 25,
+  },
+};

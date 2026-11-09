@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang="es" class="antialiased"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"><meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)"><meta name="generator" content="Astro v7.4.7"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><!-- SEO Técnico y Metadatos --><title>Directivas de Grupo (GPO) en Windows Server y Active Directory | ApuntesDev</title><meta name="description" content="Aprende Sistemas Operativos, Redes y Programación. Completa apuntes, gana XP y sube de nivel en esta plataforma gamificada de élite."><meta name="author" content="ApuntesDev"><link rel="canonical" href="https://apuntes-dev-six.vercel.app/apuntes/directivas-grupo-gpo-windows-server/"><!-- Open Graph / Facebook / LinkedIn --><meta property="og:type" content="website"><meta property="og:url" content="https://apuntes-dev-six.vercel.app/apuntes/directivas-grupo-gpo-windows-server/"><meta property="og:title" content="Directivas de Grupo (GPO) en Windows Server y Active Directory | ApuntesDev"><meta property="og:description" content="Aprende Sistemas Operativos, Redes y Programación. Completa apuntes, gana XP y sube de nivel en esta plataforma gamificada de élite."><meta property="og:image" content="https://apuntes-dev-six.vercel.app/og-image.png"><meta property="og:site_name" content="ApuntesDev"><meta property="og:locale" content="es_ES"><!-- Twitter Cards --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://apuntes-dev-six.vercel.app/apuntes/directivas-grupo-gpo-windows-server/"><meta name="twitter:title" content="Directivas de Grupo (GPO) en Windows Server y Active Directory | ApuntesDev"><meta name="twitter:description" content="Aprende Sistemas Operativos, Redes y Programación. Completa apuntes, gana XP y sube de nivel en esta plataforma gamificada de élite."><meta name="twitter:image" content="https://apuntes-dev-six.vercel.app/og-image.png"><!-- Preloads para rendimiento (Opcional, ajusta la ruta si usas fuentes locales) --><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><!-- Enrutador SPA de Astro (ViewTransitions) --><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CnDxeVtR.js"></script><!-- Tema Persistente Anti-Flash (Optimizado) --><script>
+    const themeScript = () => {
+      try {
+        const rawData = localStorage.getItem('apuntesdev_perfil:');
+        if (rawData) {
+          const perfil = JSON.parse(rawData);
+          if (perfil.temaActivo) {
+            document.documentElement.setAttribute('data-theme', perfil.temaActivo);
+            return;
+          }
+        }
+      } catch (e) { console.error("Error al cargar tema", e); }
+      
+      // Fallback a preferencias del sistema
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'default');
+      }
+    };
+    
+    themeScript();
+    document.addEventListener('astro:after-swap', themeScript);
+  </script><link rel="stylesheet" href="/_astro/Footer.Dp3dxip3.css"><link rel="stylesheet" href="/_astro/Layout.ZfYTfJWK.css"><link rel="stylesheet" href="/_astro/_..BKlwxcR3.css"></head><body><!-- Paleta de comandos rápida (Ctrl + K) --><style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(function(){let e=async e=>{await(await e())()};(self.Astro||(self.Astro={})).load=e,window.dispatchEvent(new Event(`astro:load`))})();</script><script>(function(){function e(t){"@babel/helpers - typeof";return e=typeof Symbol==`function`&&typeof Symbol.iterator==`symbol`?function(e){return typeof e}:function(e){return e&&typeof Symbol==`function`&&e.constructor===Symbol&&e!==Symbol.prototype?`symbol`:typeof e},e(t)}function t(t,n){if(e(t)!=`object`||!t)return t;var r=t[Symbol.toPrimitive];if(r!==void 0){var i=r.call(t,n||`default`);if(e(i)!=`object`)return i;throw TypeError(`@@toPrimitive must return a primitive value.`)}return(n===`string`?String:Number)(t)}function n(n){var r=t(n,`string`);return e(r)==`symbol`?r:r+``}function r(e,t,r){return(t=n(t))in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e}let i=/* @__PURE__ */ new Set([`__proto__`,`constructor`,`prototype`]);{let e={0:e=>a(e),1:e=>n(e),2:e=>new RegExp(e),3:e=>new Date(e),4:e=>new Map(n(e)),5:e=>new Set(n(e)),6:e=>BigInt(e),7:e=>new URL(e),8:e=>new Uint8Array(e),9:e=>new Uint16Array(e),10:e=>new Uint32Array(e),11:e=>1/0*e},t=t=>{let[n,r]=t;return n in e?e[n](r):void 0},n=e=>e.map(t),a=e=>typeof e!=`object`||!e?e:Object.fromEntries(Object.entries(e).map(([e,n])=>[e,t(n)]));class o extends HTMLElement{constructor(...e){super(...e),r(this,`Component`,void 0),r(this,`hydrator`,void 0),r(this,`hydrate`,async()=>{var e;if(!this.hydrator||!this.isConnected)return;let t=(e=this.parentElement)==null?void 0:e.closest(`astro-island[ssr]`);if(t){t.addEventListener(`astro:hydrate`,this.hydrate,{once:!0});return}let n=this.querySelectorAll(`astro-slot`),r={},i=this.querySelectorAll(`template[data-astro-template]`);for(let e of i){let t=e.closest(this.tagName);t!=null&&t.isSameNode(this)&&(r[e.getAttribute(`data-astro-template`)||`default`]=e.innerHTML,e.remove())}for(let e of n){let t=e.closest(this.tagName);t!=null&&t.isSameNode(this)&&(r[e.getAttribute(`name`)||`default`]=e.innerHTML)}let o;try{o=this.hasAttribute(`props`)?a(JSON.parse(this.getAttribute(`props`))):{}}catch(e){let t=this.getAttribute(`component-url`)||`<unknown>`,n=this.getAttribute(`component-export`);throw n&&(t+=` (export ${n})`),console.error(`[hydrate] Error parsing props for component ${t}`,this.getAttribute(`props`),e),e}await this.hydrator(this)(this.Component,o,r,{client:this.getAttribute(`client`)}),this.removeAttribute(`ssr`),this.dispatchEvent(new CustomEvent(`astro:hydrate`))}),r(this,`unmount`,()=>{this.isConnected||this.dispatchEvent(new CustomEvent(`astro:unmount`))})}disconnectedCallback(){document.removeEventListener(`astro:after-swap`,this.unmount),document.addEventListener(`astro:after-swap`,this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute(`await-children`)||document.readyState===`interactive`||document.readyState===`complete`)this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener(`DOMContentLoaded`,e),t.disconnect(),this.childrenConnectedCallback()},t=new MutationObserver(()=>{var t;((t=this.lastChild)==null?void 0:t.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue===`astro:end`&&(this.lastChild.remove(),e())});t.observe(this,{childList:!0}),document.addEventListener(`DOMContentLoaded`,e)}}async childrenConnectedCallback(){let e=this.getAttribute(`before-hydration-url`);e&&await import(e),this.start()}getRetryImportUrl(e){let t=new URL(e,document.baseURI);return t.searchParams.set(`astro-retry`,Date.now().toString()),t.toString()}async importWithRetry(e){try{return await import(e)}catch(t){return await new Promise(e=>setTimeout(e,1e3)),import(this.getRetryImportUrl(e))}}handleHydrationError(e){let t=this.getAttribute(`component-url`),n=new CustomEvent(`astro:hydration-error`,{cancelable:!0,bubbles:!0,composed:!0,detail:{error:e,componentUrl:t}});this.dispatchEvent(n)&&console.error(`[astro-island] Error hydrating ${t}`,e)}async start(){let e=JSON.parse(this.getAttribute(`opts`)),t=this.getAttribute(`client`);if(Astro[t]===void 0)window.addEventListener(`astro:${t}`,()=>this.start(),{once:!0});else try{await Astro[t](async()=>{let e=this.getAttribute(`renderer-url`);try{let[t,{default:n}]=await Promise.all([this.importWithRetry(this.getAttribute(`component-url`)),e?this.importWithRetry(e):Promise.resolve({default:()=>()=>{}})]),r=this.getAttribute(`component-export`)||`default`;if(r.includes(`.`)){this.Component=t;for(let e of r.split(`.`)){if(i.has(e)||!this.Component||typeof this.Component!=`object`&&typeof this.Component!=`function`||!Object.hasOwn(this.Component,e))throw Error(`Invalid component export path: ${r}`);this.Component=this.Component[e]}}else{if(i.has(r))throw Error(`Invalid component export path: ${r}`);this.Component=t[r]}return this.hydrator=n,this.hydrate}catch(e){return this.handleHydrationError(e),()=>{}}},e,this)}catch(e){this.handleHydrationError(e)}}attributeChangedCallback(){this.hydrate()}}r(o,`observedAttributes`,[`props`]),customElements.get(`astro-island`)||customElements.define(`astro-island`,o)}})();</script><astro-island uid="2hXg42" data-preact-island-id="4" component-url="/_astro/CommandPalette.B8MYR_mM.js" component-export="default" renderer-url="/_astro/client.BRFhofLy.js" props="{}" ssr client="load" opts="{&quot;name&quot;:&quot;CommandPalette&quot;,&quot;value&quot;:true}"></astro-island><!-- Contenedor Principal a Pantalla Completa (Full-Width) --><div id="site-root" class="site-root"><header class="main-header" data-astro-cid-nen7h5rs><div class="header-inner" data-astro-cid-nen7h5rs><!-- Logo & Brand --><a href="/" class="brand-link" aria-label="Ir a Inicio de ApuntesDev" data-astro-cid-nen7h5rs><div class="logo-wrapper" data-astro-cid-nen7h5rs><img src="/logo.png" alt="Logo ApuntesDev" class="logo-img" data-astro-cid-nen7h5rs></div><div class="brand-info" data-astro-cid-nen7h5rs><span class="brand-name" data-astro-cid-nen7h5rs>Apuntes<span class="brand-accent" data-astro-cid-nen7h5rs>Dev</span></span><span class="brand-tag" data-astro-cid-nen7h5rs>SMR & CODE</span></div></a><!-- Menú de Navegación Central --><nav class="nav-links" aria-label="Navegación principal" data-astro-cid-nen7h5rs><a href="/sistemas" class="nav-pill" data-astro-cid-nen7h5rs><span class="pill-icon" data-astro-cid-nen7h5rs>🖥️</span><span data-astro-cid-nen7h5rs>Sistemas</span></a><a href="/redes" class="nav-pill" data-astro-cid-nen7h5rs><span class="pill-icon" data-astro-cid-nen7h5rs>🌐</span><span data-astro-cid-nen7h5rs>Redes</span></a><a href="/programacion" class="nav-pill" data-astro-cid-nen7h5rs><span class="pill-icon" data-astro-cid-nen7h5rs>💻</span><span data-astro-cid-nen7h5rs>Programación</span></a><a href="/ranking" class="nav-pill nav-pill--ranking" data-astro-cid-nen7h5rs><span class="pill-icon" data-astro-cid-nen7h5rs>🏆</span><span data-astro-cid-nen7h5rs>Leaderboard</span></a></nav><!-- Acciones Derecha: Buscador + HUD XP + Perfil --><div class="header-actions" data-astro-cid-nen7h5rs><!-- Buscador Compacto --><form action="/buscar" method="GET" class="search-box" data-astro-cid-nen7h5rs><svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs><circle cx="11" cy="11" r="8" data-astro-cid-nen7h5rs></circle><path d="m21 21-4.35-4.35" data-astro-cid-nen7h5rs></path></svg><input type="search" name="q" placeholder="Buscar... (Ctrl+K)" required autocomplete="off" aria-label="Buscar apuntes" data-astro-cid-nen7h5rs><span class="search-shortcut" data-astro-cid-nen7h5rs>⌘K</span></form><!-- HUD Gamificado Integrado --><div class="header-hud" data-astro-cid-nen7h5rs><astro-island uid="1eCt2u" data-preact-island-id="5" component-url="/_astro/BarraProgreso.C8gtrRlz.js" component-export="default" renderer-url="/_astro/client.BRFhofLy.js" props="{&quot;data-astro-cid-nen7h5rs&quot;:[0,true]}" ssr client="load" opts="{&quot;name&quot;:&quot;BarraProgreso&quot;,&quot;value&quot;:true}" await-children><div class="xp-hud"><div class="nivel-badge">Nvl. 1</div><div class="xp-barra-fondo"><div class="xp-barra-relleno" style="width:0%;"></div></div><span class="xp-texto">0 / 100 XP</span><div class="monedas-badge">🪙 0</div></div><!--astro:end--></astro-island></div><!-- Botón de Perfil con Avatar --><a href="/perfil" class="profile-card" id="link-perfil" title="Ver mi Perfil y Rango" data-astro-cid-nen7h5rs><span class="profile-icon" data-astro-cid-nen7h5rs>👨‍💻</span><span id="nav-username" class="profile-alias" data-astro-cid-nen7h5rs>Mi Perfil</span></a></div></div></header><script type="module" src="/_astro/Header.astro_astro_type_script_index_0_lang.BPRGcbAo.js"></script><div class="reader-container" data-astro-cid-phcqxoui><!-- COLUMNA 1: SIDEBAR DE NAVEGACIÓN (IZQUIERDA) --><aside class="sidebar-left" data-astro-cid-phcqxoui><div class="sidebar-sticky" data-astro-cid-phcqxoui><h3 class="sidebar-title" data-astro-cid-phcqxoui>📌 SISTEMAS</h3><nav class="sidebar-nav" data-astro-cid-phcqxoui><ul data-astro-cid-phcqxoui><li data-astro-cid-phcqxoui><a href="/apuntes/comandos-linux-basicos" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Comandos Básicos de Linux en la Terminal</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/directivas-grupo-gpo-windows-server" class="active" data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>👉</span><span class="nav-text" data-astro-cid-phcqxoui>Directivas de Grupo (GPO) en Windows Server y Active Directory</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/estructura-directorios-linux-fhs" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Estructura del Árbol de Directorios en Linux (FHS) y Enlaces</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/gestion-paquetes-repositorios-linux" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Gestión de Paquetes y Repositorios en Linux (APT y DPKG)</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/gestion-procesos-servicios-systemd-linux" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Gestión de Procesos y Servicios con Systemd en Linux</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/introduccion-active-directory" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Introducción a Active Directory y DNS (SOR)</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/particionado-discos-sistemas-archivos-fstab" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Particionado de Discos, Formateo y Montaje Automático en /etc/fstab</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/permisos-linux-chmod-chown" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Gestión de Permisos en Linux: chmod, chown y Notación Octal</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/scripting-bash-automatizacion-tareas-cron" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Scripting en Bash y Automatización con Tareas Programadas (Cron)</span></a></li><li data-astro-cid-phcqxoui><a href="/apuntes/usuarios-grupos-active-directory-powershell" class data-astro-cid-phcqxoui><span class="nav-icon" data-astro-cid-phcqxoui>📄</span><span class="nav-text" data-astro-cid-phcqxoui>Administración de Usuarios y Grupos con PowerShell en Active Directory</span></a></li></ul></nav></div></aside><!-- COLUMNA 2: CONTENIDO PRINCIPAL (CENTRO) --><main class="reader-content" data-astro-cid-phcqxoui><header class="apunte-header" data-astro-cid-phcqxoui><div class="badges" data-astro-cid-phcqxoui><span class="badge-cat" data-astro-cid-phcqxoui>SISTEMAS ❯ SOR</span><span class="badge-dif avanzado" data-astro-cid-phcqxoui>⚡ Avanzado</span></div><h1 data-astro-cid-phcqxoui>Directivas de Grupo (GPO) en Windows Server y Active Directory</h1><p class="desc" data-astro-cid-phcqxoui>Aprende a diseñar, vincular y aplicar GPOs en Active Directory: orden de procesamiento LSDOU, mapeo de unidades de red, restricciones de seguridad y gpupdate.</p><div class="meta-info" data-astro-cid-phcqxoui><span data-astro-cid-phcqxoui>📅 14 de abril de 2026</span><span data-astro-cid-phcqxoui>🏆 +50 XP / +10 🪙</span></div></header><article class="markdown-body" id="article-body" data-astro-cid-phcqxoui><h1 id="️-directivas-de-grupo-gpo-en-windows-server">🏛️ Directivas de Grupo (GPO) en Windows Server</h1>
+<p>En una red corporativa o en un aula de informática, configurar cada equipo cliente manualmente es inviable. Las <strong>Directivas de Grupo (GPO - Group Policy Objects)</strong> permiten a los administradores de red centralizar la configuración de miles de ordenadores y usuarios desde el Controlador de Dominio (DC).</p>
+<hr>
+<h2 id="1-orden-de-procesamiento-y-jerarquía-lsdou">1. Orden de Procesamiento y Jerarquía (LSDOU)</h2>
+<p>Cuando un equipo Windows enciende y un usuario inicia sesión, las directivas no se aplican al azar; siguen una jerarquía estricta conocida por las siglas <strong>LSDOU</strong>:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>1. [ Local ]     ──&gt; Directivas locales del propio equipo cliente (gpedit.msc)</span></span>
+<span class="line"><span>         │</span></span>
+<span class="line"><span>         ▼</span></span>
+<span class="line"><span>2. [ Sitio ]     ──&gt; Directivas aplicadas a la ubicación física de red (Site)</span></span>
+<span class="line"><span>         │</span></span>
+<span class="line"><span>         ▼</span></span>
+<span class="line"><span>3. [ Dominio ]   ──&gt; Directivas que afectan a TODOS los equipos y usuarios del dominio</span></span>
+<span class="line"><span>         │</span></span>
+<span class="line"><span>         ▼</span></span>
+<span class="line"><span>4. [ OU ]        ──&gt; Directivas vinculadas a Unidades Organizativas (y sub-OUs anidadas)</span></span></code></pre>
+<blockquote>
+<p>⚠️ <strong>Regla de Prevalencia:</strong> La directiva que se aplica más tarde <strong>sobrescribe</strong> a las anteriores si hay un conflicto. Por tanto, una GPO vinculada a una <strong>OU específica tiene mayor prioridad</strong> que una GPO de Dominio.</p>
+</blockquote>
+<hr>
+<h2 id="2-tipos-de-configuración-en-una-gpo">2. Tipos de Configuración en una GPO</h2>
+<p>Toda directiva de grupo se divide en dos secciones independientes:</p>
+<ol>
+<li><strong>Configuración del Equipo (Computer Configuration):</strong> Se aplica durante el arranque del sistema operativo, antes de que nadie inicie sesión. Afecta a la máquina física/virtual sin importar quién inicie sesión (ej: cortafuegos, scripts de inicio, actualizaciones de Windows).</li>
+<li><strong>Configuración de Usuario (User Configuration):</strong> Se aplica en el momento en que un usuario concreto introduce su contraseña y carga su perfil (ej: fondo de pantalla corporativo, bloqueo del Panel de Control, mapeo de unidades de red personales).</li>
+</ol>
+<hr>
+<h2 id="3-ejemplos-prácticos-de-implementación">3. Ejemplos Prácticos de Implementación</h2>
+<h3 id="caso-a-bloquear-el-acceso-al-panel-de-control-y-configuración">Caso A: Bloquear el acceso al Panel de Control y Configuración</h3>
+<p>Ideal para ordenadores de alumnos o puestos de atención al público:</p>
+<ol>
+<li>Abrir la consola <strong><code>gpmc.msc</code></strong> (Administración de directivas de grupo).</li>
+<li>Crear y vincular una GPO llamada <code>GPO_Restriccion_Alumnos</code> sobre la OU <em>Alumnos</em>.</li>
+<li>Navegar a:
+<code>Configuración de usuario -&gt; Directivas -&gt; Plantillas administrativas -&gt; Panel de control</code></li>
+<li>Habilitar la directiva: <strong>“Prohibir el acceso a Configuración de PC y al Panel de control”</strong>.</li>
+</ol>
+<h3 id="caso-b-mapeo-automático-de-carpetas-compartidas-unidad-de-red">Caso B: Mapeo Automático de Carpetas Compartidas (Unidad de Red)</h3>
+<p>Permite que al iniciar sesión aparezca automáticamente una unidad <code>Z:</code> con los apuntes:</p>
+<ol>
+<li>Navegar en la GPO a:
+<code>Configuración de usuario -&gt; Preferencias -&gt; Configuración de Windows -&gt; Asignaciones de unidades</code></li>
+<li>Crear una nueva unidad mapeada:
+<ul>
+<li><strong>Acción:</strong> <code>Crear</code> o <code>Actualizar</code>.</li>
+<li><strong>Ubicación:</strong> <code>\\servidor-archivos\apuntes_smr</code></li>
+<li><strong>Letra de unidad:</strong> <code>Z:</code></li>
+<li><strong>Etiqueta:</strong> <code>Recursos Educativos SMR</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="4-opciones-avanzadas-de-herencia">4. Opciones Avanzadas de Herencia</h2>
+<ul>
+<li><strong>Bloquear Herencia (Block Inheritance):</strong> Se configura sobre una OU. Impide que las directivas de los niveles superiores (Dominio o Sitio) se apliquen a los objetos dentro de esa OU.</li>
+<li><strong>Exigida / Forzada (Enforced):</strong> Se activa sobre una GPO específica. Hace que dicha directiva se aplique <strong>obligatoriamente</strong>, saltándose cualquier bloqueo de herencia que exista debajo.</li>
+</ul>
+<hr>
+<h2 id="5-comandos-de-diagnóstico-y-actualización">5. Comandos de Diagnóstico y Actualización</h2>
+<p>Por defecto, los clientes Windows refrescan sus GPOs cada 90 minutos con un retraso aleatorio de hasta 30 minutos. Para forzar la actualización inmediata en una máquina cliente:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="cmd"><code><span class="line"><span style="color:#6A737D">:: Forzar la aplicación inmediata de todas las directivas de equipo y usuario</span></span>
+<span class="line"><span style="color:#F97583">gpupdate</span><span style="color:#E1E4E8"> /force</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">:: Generar un informe detallado en pantalla de qué GPOs se están aplicando</span></span>
+<span class="line"><span style="color:#F97583">gpresult</span><span style="color:#E1E4E8"> /r</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">:: Exportar un informe gráfico completo en formato HTML para auditoría</span></span>
+<span class="line"><span style="color:#F97583">gpresult</span><span style="color:#E1E4E8"> /h C:\reporte_gpo.html</span></span></code></pre>
+</article><astro-island uid="Z1XDJVm" data-preact-island-id="1" component-url="/_astro/Quiz.-aLmbLf3.js" component-export="default" renderer-url="/_astro/client.BRFhofLy.js" props="{&quot;apunteId&quot;:[0,&quot;directivas-grupo-gpo-windows-server&quot;],&quot;quiz&quot;:[0,{&quot;pregunta&quot;:[0,&quot;Según el orden de aplicación LSDOU en Windows Server, ¿qué nivel de GPO tiene mayor prioridad al sobrescribir conflictos?&quot;],&quot;opciones&quot;:[1,[[0,&quot;Unidad Organizativa (OU)&quot;],[0,&quot;Dominio&quot;],[0,&quot;Sitio (Site)&quot;],[0,&quot;Local&quot;]]],&quot;respuestaCorrecta&quot;:[0,&quot;Unidad Organizativa (OU)&quot;],&quot;explicacion&quot;:[0,&quot;Las directivas se aplican en orden Local -&gt; Sitio -&gt; Dominio -&gt; Unidad Organizativa. Como la OU se aplica al final, sus configuraciones sobrescriben a las anteriores.&quot;],&quot;xpBonus&quot;:[0,25]}],&quot;data-astro-cid-phcqxoui&quot;:[0,true]}" ssr client="load" opts="{&quot;name&quot;:&quot;Quiz&quot;,&quot;value&quot;:true}" await-children><section class="quiz-card" aria-label="Desafío Técnico de Repaso"><div class="quiz-header"><div class="quiz-badge"><span class="quiz-pulse"></span><span>TEST DE CONOCIMIENTOS</span></div><span class="quiz-reward">+25 XP Bonus</span></div><h3 class="quiz-pregunta">Según el orden de aplicación LSDOU en Windows Server, ¿qué nivel de GPO tiene mayor prioridad al sobrescribir conflictos?</h3><div class="quiz-opciones"><button type="button" class="quiz-opcion-btn "><span class="opcion-radio"><span class="opcion-radio-inner"></span></span><span class="opcion-texto">Unidad Organizativa (OU)</span></button><button type="button" class="quiz-opcion-btn "><span class="opcion-radio"><span class="opcion-radio-inner"></span></span><span class="opcion-texto">Dominio</span></button><button type="button" class="quiz-opcion-btn "><span class="opcion-radio"><span class="opcion-radio-inner"></span></span><span class="opcion-texto">Sitio (Site)</span></button><button type="button" class="quiz-opcion-btn "><span class="opcion-radio"><span class="opcion-radio-inner"></span></span><span class="opcion-texto">Local</span></button></div><div class="quiz-footer"><button type="button" class="btn-evaluar" disabled>Comprobar Respuesta →</button></div><style>
+        .quiz-card {
+          margin: 3.5rem 0 2rem;
+          background: linear-gradient(145deg, rgba(17, 19, 27, 0.9) 0%, rgba(10, 12, 18, 0.95) 100%);
+          border: 1px solid rgba(74, 222, 128, 0.25);
+          border-radius: 20px;
+          padding: 2.2rem;
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(74, 222, 128, 0.08);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .quiz-card::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        .quiz-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.25rem;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .quiz-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          background: rgba(74, 222, 128, 0.1);
+          border: 1px solid rgba(74, 222, 128, 0.3);
+          color: var(--accent-color);
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          padding: 0.3rem 0.8rem;
+          border-radius: 100px;
+        }
+
+        .quiz-pulse {
+          width: 6px;
+          height: 6px;
+          background: var(--accent-color);
+          border-radius: 50%;
+          box-shadow: 0 0 6px var(--accent-color);
+          animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        .quiz-reward {
+          font-family: var(--font-mono);
+          font-size: 0.82rem;
+          font-weight: 800;
+          color: #ffd700;
+          background: rgba(255, 215, 0, 0.08);
+          border: 1px solid rgba(255, 215, 0, 0.25);
+          padding: 0.25rem 0.75rem;
+          border-radius: 100px;
+        }
+
+        .quiz-pregunta {
+          color: #ffffff;
+          font-size: 1.25rem;
+          font-weight: 800;
+          letter-spacing: -0.015em;
+          margin: 0 0 1.75rem 0;
+          line-height: 1.4;
+        }
+
+        .quiz-opciones {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+          margin-bottom: 1.75rem;
+        }
+
+        .quiz-opcion-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 1rem 1.25rem;
+          color: #e2e8f0;
+          font-size: 0.95rem;
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .quiz-opcion-btn:hover:not(:disabled) {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(74, 222, 128, 0.4);
+          transform: translateX(4px);
+        }
+
+        .quiz-opcion-btn.seleccionada {
+          background: rgba(74, 222, 128, 0.12);
+          border-color: var(--accent-color);
+          box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+        }
+
+        .quiz-opcion-btn.correcta {
+          background: rgba(74, 222, 128, 0.18) !important;
+          border-color: #4ade80 !important;
+          color: #4ade80 !important;
+        }
+
+        .quiz-opcion-btn.incorrecta {
+          background: rgba(248, 113, 113, 0.18) !important;
+          border-color: #f87171 !important;
+          color: #f87171 !important;
+        }
+
+        .opcion-radio {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: border-color 0.2s;
+        }
+
+        .quiz-opcion-btn.seleccionada .opcion-radio {
+          border-color: var(--accent-color);
+        }
+
+        .opcion-radio-inner {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: transparent;
+          transition: background 0.2s;
+        }
+
+        .quiz-opcion-btn.seleccionada .opcion-radio-inner {
+          background: var(--accent-color);
+        }
+
+        .opcion-texto {
+          flex-grow: 1;
+        }
+
+        .check-icon {
+          font-weight: 900;
+          color: #4ade80;
+        }
+
+        .btn-evaluar {
+          background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+          color: #060809;
+          padding: 0.85rem 1.75rem;
+          border: none;
+          border-radius: 12px;
+          font-size: 0.95rem;
+          font-weight: 800;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-evaluar:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .btn-evaluar:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+
+        .feedback-correcto {
+          background: rgba(74, 222, 128, 0.08);
+          border: 1px solid rgba(74, 222, 128, 0.3);
+          border-radius: 12px;
+          padding: 1.25rem 1.5rem;
+        }
+
+        .feedback-title {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-weight: 800;
+          color: #4ade80;
+          margin-bottom: 0.4rem;
+        }
+
+        .bonus-tag {
+          font-family: var(--font-mono);
+          font-size: 0.75rem;
+          background: rgba(74, 222, 128, 0.2);
+          padding: 0.2rem 0.5rem;
+          border-radius: 6px;
+        }
+
+        .feedback-desc {
+          color: #cbd5e1;
+          font-size: 0.9rem;
+          line-height: 1.6;
+          margin: 0;
+        }
+
+        .feedback-incorrecto {
+          background: rgba(248, 113, 113, 0.08);
+          border: 1px solid rgba(248, 113, 113, 0.3);
+          border-radius: 12px;
+          padding: 1.25rem 1.5rem;
+        }
+
+        .feedback-incorrecto .feedback-title {
+          color: #f87171;
+        }
+
+        .btn-reintentar {
+          background: transparent;
+          border: 1px solid rgba(248, 113, 113, 0.4);
+          color: #f87171;
+          padding: 0.45rem 1rem;
+          border-radius: 8px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          margin-top: 0.85rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .btn-reintentar:hover {
+          background: rgba(248, 113, 113, 0.15);
+          border-color: #f87171;
+        }
+      </style></section><!--astro:end--></astro-island><!-- BOTÓN GAMIFICADO GLOBAL --><div class="recompensa-global" data-astro-cid-phcqxoui><button id="btn-completar-global" class="btn-gamificado" data-id="directivas-grupo-gpo-windows-server" data-xp="50" data-monedas="10" data-astro-cid-phcqxoui>✨ ¡Completar Apunte (+50 XP y +10 🪙)!</button></div></main><!-- COLUMNA 3: TABLA DE CONTENIDOS TOC CON SCROLLSPY (DERECHA) --><aside class="sidebar-right" data-astro-cid-phcqxoui><div class="toc-sticky" data-astro-cid-phcqxoui><h3 class="toc-title" data-astro-cid-phcqxoui>En esta página</h3><nav class="toc-nav" data-astro-cid-phcqxoui><ul data-astro-cid-phcqxoui><li class="toc-item depth-2" data-astro-cid-phcqxoui><a href="#1-orden-de-procesamiento-y-jerarquía-lsdou" class="toc-link" data-slug="1-orden-de-procesamiento-y-jerarquía-lsdou" data-astro-cid-phcqxoui>1. Orden de Procesamiento y Jerarquía (LSDOU)</a></li><li class="toc-item depth-2" data-astro-cid-phcqxoui><a href="#2-tipos-de-configuración-en-una-gpo" class="toc-link" data-slug="2-tipos-de-configuración-en-una-gpo" data-astro-cid-phcqxoui>2. Tipos de Configuración en una GPO</a></li><li class="toc-item depth-2" data-astro-cid-phcqxoui><a href="#3-ejemplos-prácticos-de-implementación" class="toc-link" data-slug="3-ejemplos-prácticos-de-implementación" data-astro-cid-phcqxoui>3. Ejemplos Prácticos de Implementación</a></li><li class="toc-item depth-3" data-astro-cid-phcqxoui><a href="#caso-a-bloquear-el-acceso-al-panel-de-control-y-configuración" class="toc-link" data-slug="caso-a-bloquear-el-acceso-al-panel-de-control-y-configuración" data-astro-cid-phcqxoui>Caso A: Bloquear el acceso al Panel de Control y Configuración</a></li><li class="toc-item depth-3" data-astro-cid-phcqxoui><a href="#caso-b-mapeo-automático-de-carpetas-compartidas-unidad-de-red" class="toc-link" data-slug="caso-b-mapeo-automático-de-carpetas-compartidas-unidad-de-red" data-astro-cid-phcqxoui>Caso B: Mapeo Automático de Carpetas Compartidas (Unidad de Red)</a></li><li class="toc-item depth-2" data-astro-cid-phcqxoui><a href="#4-opciones-avanzadas-de-herencia" class="toc-link" data-slug="4-opciones-avanzadas-de-herencia" data-astro-cid-phcqxoui>4. Opciones Avanzadas de Herencia</a></li><li class="toc-item depth-2" data-astro-cid-phcqxoui><a href="#5-comandos-de-diagnóstico-y-actualización" class="toc-link" data-slug="5-comandos-de-diagnóstico-y-actualización" data-astro-cid-phcqxoui>5. Comandos de Diagnóstico y Actualización</a></li></ul></nav></div></aside></div><footer class="main-footer" data-astro-cid-jo6i4kqk><!-- Línea decorativa superior --><div class="footer-glow-line" data-astro-cid-jo6i4kqk></div><div class="footer-container" data-astro-cid-jo6i4kqk><div class="footer-top" data-astro-cid-jo6i4kqk><!-- Brand & Mission --><div class="footer-brand" data-astro-cid-jo6i4kqk><a href="/" class="footer-logo" data-astro-cid-jo6i4kqk><img src="/logo.png" alt="ApuntesDev Logo" class="footer-logo-img" data-astro-cid-jo6i4kqk><span class="footer-title" data-astro-cid-jo6i4kqk>Apuntes<span class="footer-accent" data-astro-cid-jo6i4kqk>Dev</span></span></a><p class="footer-desc" data-astro-cid-jo6i4kqk>Plataforma educativa de alto rendimiento para estudiantes de SMR y futuros desarrolladores. Aprende sistemas, redes y código con gamificación real y sin rodeos.</p><div class="footer-status-pill" data-astro-cid-jo6i4kqk><span class="status-dot" data-astro-cid-jo6i4kqk></span><span data-astro-cid-jo6i4kqk>Sistemas Operativos 100% Online</span></div></div><!-- Links Column 1: Rutas --><div class="footer-col" data-astro-cid-jo6i4kqk><h4 data-astro-cid-jo6i4kqk>Rutas Troncales</h4><ul data-astro-cid-jo6i4kqk><li data-astro-cid-jo6i4kqk><a href="/sistemas" data-astro-cid-jo6i4kqk>🖥️ Sistemas (SOM / SOR)</a></li><li data-astro-cid-jo6i4kqk><a href="/redes" data-astro-cid-jo6i4kqk>🌐 Redes & Telecom</a></li><li data-astro-cid-jo6i4kqk><a href="/programacion" data-astro-cid-jo6i4kqk>💻 Desarrollo & Python</a></li><li data-astro-cid-jo6i4kqk><a href="/ranking" data-astro-cid-jo6i4kqk>🏆 Leaderboard Global</a></li></ul></div><!-- Links Column 2: Plataforma --><div class="footer-col" data-astro-cid-jo6i4kqk><h4 data-astro-cid-jo6i4kqk>Plataforma</h4><ul data-astro-cid-jo6i4kqk><li data-astro-cid-jo6i4kqk><a href="/perfil" data-astro-cid-jo6i4kqk>👤 Mi Perfil & Estadísticas</a></li><li data-astro-cid-jo6i4kqk><a href="/buscar" data-astro-cid-jo6i4kqk>🔍 Buscador de Apuntes</a></li><li data-astro-cid-jo6i4kqk><a href="/sobre-mi" data-astro-cid-jo6i4kqk>👨‍🏫 Sobre el Proyecto</a></li><li data-astro-cid-jo6i4kqk><a href="/contacto" data-astro-cid-jo6i4kqk>✉️ Contacto & Sugerencias</a></li></ul></div><!-- Links Column 3: Legal --><div class="footer-col" data-astro-cid-jo6i4kqk><h4 data-astro-cid-jo6i4kqk>Legal & Privacidad</h4><ul data-astro-cid-jo6i4kqk><li data-astro-cid-jo6i4kqk><a href="/privacidad" data-astro-cid-jo6i4kqk>Política de Privacidad</a></li><li data-astro-cid-jo6i4kqk><a href="/cookies" data-astro-cid-jo6i4kqk>Política de Cookies</a></li><li data-astro-cid-jo6i4kqk><a href="/aviso-legal" data-astro-cid-jo6i4kqk>Aviso Legal</a></li></ul></div></div><div class="footer-bottom" data-astro-cid-jo6i4kqk><p data-astro-cid-jo6i4kqk>© 2026 ApuntesDev • Diseñado con pasión para estudiantes de SMR y Código.</p><div class="footer-bottom-badge" data-astro-cid-jo6i4kqk><span data-astro-cid-jo6i4kqk>⚡ Astro 5 + Preact</span></div></div></div></footer></div><!-- Sistema Flotante de Notificaciones (Toasts Cyberpunk) --><div id="toast-container" class="toast-container" data-astro-cid-hyvcqdav></div><script type="module">window.addEventListener(`recompensa-ganada`,(t=>{let{xp:n,monedas:r,titulo:i}=t.detail;e(n,r,i)}));function e(e,t,n){let r=document.getElementById(`toast-container`);if(!r)return;let i=document.createElement(`div`);i.className=`toast-item`,i.innerHTML=`
+      <div class="toast-icon">🏆</div>
+      <div class="toast-content">
+        <h4>${n||`¡Misión Completada!`}</h4>
+        <p><span class="toast-xp">+${e} XP</span> · <span class="toast-coins">+${t} 🪙</span></p>
+      </div>
+    `,r.appendChild(i),requestAnimationFrame(()=>{i.classList.add(`show`)}),setTimeout(()=>{i.classList.remove(`show`),setTimeout(()=>i.remove(),400)},4e3)}</script><!-- Sistema de Scroll Reveal & Efectos Magnéticos --><script type="module">var e=()=>{let e=new IntersectionObserver(t=>{t.forEach(t=>{t.isIntersecting&&(t.target.classList.add(`revealed`),e.unobserve(t.target))})},{threshold:.08,rootMargin:`0px 0px -40px 0px`});document.querySelectorAll(`.reveal, .reveal-left, .reveal-right, .reveal-scale`).forEach(t=>{e.observe(t)})},t=()=>{document.querySelectorAll(`.magnetic`).forEach(e=>{e.addEventListener(`mousemove`,t=>{let n=e.getBoundingClientRect(),r=t.clientX-n.left-n.width/2,i=t.clientY-n.top-n.height/2,a=.35;e.style.transform=`translate(${r*a}px, ${i*a}px)`}),e.addEventListener(`mouseleave`,()=>{e.style.transform=``,e.style.transition=`transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)`,setTimeout(()=>{e.style.transition=``},500)})})},n=e=>{let t=parseInt(e.getAttribute(`data-target`)||e.textContent,10);if(isNaN(t))return;let n=performance.now(),r=i=>{let a=i-n,o=Math.min(a/1200,1),s=1-(1-o)**3;e.textContent=Math.round(s*t).toLocaleString(`es-ES`),o<1&&requestAnimationFrame(r)};requestAnimationFrame(r)},r=()=>{let e=new IntersectionObserver(t=>{t.forEach(t=>{t.isIntersecting&&(n(t.target),e.unobserve(t.target))})},{threshold:.5});document.querySelectorAll(`.counter-num`).forEach(t=>e.observe(t))},i=()=>{document.querySelectorAll(`.tilt-card`).forEach(e=>{e.addEventListener(`mousemove`,t=>{let n=e.getBoundingClientRect(),r=(t.clientX-n.left)/n.width-.5,i=(t.clientY-n.top)/n.height-.5;e.style.transform=`perspective(800px) rotateY(${r*8}deg) rotateX(${-i*8}deg) translateZ(8px)`}),e.addEventListener(`mouseleave`,()=>{e.style.transform=``,e.style.transition=`transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,setTimeout(()=>{e.style.transition=``},600)})})};document.addEventListener(`astro:page-load`,()=>{e(),t(),r(),i()});</script><!-- Interactividad UX: Copiar Código --><script type="module">document.addEventListener(`astro:page-load`,()=>{document.querySelectorAll(`pre`).forEach(e=>{if(e.querySelector(`.boton-copiar`))return;e.style.position=`relative`;let t=document.createElement(`button`);t.className=`boton-copiar`,t.setAttribute(`aria-label`,`Copiar código al portapapeles`),t.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> <span>Copiar</span>`,e.appendChild(t),t.addEventListener(`click`,async()=>{let n=e.querySelector(`code`),r=n?n.innerText:e.innerText;if(r)try{await navigator.clipboard.writeText(r);let e=t.querySelector(`span`);e&&(e.innerText=`Copiado`),t.classList.add(`copiado`),setTimeout(()=>{e&&(e.innerText=`Copiar`),t.classList.remove(`copiado`)},2e3)}catch(e){console.error(`Fallo al copiar`,e)}})})});</script><!-- Sync Cloud (Supabase) --><script type="module" src="/_astro/Layout.astro_astro_type_script_index_2_lang.DeSIXvF6.js"></script></body></html><script type="module" src="/_astro/_...slug_.astro_astro_type_script_index_0_lang.DEo6-ghc.js"></script>

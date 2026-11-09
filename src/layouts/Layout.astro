@@ -108,6 +108,95 @@ const socialImageURL = image.startsWith('http')
   <!-- Sistema Flotante de Notificaciones (Toasts Cyberpunk) -->
   <Toast />
 
+  <!-- Sistema de Scroll Reveal & Efectos Magnéticos -->
+  <script>
+    // ── SCROLL REVEAL SYSTEM ──
+    const initScrollReveal = () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach((el) => {
+        observer.observe(el);
+      });
+    };
+
+    // ── EFECTO MAGNÉTICO EN BOTONES ──
+    const initMagneticButtons = () => {
+      document.querySelectorAll('.magnetic').forEach((btn) => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          const strength = 0.35;
+          btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = '';
+          btn.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+          setTimeout(() => { btn.style.transition = ''; }, 500);
+        });
+      });
+    };
+
+    // ── CONTADOR ANIMADO ──
+    const animateCounter = (el) => {
+      const target = parseInt(el.getAttribute('data-target') || el.textContent, 10);
+      if (isNaN(target)) return;
+      const duration = 1200;
+      const start = performance.now();
+      const update = (now) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target).toLocaleString('es-ES');
+        if (progress < 1) requestAnimationFrame(update);
+      };
+      requestAnimationFrame(update);
+    };
+
+    const initCounters = () => {
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            counterObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.counter-num').forEach((el) => counterObserver.observe(el));
+    };
+
+    // ── TILT 3D EN TARJETAS ──
+    const initTilt = () => {
+      document.querySelectorAll('.tilt-card').forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(8px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          setTimeout(() => { card.style.transition = ''; }, 600);
+        });
+      });
+    };
+
+    document.addEventListener('astro:page-load', () => {
+      initScrollReveal();
+      initMagneticButtons();
+      initCounters();
+      initTilt();
+    });
+  </script>
+
   <!-- Interactividad UX: Copiar Código -->
   <script>
     const inicializarBotonesCopiar = () => {
@@ -802,5 +891,102 @@ button:active::after {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-color);
   box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* =========================================
+   SCROLL REVEAL SYSTEM
+   ========================================= */
+.reveal,
+.reveal-left,
+.reveal-right,
+.reveal-scale {
+  opacity: 0;
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal          { transform: translateY(32px); }
+.reveal-left     { transform: translateX(-40px); }
+.reveal-right    { transform: translateX(40px); }
+.reveal-scale    { transform: scale(0.94) translateY(20px); }
+
+.revealed {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Delay cascade para elementos dentro de grids */
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* =========================================
+   EFECTOS HOVER MAGNÉTICOS
+   ========================================= */
+.magnetic {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* =========================================
+   GRADIENTE ANIMADO EN TEXTO
+   ========================================= */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-gradient {
+  to { --angle: 360deg; }
+}
+
+.gradient-border {
+  border: 1px solid;
+  border-image: conic-gradient(from var(--angle), transparent 60%, var(--accent-color) 80%, transparent 100%) 1;
+  animation: spin-gradient 4s linear infinite;
+}
+
+/* =========================================
+   GLASS CARDS MEJORADAS
+   ========================================= */
+.glass-card {
+  background: linear-gradient(135deg, 
+    rgba(255,255,255,0.04) 0%, 
+    rgba(255,255,255,0.01) 100%);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top left, rgba(74,222,128,0.04), transparent 60%);
+  pointer-events: none;
+}
+
+/* =========================================
+   SELECTION COLOR
+   ========================================= */
+::selection {
+  background: rgba(74, 222, 128, 0.25);
+  color: #ffffff;
+}
+
+/* =========================================
+   FOCUS RING GLOBAL ACCESIBLE
+   ========================================= */
+*:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 </style>

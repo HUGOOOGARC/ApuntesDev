@@ -40,14 +40,14 @@ import Footer from '../components/Footer.astro';
 
       <!-- Botones de Acción Épicos -->
       <div class="hero-actions">
-        <a href="/sistemas" class="btn-hero-primary">
+        <a href="/sistemas" class="btn-hero-primary magnetic">
           <span>Empezar a Estudiar</span>
           <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </a>
 
-        <a href="/perfil" class="btn-hero-secondary">
+        <a href="/perfil" class="btn-hero-secondary magnetic">
           <span>Ver mi Rango & Stats</span>
           <span class="btn-emoji">👤</span>
         </a>
@@ -75,7 +75,7 @@ import Footer from '../components/Footer.astro';
         <div class="terminal-body">
           <div class="terminal-grid">
             <div class="terminal-stat">
-              <span class="term-stat-num">50 XP</span>
+              <span class="term-stat-num counter-num" data-target="50">50 XP</span>
               <span class="term-stat-label">Recompensa por apunte</span>
             </div>
             <div class="terminal-stat">
@@ -110,7 +110,7 @@ import Footer from '../components/Footer.astro';
       <div class="bento-features">
         
         <!-- CARD 1: Directo al Grano -->
-        <div class="feature-tile">
+        <div class="feature-tile reveal reveal-delay-1">
           <div class="tile-icon-bg">⚡</div>
           <h3>Directo al Grano</h3>
           <p>Apuntes sintetizados en Markdown listos para estudiar. Menos relleno y más comandos, arquitecturas y configuraciones reales.</p>
@@ -118,7 +118,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 2: Gamificación -->
-        <div class="feature-tile feature-tile--highlight">
+        <div class="feature-tile feature-tile--highlight reveal reveal-delay-2">
           <div class="tile-icon-bg">🎮</div>
           <h3>Gamificación Real</h3>
           <p>Gana 50 XP y 10 monedas por cada apunte dominado. Sube de rango, alcanza el Nivel 50 y desbloquea el Protocolo de Prestigio.</p>
@@ -126,7 +126,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 3: Redes & Cisco -->
-        <div class="feature-tile">
+        <div class="feature-tile reveal reveal-delay-3">
           <div class="tile-icon-bg">🌐</div>
           <h3>Redes & Laboratorios</h3>
           <p>Subnetting IPv4/IPv6 con VLSM, VLANs 802.1Q en Cisco IOS, servidores DNS y DHCP en Linux para simulaciones Packet Tracer.</p>
@@ -134,7 +134,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 4: Tienda de Temas -->
-        <div class="feature-tile">
+        <div class="feature-tile reveal reveal-delay-1">
           <div class="tile-icon-bg">🎨</div>
           <h3>Tienda de Temas Visuales</h3>
           <p>Invierte tus créditos en desbloquear skins completas para la web: Kali Linux rojo fuego, Matrix verde fósforo o Cyberpunk neón.</p>
@@ -142,7 +142,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 5: Leaderboard -->
-        <div class="feature-tile">
+        <div class="feature-tile reveal reveal-delay-2">
           <div class="tile-icon-bg">🏆</div>
           <h3>Leaderboard Global</h3>
           <p>Compite sanamente contra tus compañeros de clase. Mira quién ha acumulado más experiencia y quién lidera el Hall of Fame.</p>
@@ -150,7 +150,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 6: Buscador Instantáneo -->
-        <div class="feature-tile">
+        <div class="feature-tile reveal reveal-delay-3">
           <div class="tile-icon-bg">🔍</div>
           <h3>Búsqueda Rápida (Ctrl+K)</h3>
           <p>Encuentra cualquier comando, servicio o sintaxis en milisegundos con nuestra paleta de comandos flotante integrada.</p>
@@ -175,7 +175,7 @@ import Footer from '../components/Footer.astro';
       <div class="rutas-grid">
         
         <!-- RUTA 1: SISTEMAS -->
-        <a href="/sistemas" class="ruta-card ruta-card--sistemas">
+        <a href="/sistemas" class="ruta-card ruta-card--sistemas tilt-card reveal reveal-delay-1">
           <div class="ruta-card-glow"></div>
           <div class="ruta-card-header">
             <span class="ruta-badge">SOM / SOR</span>
@@ -191,7 +191,7 @@ import Footer from '../components/Footer.astro';
         </a>
 
         <!-- RUTA 2: REDES -->
-        <a href="/redes" class="ruta-card ruta-card--redes">
+        <a href="/redes" class="ruta-card ruta-card--redes tilt-card reveal reveal-delay-2">
           <div class="ruta-card-glow"></div>
           <div class="ruta-card-header">
             <span class="ruta-badge">TELECOM & CISCO</span>
@@ -207,7 +207,7 @@ import Footer from '../components/Footer.astro';
         </a>
 
         <!-- RUTA 3: PROGRAMACIÓN -->
-        <a href="/programacion" class="ruta-card ruta-card--prog">
+        <a href="/programacion" class="ruta-card ruta-card--prog tilt-card reveal reveal-delay-3">
           <div class="ruta-card-glow"></div>
           <div class="ruta-card-header">
             <span class="ruta-badge">DEV & BACKEND</span>
@@ -230,14 +230,14 @@ import Footer from '../components/Footer.astro';
   <!-- CTA FINAL AURORA -->
   <section class="section-full cta-section">
     <div class="content-container">
-      <div class="cta-aurora-box">
+      <div class="cta-aurora-box reveal">
         <div class="cta-aurora-bg"></div>
         <div class="cta-content">
           <span class="cta-pill">🚀 COMIENZA AHORA MISMO</span>
           <h2>¿Listo para subir de nivel tu carrera técnica?</h2>
           <p>Crea tu cuenta gratuita en menos de 30 segundos, sincroniza tu progreso en la nube y compite con la comunidad.</p>
           <div class="cta-btns">
-            <a href="/login" class="btn-hero-primary">
+            <a href="/login" class="btn-hero-primary magnetic">
               <span>Crear Cuenta Gratis</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
