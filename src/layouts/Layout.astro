@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import CommandPalette from '../components/CommandPalette.tsx';
 import Toast from '../components/Toast.astro';
+import PWAInstallPrompt from '../components/PWAInstallPrompt.tsx';
 
 interface Props {
   title: string;
@@ -35,11 +36,20 @@ const socialImageURL = image.startsWith('http')
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#4ade80" />
   <meta name="generator" content={Astro.generator} />
   
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  
+  <!-- Configuración PWA y Web App Manifest -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ApuntesDev" />
+  <meta name="application-name" content="ApuntesDev" />
+  <meta name="msapplication-TileColor" content="#0a0a0f" />
   
   <!-- SEO Técnico y Metadatos -->
   <title>{title}</title>
@@ -253,6 +263,24 @@ const socialImageURL = image.startsWith('http')
         await cargarPerfilDesdeSupabase();
       }
     });
+  </script>
+
+  <!-- Banner Flotante de Instalación PWA (Móvil y Escritorio) -->
+  <PWAInstallPrompt client:idle />
+
+  <!-- Registro de Service Worker PWA -->
+  <script is:inline>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => {
+            console.log('ApuntesDev PWA Service Worker registrado correctamente');
+          })
+          .catch((err) => {
+            console.warn('Fallo al registrar Service Worker PWA:', err);
+          });
+      });
+    }
   </script>
 </body>
 </html>
