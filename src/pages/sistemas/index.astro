@@ -11,7 +11,7 @@ const todosLosApuntes = await getCollection('apuntes');
 const apuntesSOM = todosLosApuntes.filter(apunte => 
   apunte.data.categoria === 'sistemas' && 
   apunte.data.subcategoria === 'som' && 
-  !apunte.data.draft // Ocultamos los que estén en borrador
+  !apunte.data.draft
 );
 
 const apuntesSOR = todosLosApuntes.filter(apunte => 
@@ -29,20 +29,20 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
     <p>Administración, comandos y configuración de sistemas operativos monopuestos y en red.</p>
   </section>
 
-  <!-- ACCESOS RÁPIDOS -->
+  <!-- ACCESOS RÁPIDOS (Corregidos con anclas id) -->
   <div class="sub-nav-grid">
-    <a href="/sistemas/som" class="sub-nav-card">
+    <a href="#som" class="sub-nav-card">
       <h3>🖥️ SOM</h3>
       <p>Sistemas Operativos Monopuestos</p>
     </a>
-    <a href="/sistemas/sor" class="sub-nav-card">
+    <a href="#sor" class="sub-nav-card">
       <h3>🌐 SOR</h3>
       <p>Sistemas Operativos en Red</p>
     </a>
   </div>
 
   <!-- SECCIÓN SOM -->
-  <section class="seccion-bloque">
+  <section id="som" class="seccion-bloque">
     <h2>📂 Apuntes de SOM (Monopuestos)</h2>
     <div class="lista-apuntes">
       {apuntesSOM.length > 0 ? (
@@ -55,13 +55,13 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
               <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
             </div>
             
-            <!-- Usamos el slug autogenerado para crear la URL perfecta -->
-            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <!-- CORRECCIÓN: apunte.id en vez de apunte.slug -->
+            <h2><a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a></h2>
             <p class="desc">{apunte.data.description}</p>
             
             <div class="card-footer">
               <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+              <a href={`/apuntes/${apunte.id}`} class="leer-mas">Leer apunte →</a>
             </div>
           </article>
         ))
@@ -72,7 +72,7 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
   </section>
 
   <!-- SECCIÓN SOR -->
-  <section class="seccion-bloque">
+  <section id="sor" class="seccion-bloque">
     <h2>📂 Apuntes de SOR (En Red)</h2>
     <div class="lista-apuntes">
       {apuntesSOR.length > 0 ? (
@@ -85,12 +85,13 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
               <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
             </div>
             
-            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <!-- CORRECCIÓN: apunte.id en vez de apunte.slug -->
+            <h2><a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a></h2>
             <p class="desc">{apunte.data.description}</p>
             
             <div class="card-footer">
               <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+              <a href={`/apuntes/${apunte.id}`} class="leer-mas">Leer apunte →</a>
             </div>
           </article>
         ))
@@ -104,7 +105,6 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
 </Layout>
 
 <style>
-  /* ESTILOS OPTIMIZADOS PARA LAS TARJETAS DINÁMICAS */
   .categoria-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -175,7 +175,6 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
     text-align: center;
   }
   
-  /* TARJETAS PREMIUM */
   .apunte-card {
     background: #1e1e1e;
     padding: 1.5rem;
@@ -209,7 +208,6 @@ const apuntesSOR = todosLosApuntes.filter(apunte =>
     letter-spacing: 0.5px;
   }
   
-  /* Colores de dificultad automatizados por Zod */
   .badge-dif.basico { background: rgba(76, 175, 80, 0.1); color: #4CAF50; border: 1px solid rgba(76, 175, 80, 0.3); }
   .badge-dif.intermedio { background: rgba(255, 152, 0, 0.1); color: #FF9800; border: 1px solid rgba(255, 152, 0, 0.3); }
   .badge-dif.avanzado { background: rgba(244, 67, 54, 0.1); color: #F44336; border: 1px solid rgba(244, 67, 54, 0.3); }

@@ -28,7 +28,7 @@ const apuntesServicios = todosLosApuntes.filter(apunte =>
     <p>Configuración de routers, switches, direccionamiento IP, VLANs y servicios de red.</p>
   </section>
 
-  <!-- ACCESOS RÁPIDOS -->
+  <!-- ACCESOS RÁPIDOS (Anclas corregidas) -->
   <div class="sub-nav-grid">
     <a href="#routing-switching" class="sub-nav-card">
       <h3>🔀 Routing & Switching</h3>
@@ -54,12 +54,13 @@ const apuntesServicios = todosLosApuntes.filter(apunte =>
               <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
             </div>
             
-            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <!-- CORRECCIÓN: apunte.id en vez de apunte.slug -->
+            <h2><a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a></h2>
             <p class="desc">{apunte.data.description}</p>
             
             <div class="card-footer">
               <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+              <a href={`/apuntes/${apunte.id}`} class="leer-mas">Leer apunte →</a>
             </div>
           </article>
         ))
@@ -83,12 +84,13 @@ const apuntesServicios = todosLosApuntes.filter(apunte =>
               <span class="recompensa-info">+{apunte.data.xp_recompensa} XP</span>
             </div>
             
-            <h2><a href={`/apuntes/${apunte.slug}`}>{apunte.data.title}</a></h2>
+            <!-- CORRECCIÓN: apunte.id en vez de apunte.slug -->
+            <h2><a href={`/apuntes/${apunte.id}`}>{apunte.data.title}</a></h2>
             <p class="desc">{apunte.data.description}</p>
             
             <div class="card-footer">
               <span class="fecha">📅 {apunte.data.date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              <a href={`/apuntes/${apunte.slug}`} class="leer-mas">Leer apunte →</a>
+              <a href={`/apuntes/${apunte.id}`} class="leer-mas">Leer apunte →</a>
             </div>
           </article>
         ))
