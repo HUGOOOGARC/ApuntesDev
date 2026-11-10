@@ -321,4 +321,101 @@ export const quizzes: Record<string, QuizItem> = {
     explicacion: 'FastAPI incluye por defecto la interfaz gráfica de Swagger UI en la ruta /docs y la alternativa ReDoc en /redoc sin necesidad de configuración adicional.',
     xpBonus: 25,
   },
+  // ── NUEVOS QUIZZES AÑADIDOS ──
+  'virtualizacion-hipervisores-docker-contenedores': {
+    pregunta: '¿Cuál es la diferencia arquitectónica principal entre un contenedor Docker y una Máquina Virtual tradicional?',
+    opciones: [
+      'Docker comparte directamente el kernel del sistema anfitrión, mientras que una VM carga un kernel completo para cada SO invitado',
+      'Docker solo funciona en entornos con hipervisores Tipo 1 bare-metal',
+      'Las máquinas virtuales no permiten asignar memoria RAM dedicada',
+      'Docker requiere emular la arquitectura física del procesador mediante software'
+    ],
+    respuestaCorrecta: 'Docker comparte directamente el kernel del sistema anfitrión, mientras que una VM carga un kernel completo para cada SO invitado',
+    explicacion: 'Al reutilizar el kernel de Linux mediante cgroups y namespaces, Docker arranca de forma instantánea y consume una fracción mínima de recursos comparado con una máquina virtual.',
+    xpBonus: 25,
+  },
+  'copias-seguridad-backup-raid-rsync': {
+    pregunta: '¿Qué principio establece la estrategia de respaldo 3-2-1 en administración de sistemas?',
+    opciones: [
+      '3 copias de los datos, en 2 soportes físicos distintos y al menos 1 copia guardada en una ubicación externa (off-site)',
+      '3 servidores en paralelo, 2 discos en espejo y 1 administrador de guardia',
+      'Copiar cada 3 días, durante 2 meses y mantener 1 año de retención',
+      '3 niveles de RAID, 2 contraseñas maestras y 1 clave de cifrado asimétrico'
+    ],
+    respuestaCorrecta: '3 copias de los datos, en 2 soportes físicos distintos y al menos 1 copia guardada en una ubicación externa (off-site)',
+    explicacion: 'La regla 3-2-1 protege los datos de cualquier escenario de catástrofe: fallos de disco local, incendios, robos en la sede o ataques de ransomware.',
+    xpBonus: 25,
+  },
+  'monitorizacion-logs-journalctl-cron': {
+    pregunta: '¿Qué comando de journalctl permite seguir en vivo y en tiempo real las nuevas entradas de log del servicio web Nginx?',
+    opciones: [
+      'journalctl -u nginx.service -f',
+      'journalctl --watch /etc/nginx',
+      'journalctl -b --tail nginx',
+      'journalctl -service nginx --live'
+    ],
+    respuestaCorrecta: 'journalctl -u nginx.service -f',
+    explicacion: 'El modificador -u filtra por la unidad de systemd (nginx.service) y -f (follow) mantiene la terminal abierta mostrando las nuevas líneas en directo.',
+    xpBonus: 25,
+  },
+  'seguridad-wifi-wpa2-wpa3-radius': {
+    pregunta: '¿Qué ventaja de seguridad introduce el protocolo SAE (Simultaneous Authentication of Equals) en WPA3 frente a WPA2-Personal?',
+    opciones: [
+      'Protege contra ataques de diccionario fuera de línea (offline brute-force) y añade secreto hacia adelante (Forward Secrecy)',
+      'Permite conectar hasta 1000 dispositivos sin usar contraseña',
+      'Duplica el alcance físico de la antena Wi-Fi a través de paredes',
+      'Obliga a reiniciar el router cada 24 horas'
+    ],
+    respuestaCorrecta: 'Protege contra ataques de diccionario fuera de línea (offline brute-force) y añade secreto hacia adelante (Forward Secrecy)',
+    explicacion: 'El protocolo Dragonfly/SAE impide que un atacante capture un handshake y pruebe millones de contraseñas en su tarjeta gráfica localmente, exigiendo interacción activa con el punto de acceso.',
+    xpBonus: 25,
+  },
+  'listas-control-acceso-acl-cisco': {
+    pregunta: 'En un router Cisco, ¿dónde se recomienda ubicar una ACL extendida para optimizar el rendimiento de la red?',
+    opciones: [
+      'Lo más cerca posible del ORIGEN del tráfico que se desea filtrar',
+      'Lo más cerca posible del DESTINO final del paquete',
+      'Únicamente en los switches de capa de acceso',
+      'En la interfaz de bucle invertido (Loopback 0)'
+    ],
+    respuestaCorrecta: 'Lo más cerca posible del ORIGEN del tráfico que se desea filtrar',
+    explicacion: 'Las ACLs extendidas se colocan cerca del origen para descartar el tráfico no deseado de inmediato, evitando que consuma ancho de banda innecesario a lo largo de toda la topología de red.',
+    xpBonus: 25,
+  },
+  'servicios-correo-smtp-imap-pop3': {
+    pregunta: '¿Cuál es la función del registro DNS SPF (Sender Policy Framework) en la infraestructura de correo electrónico?',
+    opciones: [
+      'Especificar qué servidores o direcciones IP están autorizados para enviar correos en nombre de tu dominio',
+      'Almacenar los correos entrantes cuando el buzón local está lleno',
+      'Cifrar el cuerpo del mensaje mediante algoritmos de clave simétrica',
+      'Acelerar la velocidad de descarga en clientes POP3'
+    ],
+    respuestaCorrecta: 'Especificar qué servidores o direcciones IP están autorizados para enviar correos en nombre de tu dominio',
+    explicacion: 'El registro SPF previene la suplantación de identidad (mail spoofing) permitiendo a los servidores receptores verificar si el remitente proviene de una IP autorizada por el titular del dominio.',
+    xpBonus: 25,
+  },
+  'git-github-control-versiones-ramas': {
+    pregunta: '¿Qué comando de Git crea una nueva rama llamada "feature/login" y te sitúa en ella en un solo paso?',
+    opciones: [
+      'git checkout -b feature/login',
+      'git branch --new feature/login',
+      'git commit -b feature/login',
+      'git push origin feature/login'
+    ],
+    respuestaCorrecta: 'git checkout -b feature/login',
+    explicacion: 'git checkout con el modificador -b (o git switch -c) crea la rama y realiza el cambio de contexto de forma simultánea.',
+    xpBonus: 25,
+  },
+  'autenticacion-jwt-cookies-seguridad-web': {
+    pregunta: '¿Por qué se recomienda almacenar los tokens JWT en cookies con el atributo "HttpOnly" en lugar de localStorage?',
+    opciones: [
+      'Porque las cookies HttpOnly no son accesibles mediante JavaScript, protegiendo el token frente a ataques de robo por XSS',
+      'Porque localStorage solo admite números enteros',
+      'Porque las cookies HttpOnly aumentan la velocidad de conexión a la base de datos',
+      'Porque los tokens JWT son demasiado pesados para almacenarse en localStorage'
+    ],
+    respuestaCorrecta: 'Porque las cookies HttpOnly no son accesibles mediante JavaScript, protegiendo el token frente a ataques de robo por XSS',
+    explicacion: 'Al impedir que scripts del cliente lean el token con document.cookie, una inyección maliciosa de JavaScript (XSS) no puede extraer la credencial de autenticación del usuario.',
+    xpBonus: 25,
+  },
 };
