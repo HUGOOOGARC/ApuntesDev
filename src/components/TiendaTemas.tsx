@@ -8,7 +8,7 @@ const CATALOGO_TEMAS = [
   { id: 'default', nombre: 'Terminal Clásica', precio: 0, color: '#4CAF50' },
   { id: 'kali', nombre: 'Kali Linux', precio: 150, color: '#e53935' },
   { id: 'dracula', nombre: 'Tema Drácula', precio: 300, color: '#bd93f9' },
-  { id: 'hacker', nombre: 'Matrix', precio: 500, color: '#00ff00' }
+  { id: 'matrix', nombre: 'Matrix', precio: 500, color: '#00ff00' }
 ];
 
 export default function TiendaTemas() {

@@ -1,6 +1,6 @@
 import { useStore } from '@nanostores/preact';
 import { useState, useEffect } from 'preact/hooks';
-import { perfilStore, aplicarPrestigio, calcularXpNecesaria } from '../store/progreso';
+import { perfilStore, aplicarPrestigio, calcularXpNecesaria, cargarPerfilDesdeSupabase } from '../store/progreso';
 import { supabase } from '../lib/supabase';
 import confetti from 'canvas-confetti';
 
@@ -26,6 +26,7 @@ export default function PerfilDashboard() {
   const statsProg = Math.min((countProg * 25), 100);
 
   useEffect(() => {
+    cargarPerfilDesdeSupabase();
     async function cargarUsername() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {

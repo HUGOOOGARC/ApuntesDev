@@ -9,7 +9,8 @@ import {
   comprarTitulo,
   equiparTitulo,
   comprarBoosterXP,
-  abrirCofreMisterioso
+  abrirCofreMisterioso,
+  cargarPerfilDesdeSupabase
 } from '../../store/progreso';
 
 interface TemaItem {
@@ -114,6 +115,10 @@ export default function CyberStore() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [openingCofre, setOpeningCofre] = useState<boolean>(false);
   const [cofreResultado, setCofreResultado] = useState<{ tipo: string; cantidad: number } | null>(null);
+
+  useEffect(() => {
+    cargarPerfilDesdeSupabase();
+  }, []);
 
   useEffect(() => {
     if (perfil.temaActivo) {

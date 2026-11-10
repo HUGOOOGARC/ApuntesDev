@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
 import confetti from 'canvas-confetti';
-import { perfilStore, registrarResultadoDuelo } from '../../store/progreso';
+import { perfilStore, registrarResultadoDuelo, cargarPerfilDesdeSupabase } from '../../store/progreso';
 import { quizzes, type QuizItem } from '../../data/quizzes';
 
 interface BotRival {
@@ -96,6 +96,10 @@ export default function DuelArena() {
   // Referencias para timers
   const timerRef = useRef<any>(null);
   const botAnswerTimerRef = useRef<any>(null);
+
+  useEffect(() => {
+    cargarPerfilDesdeSupabase();
+  }, []);
 
   // Preparar partida
   const iniciarDuelo = (bot: BotRival) => {

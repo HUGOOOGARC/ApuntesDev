@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PerfilDashboard from '../components/PerfilDashboard.tsx';
-import TiendaTemas from '../components/TiendaTemas.tsx';
 ---
 
 <Layout title="Mi Perfil | ApuntesDev">
@@ -18,8 +17,8 @@ import TiendaTemas from '../components/TiendaTemas.tsx';
     <!-- Cargamos el componente interactivo de estadísticas (Aquí ya va incluido el nombre de usuario) -->
     <PerfilDashboard client:load />
 
-    <div style="margin-top: 4rem;">
-      <TiendaTemas client:load />
+    <div style="margin-top: 3rem; text-align: center;">
+      <a href="/tienda" class="btn-ir-tienda">🏪 Ir a la Tienda de Recompensas →</a>
     </div>
   </main>
 
@@ -343,4 +342,26 @@ import TiendaTemas from '../components/TiendaTemas.tsx';
   .logro-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
   .logro-item h4 { color: #fff; margin: 0 0 0.2rem 0; font-size: 0.9rem; }
   .logro-item p { color: #666; font-size: 0.72rem; margin: 0; line-height: 1.3; }
+
+  /* Botón enlace a Tienda */
+  .btn-ir-tienda {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(56, 189, 248, 0.04));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    padding: 0.85rem 1.75rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+  .btn-ir-tienda:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+  }
 </style>

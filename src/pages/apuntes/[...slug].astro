@@ -142,8 +142,8 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
       }
 
       btn.addEventListener('click', async () => {
-        const completado = await completarApunte(idApunte, xp, monedas);
-        if (completado) {
+        const resultado = await completarApunte(idApunte, xp, monedas);
+        if (resultado && resultado.completado) {
           btn.textContent = `🎉 ¡Ganado! (+${xp} XP)`;
           btn.classList.add('dominado');
           btn.disabled = true;

@@ -52,7 +52,7 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
   try {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({
           xp: nuevoPerfil.xp,
@@ -63,9 +63,14 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
           cristales_ascension: nuevoPerfil.cristalesAscension,
           apuntes_completados: nuevoPerfil.apuntesCompletados,
           tema_activo: nuevoPerfil.temaActivo,
-          temas_desbloqueados: nuevoPerfil.temasDesbloqueados
+          temas_desbloqueados: nuevoPerfil.temasDesbloqueados,
+          updated_at: new Date().toISOString()
         })
         .eq('id', session.user.id);
+
+      if (error) {
+        console.warn('Aviso sincronización Supabase:', error.message);
+      }
     }
   } catch (error) {
     console.error('Error al sincronizar con Supabase:', error);
@@ -85,6 +90,16 @@ export async function cargarPerfilDesdeSupabase() {
 
       if (data && !error) {
         const perfilActual = perfilStore.get();
+        // Fusión segura de arrays para no perder progreso local ni remoto
+        const apuntesCombinados = Array.from(new Set([
+          ...(perfilActual.apuntesCompletados || []),
+          ...(data.apuntes_completados || [])
+        ]));
+        const temasCombinados = Array.from(new Set([
+          ...(perfilActual.temasDesbloqueados || ['default']),
+          ...(data.temas_desbloqueados || ['default'])
+        ]));
+
         perfilStore.set({
           ...perfilActual,
           xp: data.xp ?? perfilActual.xp,
@@ -93,9 +108,9 @@ export async function cargarPerfilDesdeSupabase() {
           prestigio: data.prestigio ?? perfilActual.prestigio,
           multiplicadorXP: data.multiplicador_xp ?? perfilActual.multiplicadorXP,
           cristalesAscension: data.cristales_ascension ?? perfilActual.cristalesAscension,
-          apuntesCompletados: data.apuntes_completados ?? perfilActual.apuntesCompletados,
+          apuntesCompletados: apuntesCombinados,
           temaActivo: data.tema_activo ?? perfilActual.temaActivo,
-          temasDesbloqueados: data.temas_desbloqueados ?? perfilActual.temasDesbloqueados
+          temasDesbloqueados: temasCombinados
         });
       }
     }

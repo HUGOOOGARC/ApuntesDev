@@ -548,13 +548,15 @@ const socialImageURL = image.startsWith('http')
   .xp-hud { 
     display: flex; 
     align-items: center; 
-    gap: 10px; 
+    gap: 7px; 
     background: var(--bg-elevated); 
-    padding: 0.45rem 1rem; 
+    padding: 0.3rem 0.65rem; 
     border-radius: var(--radius-lg); 
     border: 1px solid var(--border-color); 
     box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.05);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .xp-hud:hover {
@@ -566,24 +568,27 @@ const socialImageURL = image.startsWith('http')
     font-weight: 800; 
     color: var(--bg-color); 
     background: var(--accent-color); 
-    padding: 0.2rem 0.65rem; 
+    padding: 0.18rem 0.5rem; 
     border-radius: var(--radius-sm); 
-    font-size: 0.82rem; 
+    font-size: 0.78rem; 
     display: flex; 
     align-items: center; 
-    gap: 4px;
+    gap: 3px;
     box-shadow: 0 0 10px var(--accent-glow);
-    letter-spacing: 0.03em;
-  }\n
-  .prestigio-estrella { font-size: 0.75rem; filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.9)); }
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .prestigio-estrella { font-size: 0.7rem; filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.9)); }
   
   .xp-barra-fondo { 
-    width: 130px; 
-    height: 6px; 
+    width: 75px; 
+    height: 5px; 
     background: rgba(0,0,0,0.5); 
     border-radius: 10px; 
     overflow: hidden; 
     border: 1px solid var(--border-subtle);
+    flex-shrink: 0;
   }
   
   .xp-barra-relleno { 
@@ -594,26 +599,21 @@ const socialImageURL = image.startsWith('http')
     border-radius: 10px;
   }
   
-  .xp-texto { 
-    font-size: 0.75rem; 
-    color: var(--text-muted); 
-    font-family: var(--font-mono); 
-    font-weight: 600; 
-    width: 75px; 
-    text-align: right;
-    letter-spacing: 0.02em;
-  }
-  
   .monedas-badge { 
     background: rgba(255, 215, 0, 0.08); 
     color: #FFD700; 
-    padding: 0.2rem 0.6rem; 
+    padding: 0.18rem 0.5rem; 
     border-radius: var(--radius-sm); 
     font-weight: 700; 
     font-family: var(--font-mono); 
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     border: 1px solid rgba(255, 215, 0, 0.2); 
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1220px) {
+    .xp-barra-fondo { display: none; }
   }
 
   .cristales-badge { 
