@@ -2,13 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ServerRack3D from '../components/3d/ServerRack3D.tsx';
+import HeroTerminalIDE from '../components/hero/HeroTerminalIDE.tsx';
 ---
 
 <Layout title="ApuntesDev | Domina SMR, Redes y Programación">
   <Header />
 
-  <!-- HERO SECTION A PANTALLA COMPLETA CON 3D RACK CHASSIS -->
+  <!-- HERO SECTION A PANTALLA COMPLETA CON CONSOLA CIBERNÉTICA INTERACTIVA -->
   <section class="hero-viewport">
     
     <!-- Luces de Fondo y Grid Cibernético -->
@@ -25,8 +25,8 @@ import ServerRack3D from '../components/3d/ServerRack3D.tsx';
         <div class="hero-badge-container">
           <div class="hero-badge">
             <span class="badge-dot"></span>
-            <span class="badge-text">HARDWARE 3D • SMR & CIBERSEGURIDAD</span>
-            <span class="badge-arrow">✨</span>
+            <span class="badge-text">TERMINAL CLOUD • SMR, REDES & CÓDIGO</span>
+            <span class="badge-arrow">⚡</span>
           </div>
         </div>
 
@@ -103,11 +103,9 @@ import ServerRack3D from '../components/3d/ServerRack3D.tsx';
         </div>
       </div>
 
-      <!-- COLUMNA DERECHA: HARDWARE 3D INTERACTIVO -->
-      <div class="hero-right-3d reveal reveal-delay-2">
-        <div class="hero-3d-hologram-stage">
-          <ServerRack3D client:load />
-        </div>
+      <!-- COLUMNA DERECHA: CONSOLA / IDE CIBERNÉTICO INTERACTIVO -->
+      <div class="hero-right-col reveal reveal-delay-2">
+        <HeroTerminalIDE client:load />
       </div>
 
     </div>
@@ -364,7 +362,7 @@ import ServerRack3D from '../components/3d/ServerRack3D.tsx';
     text-align: left;
   }
 
-  .hero-right-3d {
+  .hero-right-col {
     position: relative;
     display: flex;
     align-items: center;
@@ -372,27 +370,293 @@ import ServerRack3D from '../components/3d/ServerRack3D.tsx';
     width: 100%;
   }
 
-  .hero-3d-hologram-stage {
+  .hero-terminal-wrapper {
     position: relative;
     width: 100%;
-    max-width: 580px;
-    height: 560px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    max-width: 600px;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
   }
 
-  /* Reflejo de luz holográfica volumétrica bajo el rack */
-  .hero-3d-hologram-stage::after {
-    content: '';
+  .terminal-ambient-glow {
     position: absolute;
-    bottom: -10px;
-    width: 75%;
-    height: 45px;
-    background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
-    filter: blur(18px);
+    inset: -20px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 65%);
+    filter: blur(40px);
     pointer-events: none;
+    opacity: 0.55;
     z-index: 0;
+    transition: background 0.3s ease;
+  }
+
+  .hero-terminal-card {
+    position: relative;
+    z-index: 1;
+    background: rgba(10, 13, 22, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 35px var(--hologram-color, rgba(16, 185, 129, 0.12));
+    display: flex;
+    flex-direction: column;
+    min-height: 460px;
+    font-family: var(--font-mono, monospace);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hero-terminal-card:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.75), 0 0 45px var(--hologram-color, rgba(16, 185, 129, 0.22));
+  }
+
+  /* CHROME HEADER */
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: rgba(17, 22, 34, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 0.75rem;
+  }
+
+  .chrome-controls {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .control-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot-close { background: #ff5f56; box-shadow: 0 0 6px rgba(255, 95, 86, 0.5); }
+  .dot-min { background: #ffbd2e; box-shadow: 0 0 6px rgba(255, 189, 46, 0.5); }
+  .dot-max { background: #27c93f; box-shadow: 0 0 6px rgba(39, 201, 63, 0.5); }
+
+  .chrome-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-grow: 1;
+  }
+  .chrome-tabs::-webkit-scrollbar { display: none; }
+
+  .chrome-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0.35rem 0.7rem;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+
+  .chrome-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f1f5f9;
+  }
+
+  .chrome-tab.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .chrome-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+  }
+
+  .chrome-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.32rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .chrome-btn.btn-run {
+    background: var(--accent-glow, rgba(16, 185, 129, 0.2));
+    color: var(--accent-color, #10b981);
+    border-color: var(--accent-color, #10b981);
+  }
+
+  .chrome-btn.btn-run:hover:not(:disabled) {
+    background: var(--accent-color, #10b981);
+    color: #07080c;
+    box-shadow: 0 0 12px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  .chrome-btn.btn-copy:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  /* EDITOR BODY & CODE LINES */
+  .terminal-editor-body {
+    flex-grow: 1;
+    padding: 1.25rem 1.25rem 1.5rem;
+    overflow-y: auto;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #e2e8f0;
+    min-height: 340px;
+  }
+
+  .fade-in {
+    animation: editorFade 0.25s ease-out;
+  }
+
+  @keyframes editorFade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .code-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+    font-family: inherit;
+  }
+
+  .line-num {
+    width: 20px;
+    text-align: right;
+    color: #475569;
+    user-select: none;
+    font-size: 0.76rem;
+    flex-shrink: 0;
+    padding-top: 1px;
+  }
+
+  .line-code {
+    flex-grow: 1;
+    word-break: break-all;
+  }
+
+  .line-code.indent { padding-left: 1.25rem; }
+  .line-code.indent-2 { padding-left: 2.25rem; }
+
+  /* TOKENS */
+  .t-prompt { color: var(--accent-color, #10b981); font-weight: 800; margin-right: 0.25rem; }
+  .t-cmd { color: #f43f5e; font-weight: 700; }
+  .t-flag { color: #38bdf8; }
+  .t-val { color: #fbbf24; }
+  .t-ip { color: #a78bfa; font-weight: 700; }
+  .t-dim { color: #64748b; font-style: italic; }
+  .t-success { color: #34d399; font-weight: 600; }
+  .t-cyan { color: #38bdf8; font-weight: 600; }
+  .t-highlight {
+    color: var(--accent-color, #10b981);
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    border-left: 2px solid var(--accent-color, #10b981);
+    display: inline-block;
+  }
+  .t-comment { color: #64748b; font-style: italic; }
+  .t-keyword { color: #c084fc; font-weight: 700; }
+  .t-string { color: #34d399; }
+  .t-def { color: #60a5fa; font-weight: 700; }
+  .t-cisco-prompt { color: #fbbf24; font-weight: 800; margin-right: 0.25rem; }
+  .t-accent { color: var(--accent-color, #10b981); font-weight: 700; }
+  .extra-log-line { animation: logPop 0.3s ease-out; }
+
+  @keyframes logPop {
+    from { opacity: 0; transform: translateX(-6px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .blinking-cursor {
+    color: var(--accent-color, #10b981);
+    animation: cursorBlink 1s infinite;
+    display: inline-block;
+  }
+
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* FOOTER */
+  .terminal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: rgba(12, 16, 26, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-color, #10b981);
+    box-shadow: 0 0 8px var(--accent-color, #10b981);
+  }
+
+  .footer-divider { color: #334155; }
+  .footer-branch { color: #94a3b8; }
+
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .footer-badge {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    color: #94a3b8;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  .footer-badge.lang-badge {
+    color: var(--accent-color, #10b981);
+    border-color: var(--accent-glow, rgba(16, 185, 129, 0.3));
   }
 
   /* Badge Pill con pulso */
