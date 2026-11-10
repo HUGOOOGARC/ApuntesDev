@@ -1,0 +1,231 @@
+---
+interface Props {
+  variant?: 'in-article' | 'before-quiz' | 'sidebar' | 'horizontal';
+  slotId?: string; // ID opcional cuando se creen bloques de anuncios específicos en AdSense
+  className?: string;
+}
+
+const { 
+  variant = 'in-article', 
+  slotId,
+  className = '' 
+} = Astro.props;
+
+// Dimensiones pre-reservadas según la variante para garantizar CLS = 0
+const minHeight = variant === 'before-quiz' ? '280px' : variant === 'in-article' ? '260px' : '250px';
+const isFluid = variant === 'in-article';
+---
+
+<div 
+  class={`adsense-slot-shield adsense-${variant} ${className}`}
+  style={`min-height: ${minHeight};`}
+  data-ad-variant={variant}
+  aria-label="Espacio publicitario patrocinado"
+>
+  <!-- Barra de etiqueta oficial AdSense (Compliance Google) -->
+  <div class="ad-compliance-header">
+    <span class="ad-dot"></span>
+    <span class="ad-tag-text">PUBLICIDAD • APUNTESDEV SPONSOR</span>
+  </div>
+
+  <!-- Contenedor del Anuncio Oficial de Google AdSense -->
+  <div class="ad-creative-container">
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center; min-width: 250px; width: 100%;"
+         data-ad-client="ca-pub-7136437312927199"
+         data-ad-slot={slotId || undefined}
+         data-ad-format={isFluid ? "fluid" : "auto"}
+         data-ad-layout={isFluid ? "in-article" : undefined}
+         data-full-width-responsive="true"></ins>
+  </div>
+
+  <!-- Fallback estético de respaldo (mientras carga o si está en revisión) -->
+  <div class="ad-fallback-card" aria-hidden="true">
+    <div class="fallback-glow"></div>
+    <div class="fallback-badge">
+      <span class="f-icon">⚡</span>
+      <span>ApuntesDev Academy</span>
+    </div>
+    <p class="fallback-motto">
+      Plataforma gratuita y de código abierto para estudiantes de SMR, ASIR y Programación.
+    </p>
+  </div>
+</div>
+
+<script is:inline>
+  // Inicialización segura del bloque AdSense
+  try {
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  } catch (e) {
+    // Silencioso si el script de AdSense aún no se ha descargado
+  }
+</script>
+
+<style>
+  /* ==========================================================================
+     ADSENSE SHIELD: CLS = 0 & GLASSMORPHISM CYBER AESTHETIC
+     ========================================================================== */
+  .adsense-slot-shield {
+    width: 100%;
+    margin: 2.5rem 0;
+    padding: 1rem 1.25rem 1.25rem;
+    background: rgba(14, 18, 28, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    contain: layout style;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  /* Shimmer sutil para simular carga mientras Google sirve el anuncio */
+  .adsense-slot-shield::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.02) 25%,
+      rgba(56, 189, 248, 0.05) 50%, 
+      rgba(255, 255, 255, 0.02) 75%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: adShimmer 3s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes adShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Etiqueta de cumplimiento de políticas AdSense */
+  .ad-compliance-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    z-index: 2;
+  }
+
+  .ad-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+  }
+
+  .ad-tag-text {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #64748b;
+    text-transform: uppercase;
+    font-family: var(--font-mono, monospace);
+  }
+
+  /* Contenedor del anuncio */
+  .ad-creative-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
+    z-index: 3;
+    position: relative;
+  }
+
+  /* Tarjeta estética de respaldo que solo se ve mientras no haya anuncio renderizado */
+  .ad-fallback-card {
+    position: absolute;
+    inset: 2rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px dashed rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    background: rgba(10, 13, 20, 0.4);
+    padding: 1rem;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+  }
+
+  .fallback-glow {
+    position: absolute;
+    width: 140px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .fallback-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 0.35rem;
+  }
+
+  .f-icon {
+    color: #38bdf8;
+    font-size: 0.95rem;
+  }
+
+  .fallback-motto {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin: 0;
+    max-width: 440px;
+    line-height: 1.4;
+  }
+
+  /* Cuando AdSense inyecta el anuncio con éxito, ocultamos el fallback y el shimmer */
+  .adsense-slot-shield.ad-filled,
+  .adsense-slot-shield:has(ins[data-ad-status="filled"]),
+  .adsense-slot-shield:has(iframe) {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .adsense-slot-shield.ad-filled::before,
+  .adsense-slot-shield:has(ins[data-ad-status="filled"])::before,
+  .adsense-slot-shield:has(iframe)::before {
+    display: none;
+  }
+
+  .adsense-slot-shield.ad-filled .ad-fallback-card,
+  .adsense-slot-shield:has(ins[data-ad-status="filled"]) .ad-fallback-card,
+  .adsense-slot-shield:has(iframe) .ad-fallback-card {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  /* Ajustes responsivos */
+  @media (max-width: 640px) {
+    .adsense-slot-shield {
+      margin: 1.75rem 0;
+      padding: 0.85rem 1rem 1rem;
+      border-radius: 12px;
+    }
+    .ad-tag-text {
+      font-size: 0.62rem;
+    }
+    .fallback-motto {
+      font-size: 0.72rem;
+    }
+  }
+</style>

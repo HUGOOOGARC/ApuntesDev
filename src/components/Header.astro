@@ -46,6 +46,10 @@ import BarraProgreso from './BarraProgreso.tsx';
         <span class="pill-icon">🏪</span>
         <span class="pill-text">Tienda</span>
       </a>
+      <a href="/certificados" class="nav-pill nav-pill--cert" title="Diplomas Oficiales y Certificaciones con QR">
+        <span class="pill-icon">🎓</span>
+        <span class="pill-text">Diplomas</span>
+      </a>
     </nav>
 
     <!-- Acciones Derecha: Buscador + HUD XP + Perfil + Hamburguesa -->
@@ -401,6 +405,12 @@ import BarraProgreso from './BarraProgreso.tsx';
   .nav-pill--tienda:hover {
     background: rgba(56, 189, 248, 0.12);
     box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+  }
+
+  .nav-pill--cert { color: #c084fc; }
+  .nav-pill--cert:hover {
+    background: rgba(192, 132, 252, 0.12);
+    box-shadow: 0 0 12px rgba(192, 132, 252, 0.25);
   }
 
   .pill-icon {

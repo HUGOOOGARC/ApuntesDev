@@ -5,6 +5,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import Quiz from '../../components/Quiz.tsx';
 import { quizzes } from '../../data/quizzes';
+import AdSenseBanner from '../../components/ads/AdSenseBanner.astro';
 
 // 1. Generar rutas dinámicas para cada apunte usando apunte.id (Astro 5+)
 export async function getStaticPaths() {
@@ -80,6 +81,14 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
       <article class="markdown-body" id="article-body">
         <Content />
       </article>
+
+      <!-- 1. Slot In-Article (se reposiciona dinámicamente al ecuador de la lección) -->
+      <div id="in-article-ad-wrapper" style="display: none;">
+        <AdSenseBanner variant="in-article" />
+      </div>
+
+      <!-- 2. Bloque de Anuncio Estratégico antes del Cuestionario Oficial (CLS = 0) -->
+      <AdSenseBanner variant="before-quiz" />
 
       {quizItem && (
         <Quiz client:load apunteId={apunteId} quiz={quizItem} />
@@ -213,6 +222,28 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
     }, observerOptions);
 
     headings.forEach(heading => observer.observe(heading));
+
+    // 4. Inyección inteligente del Anuncio In-Article al centro de la lectura (CLS = 0)
+    const article = document.getElementById('article-body');
+    const inArticleAd = document.getElementById('in-article-ad-wrapper');
+    if (article && inArticleAd) {
+      const h2List = article.querySelectorAll('h2');
+      if (h2List.length >= 2) {
+        const midH2 = h2List[Math.floor(h2List.length / 2)];
+        midH2.parentNode?.insertBefore(inArticleAd, midH2);
+        inArticleAd.style.display = 'block';
+      } else {
+        const pList = article.querySelectorAll('p');
+        if (pList.length >= 3) {
+          const midP = pList[Math.floor(pList.length / 2)];
+          midP.after(inArticleAd);
+          inArticleAd.style.display = 'block';
+        } else {
+          article.appendChild(inArticleAd);
+          inArticleAd.style.display = 'block';
+        }
+      }
+    }
   });
 </script>
 
