@@ -17,8 +17,9 @@ import PerfilDashboard from '../components/PerfilDashboard.tsx';
     <!-- Cargamos el componente interactivo de estadísticas (Aquí ya va incluido el nombre de usuario) -->
     <PerfilDashboard client:load />
 
-    <div style="margin-top: 3rem; text-align: center;">
-      <a href="/tienda" class="btn-ir-tienda">🏪 Ir a la Tienda de Recompensas →</a>
+    <div class="perfil-quick-actions">
+      <a href="/certificados" class="btn-ir-certificados">🎓 Ver mis Diplomas & Certificados →</a>
+      <a href="/tienda" class="btn-ir-tienda">🏪 Tienda de Recompensas →</a>
     </div>
   </main>
 
@@ -342,6 +343,37 @@ import PerfilDashboard from '../components/PerfilDashboard.tsx';
   .logro-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
   .logro-item h4 { color: #fff; margin: 0 0 0.2rem 0; font-size: 0.9rem; }
   .logro-item p { color: #666; font-size: 0.72rem; margin: 0; line-height: 1.3; }
+
+  .perfil-quick-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 3.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Botón enlace a Certificados */
+  .btn-ir-certificados {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05));
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: #ffd700;
+    padding: 0.85rem 1.75rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+  .btn-ir-certificados:hover {
+    background: rgba(255, 215, 0, 0.25);
+    border-color: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 25px rgba(255, 215, 0, 0.3);
+  }
 
   /* Botón enlace a Tienda */
   .btn-ir-tienda {

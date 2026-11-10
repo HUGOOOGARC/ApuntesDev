@@ -449,16 +449,17 @@ const theme = colorMap[cat] ?? colorMap.sistemas;
   }
 
   /* ═══════════════════════════════════════════
-     ARTÍCULO PRINCIPAL
+     ARTÍCULO PRINCIPAL (MODO FOCUS READER)
   ═══════════════════════════════════════════ */
   .apunte-contenido {
-    background: linear-gradient(145deg, rgba(18,20,30,0.7), rgba(12,13,20,0.8));
-    padding: 2.5rem 3rem;
+    background: rgba(13, 16, 23, 0.92);
+    padding: 2.75rem 3.25rem;
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow: 0 4px 32px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
     min-width: 0;
-    backdrop-filter: blur(10px);
+    max-width: 82ch; /* Modo Focus: lectura óptima entre 70-80 caracteres */
+    backdrop-filter: blur(14px);
   }
 
   /* ═══════════════════════════════════════════

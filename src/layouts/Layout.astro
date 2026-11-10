@@ -124,8 +124,10 @@ const socialImageURL = image.startsWith('http')
   <!-- Sistema Flotante de Notificaciones (Toasts Cyberpunk) -->
   <Toast />
 
-  <!-- Sistema de Scroll Reveal & Efectos Magnéticos -->
+  <!-- Next-Gen Interaction Engine: Lenis Smooth Scroll, Spotlight 3D Tilt, Magnetic CTAs, AdSense Shield -->
   <script>
+    import { setupNextGenInteractions } from '../scripts/interactiveExperience';
+
     // ── SCROLL REVEAL SYSTEM ──
     const initScrollReveal = () => {
       const observer = new IntersectionObserver((entries) => {
@@ -142,31 +144,13 @@ const socialImageURL = image.startsWith('http')
       });
     };
 
-    // ── EFECTO MAGNÉTICO EN BOTONES ──
-    const initMagneticButtons = () => {
-      document.querySelectorAll('.magnetic').forEach((btn) => {
-        btn.addEventListener('mousemove', (e) => {
-          const rect = btn.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          const strength = 0.35;
-          btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
-        });
-        btn.addEventListener('mouseleave', () => {
-          btn.style.transform = '';
-          btn.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-          setTimeout(() => { btn.style.transition = ''; }, 500);
-        });
-      });
-    };
-
     // ── CONTADOR ANIMADO ──
-    const animateCounter = (el) => {
-      const target = parseInt(el.getAttribute('data-target') || el.textContent, 10);
+    const animateCounter = (el: HTMLElement) => {
+      const target = parseInt(el.getAttribute('data-target') || el.textContent || '0', 10);
       if (isNaN(target)) return;
       const duration = 1200;
       const start = performance.now();
-      const update = (now) => {
+      const update = (now: number) => {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
@@ -180,7 +164,7 @@ const socialImageURL = image.startsWith('http')
       const counterObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            animateCounter(entry.target);
+            animateCounter(entry.target as HTMLElement);
             counterObserver.unobserve(entry.target);
           }
         });
@@ -188,28 +172,10 @@ const socialImageURL = image.startsWith('http')
       document.querySelectorAll('.counter-num').forEach((el) => counterObserver.observe(el));
     };
 
-    // ── TILT 3D EN TARJETAS ──
-    const initTilt = () => {
-      document.querySelectorAll('.tilt-card').forEach((card) => {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = (e.clientX - rect.left) / rect.width - 0.5;
-          const y = (e.clientY - rect.top) / rect.height - 0.5;
-          card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(8px)`;
-        });
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-          card.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-          setTimeout(() => { card.style.transition = ''; }, 600);
-        });
-      });
-    };
-
     document.addEventListener('astro:page-load', () => {
       initScrollReveal();
-      initMagneticButtons();
       initCounters();
-      initTilt();
+      setupNextGenInteractions();
     });
   </script>
 
@@ -295,20 +261,22 @@ const socialImageURL = image.startsWith('http')
 
 <style is:global>
   /* =========================================
-     VARIABLES GLOBALES Y SISTEMA DE TEMAS
+     VARIABLES GLOBALES Y SISTEMA DE TEMAS (DARK CLEAN + CYBERPUNK REACTIVO)
      ========================================= */
   :root {
-    --bg-color: #0a0a0f;
-    --bg-surface: #111118;
-    --bg-elevated: #18181f;
-    --text-color: #e8e8f0;
-    --text-muted: #8888a0;
-    --accent-color: #4ade80;
-    --accent-dark: #22c55e;
-    --accent-glow: rgba(74, 222, 128, 0.35);
-    --code-bg: #0d0d14;
-    --border-color: #2a2a38;
-    --border-subtle: #1e1e28;
+    --bg-color: #07080c;
+    --bg-surface: #0e111a;
+    --bg-elevated: #151824;
+    --text-color: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent-color: #10b981;
+    --accent-dark: #059669;
+    --accent-glow: rgba(16, 185, 129, 0.35);
+    --primary-glow: #10b981;
+    --hologram-color: rgba(16, 185, 129, 0.14);
+    --code-bg: #0b0d14;
+    --border-color: #1e2433;
+    --border-subtle: #141724;
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
@@ -323,90 +291,102 @@ const socialImageURL = image.startsWith('http')
     --shadow-glow: 0 0 24px var(--accent-glow);
   }
 
-  /* Temas de la Tienda Endgame */
+  /* Temas Reactivos de la Tienda Cyber */
   [data-theme="kali"] {
-    --bg-color: #0a0005;
-    --bg-surface: #120008;
-    --bg-elevated: #1a000d;
+    --bg-color: #070305;
+    --bg-surface: #120509;
+    --bg-elevated: #1c080f;
     --accent-color: #f43f5e;
     --accent-dark: #e11d48;
     --accent-glow: rgba(244, 63, 94, 0.35);
+    --primary-glow: #f43f5e;
+    --hologram-color: rgba(244, 63, 94, 0.16);
     --border-color: #3f0a1a;
-    --border-subtle: #2a0510;
+    --border-subtle: #24050e;
   }
 
   [data-theme="dracula"] {
-    --bg-color: #1e1f2b;
-    --bg-surface: #252637;
-    --bg-elevated: #2d2e45;
+    --bg-color: #12131c;
+    --bg-surface: #1a1c29;
+    --bg-elevated: #242638;
     --text-color: #f8f8f2;
-    --text-muted: #6272a4;
+    --text-muted: #8b9bb4;
     --accent-color: #bd93f9;
     --accent-dark: #a580f7;
     --accent-glow: rgba(189, 147, 249, 0.35);
-    --code-bg: #191a27;
-    --border-color: #3a3c58;
-    --border-subtle: #2d2e45;
+    --primary-glow: #bd93f9;
+    --hologram-color: rgba(189, 147, 249, 0.16);
+    --code-bg: #101119;
+    --border-color: #33364d;
+    --border-subtle: #202231;
   }
 
   [data-theme="matrix"] {
-    --bg-color: #000000;
-    --bg-surface: #050805;
-    --bg-elevated: #0a110a;
-    --text-color: #00e676;
-    --text-muted: #00701a;
+    --bg-color: #020402;
+    --bg-surface: #060b06;
+    --bg-elevated: #0b150b;
+    --text-color: #00ff41;
+    --text-muted: #22c55e;
     --accent-color: #00ff41;
     --accent-dark: #00cc33;
     --accent-glow: rgba(0, 255, 65, 0.4);
-    --code-bg: #020302;
+    --primary-glow: #00ff41;
+    --hologram-color: rgba(0, 255, 65, 0.18);
+    --code-bg: #010301;
     --border-color: #004d10;
-    --border-subtle: #002a08;
+    --border-subtle: #002607;
   }
   
   [data-theme="cyberpunk"] {
     --bg-color: #05050f;
     --bg-surface: #0c0c1e;
     --bg-elevated: #121228;
-    --text-color: #e0e0ff;
-    --text-muted: #8080c0;
+    --text-color: #f3f4f6;
+    --text-muted: #94a3b8;
     --accent-color: #f9e800;
     --accent-dark: #d4c200;
     --accent-glow: rgba(249, 232, 0, 0.35);
+    --primary-glow: #f9e800;
+    --hologram-color: rgba(249, 232, 0, 0.18);
     --code-bg: #030308;
     --border-color: #2a2a60;
     --border-subtle: #1a1a40;
   }
 
   [data-theme="nord"] {
-    --bg-color: #242933;
-    --bg-surface: #2e3440;
-    --bg-elevated: #3b4252;
+    --bg-color: #1b1f27;
+    --bg-surface: #242933;
+    --bg-elevated: #2e3440;
     --text-color: #eceff4;
     --text-muted: #d8dee9;
     --accent-color: #88c0d0;
     --accent-dark: #81a1c1;
     --accent-glow: rgba(136, 192, 208, 0.35);
-    --code-bg: #1e222a;
-    --border-color: #4c566a;
-    --border-subtle: #3b4252;
+    --primary-glow: #88c0d0;
+    --hologram-color: rgba(136, 192, 208, 0.16);
+    --code-bg: #161920;
+    --border-color: #3b4252;
+    --border-subtle: #2a2f3a;
   }
 
   [data-theme="obsidian"] {
-    --bg-color: #0b0b0e;
-    --bg-surface: #14141a;
-    --bg-elevated: #1e1e28;
+    --bg-color: #070709;
+    --bg-surface: #0f0f14;
+    --bg-elevated: #181820;
     --text-color: #f8fafc;
     --text-muted: #94a3b8;
     --accent-color: #ffd700;
     --accent-dark: #f59e0b;
     --accent-glow: rgba(255, 215, 0, 0.4);
-    --code-bg: #070709;
+    --primary-glow: #ffd700;
+    --hologram-color: rgba(255, 215, 0, 0.18);
+    --code-bg: #040406;
     --border-color: #4a3e14;
     --border-subtle: #241e06;
   }
 
   /* =========================================
-     RESETS Y BASE
+     RESETS Y BASE (VERCEL & LINEAR AESTHETIC)
      ========================================= */
   *, *::before, *::after {
     box-sizing: border-box;
@@ -422,8 +402,6 @@ const socialImageURL = image.startsWith('http')
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
-    scroll-behavior: smooth;
-    transition: background-color 0.3s ease, color 0.3s ease;
     font-size: 16px;
     letter-spacing: -0.01em;
   }
@@ -434,10 +412,146 @@ const socialImageURL = image.startsWith('http')
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: var(--bg-color);
     background-image: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(74, 222, 128, 0.07), transparent),
-      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(74, 222, 128, 0.04), transparent);
+      radial-gradient(circle at 50% -12%, var(--hologram-color) 0%, transparent 55%),
+      radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+    background-size: 100% 100%, 28px 28px;
     background-attachment: fixed;
+    transition: background-color 0.35s ease;
+  }
+
+  /* ── LENIS SMOOTH SCROLL INTEGRATION ── */
+  html.lenis, html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
+  /* ── GLOW SPOTLIGHT 3D TILT CARDS ── */
+  .spotlight-card {
+    position: relative;
+    background: rgba(14, 17, 26, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    overflow: hidden;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+
+  .spotlight-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      380px circle at var(--mouse-x, -500px) var(--mouse-y, -500px),
+      var(--accent-color, #10b981),
+      transparent 65%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+
+  .spotlight-card:hover::before {
+    opacity: 0.9;
+  }
+
+  .spotlight-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      320px circle at var(--mouse-x, -500px) var(--mouse-y, -500px),
+      var(--accent-glow, rgba(16, 185, 129, 0.15)),
+      transparent 70%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    z-index: 1;
+  }
+
+  .spotlight-card:hover::after {
+    opacity: 0.75;
+  }
+
+  /* ── BOTONES MAGNÉTICOS DE IMPACTO ── */
+  .magnetic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    will-change: transform;
+  }
+
+  /* ── ADSENSE CORE WEB VITALS SHIELD (CLS = 0) ── */
+  .adsense-slot-shield {
+    min-height: 100px;
+    width: 100%;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 17, 26, 0.6);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .adsense-slot-shield::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: adSkeleton 2.2s infinite linear;
+  }
+
+  @keyframes adSkeleton {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .adsense-slot-shield.ad-filled {
+    border-style: solid;
+    border-color: transparent;
+    background: transparent;
+  }
+  .adsense-slot-shield.ad-filled::before {
+    display: none;
+  }
+
+  /* ── TRANSICIÓN DE ENTRADA GLITCH A LA ARENA 1v1 ── */
+  @keyframes cyberGlitchIn {
+    0% { opacity: 0; transform: scale(0.98) translateY(10px); filter: blur(4px) hue-rotate(90deg); }
+    50% { opacity: 0.8; transform: scale(1.01) translateY(-2px); filter: blur(0px) hue-rotate(-30deg); }
+    100% { opacity: 1; transform: scale(1) translateY(0); filter: none; }
+  }
+
+  .arena-enter-glitch {
+    animation: cyberGlitchIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   /* Mejora de accesibilidad para el salto al contenido */

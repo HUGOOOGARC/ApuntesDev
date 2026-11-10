@@ -2,12 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ServerRack3D from '../components/3d/ServerRack3D.tsx';
 ---
 
 <Layout title="ApuntesDev | Domina SMR, Redes y Programación">
   <Header />
 
-  <!-- HERO SECTION A PANTALLA COMPLETA CON AMBIENTE CYBERPUNK -->
+  <!-- HERO SECTION A PANTALLA COMPLETA CON 3D RACK CHASSIS -->
   <section class="hero-viewport">
     
     <!-- Luces de Fondo y Grid Cibernético -->
@@ -16,88 +17,103 @@ import Footer from '../components/Footer.astro';
     <div class="glow-orb glow-orb--cyan"></div>
     <div class="glow-orb glow-orb--purple"></div>
 
-    <div class="hero-wrapper">
+    <div class="hero-split-grid">
       
-      <!-- Pill Badge Animada -->
-      <div class="hero-badge-container">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          <span class="badge-text">SMR & CIBERSEGURIDAD • GAMIFICACIÓN REAL</span>
-          <span class="badge-arrow">✨</span>
-        </div>
-      </div>
-
-      <!-- Título Principal de Impacto -->
-      <h1 class="hero-title">
-        Sube de nivel en <br />
-        <span class="hero-gradient-text">SMR y Código</span>
-      </h1>
-
-      <!-- Subtítulo -->
-      <p class="hero-subtitle">
-        Domina <strong>Sistemas Operativos</strong>, <strong>Redes de Computadores</strong> y <strong>Programación</strong>. Completa lecciones sintetizadas, acumula XP, gana créditos y desbloquea temas de terminal exclusivos.
-      </p>
-
-      <!-- Botones de Acción Épicos -->
-      <div class="hero-actions">
-        <a href="/sistemas" class="btn-hero-primary magnetic">
-          <span>Empezar a Estudiar</span>
-          <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </a>
-
-        <a href="/perfil" class="btn-hero-secondary magnetic">
-          <span>Ver mi Rango & Stats</span>
-          <span class="btn-emoji">👤</span>
-        </a>
-      </div>
-
-      <!-- Hint de Consola Rápida -->
-      <div class="hero-hint">
-        <span>Tip Pro: Pulsa <kbd>Ctrl</kbd> + <kbd>K</kbd> en cualquier momento para abrir la consola rápida</span>
-      </div>
-
-      <!-- TERMINAL SHOWCASE CIBERNÉTICA -->
-      <div class="terminal-showcase">
-        <div class="terminal-bar">
-          <div class="terminal-dots">
-            <span class="dot dot--red"></span>
-            <span class="dot dot--yellow"></span>
-            <span class="dot dot--green"></span>
-          </div>
-          <div class="terminal-title">apuntesdev@cloud: ~/learning-hub/2026</div>
-          <div class="terminal-status">
-            <span class="status-indicator"></span> ONLINE
+      <!-- COLUMNA IZQUIERDA: CONTENIDO & CTA -->
+      <div class="hero-left-content">
+        <!-- Pill Badge Animada -->
+        <div class="hero-badge-container">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-text">HARDWARE 3D • SMR & CIBERSEGURIDAD</span>
+            <span class="badge-arrow">✨</span>
           </div>
         </div>
 
-        <div class="terminal-body">
-          <div class="terminal-grid">
-            <div class="terminal-stat">
-              <span class="term-stat-num counter-num" data-target="50">50 XP</span>
-              <span class="term-stat-label">Recompensa por apunte</span>
+        <!-- Título Principal de Impacto -->
+        <h1 class="hero-title">
+          Sube de nivel en <br />
+          <span class="hero-gradient-text">SMR y Código</span>
+        </h1>
+
+        <!-- Subtítulo -->
+        <p class="hero-subtitle">
+          Domina <strong>Sistemas Operativos</strong>, <strong>Redes Cisco</strong> y <strong>Programación</strong>. Completa lecciones sintetizadas, acumula XP, gana créditos y desbloquea temas de terminal exclusivos.
+        </p>
+
+        <!-- Botones de Acción Épicos Magnéticos -->
+        <div class="hero-actions">
+          <a href="/sistemas" class="btn-hero-primary magnetic" data-magnetic>
+            <span>Empezar a Estudiar</span>
+            <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+
+          <a href="/duelo" class="btn-hero-secondary magnetic" data-magnetic>
+            <span>Arena 1v1</span>
+            <span class="btn-emoji">⚔️</span>
+          </a>
+
+          <a href="/perfil" class="btn-hero-ghost">
+            <span>Mi Rango</span>
+            <span class="btn-emoji">👤</span>
+          </a>
+        </div>
+
+        <!-- Hint de Consola Rápida -->
+        <div class="hero-hint">
+          <span>Tip Pro: Pulsa <kbd>Ctrl</kbd> + <kbd>K</kbd> en cualquier momento para abrir la consola rápida</span>
+        </div>
+
+        <!-- TERMINAL SHOWCASE CIBERNÉTICA -->
+        <div class="terminal-showcase">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="dot dot--red"></span>
+              <span class="dot dot--yellow"></span>
+              <span class="dot dot--green"></span>
             </div>
-            <div class="terminal-stat">
-              <span class="term-stat-num">10 🪙</span>
-              <span class="term-stat-label">Créditos de tienda</span>
-            </div>
-            <div class="terminal-stat">
-              <span class="term-stat-num">3 Rutas</span>
-              <span class="term-stat-label">Sistemas • Redes • Dev</span>
-            </div>
-            <div class="terminal-stat">
-              <span class="term-stat-num">4 Temas</span>
-              <span class="term-stat-label">Kali • Dracula • Matrix</span>
+            <div class="terminal-title">apuntesdev@cloud: ~/telemetry</div>
+            <div class="terminal-status">
+              <span class="status-indicator"></span> ONLINE
             </div>
           </div>
+
+          <div class="terminal-body">
+            <div class="terminal-grid">
+              <div class="terminal-stat">
+                <span class="term-stat-num counter-num" data-target="50">50 XP</span>
+                <span class="term-stat-label">Recompensa</span>
+              </div>
+              <div class="terminal-stat">
+                <span class="term-stat-num">10 🪙</span>
+                <span class="term-stat-label">Créditos tienda</span>
+              </div>
+              <div class="terminal-stat">
+                <span class="term-stat-num">40+</span>
+                <span class="term-stat-label">Apuntes SMR</span>
+              </div>
+              <div class="terminal-stat">
+                <span class="term-stat-num">7 Temas</span>
+                <span class="term-stat-label">Endgame Store</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: HARDWARE 3D INTERACTIVO -->
+      <div class="hero-right-3d reveal reveal-delay-2">
+        <div class="hero-3d-hologram-stage">
+          <ServerRack3D client:load />
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- SECCIÓN DE CARACTERÍSTICAS BENTO GRID 2.0 -->
+  <!-- SECCIÓN DE CARACTERÍSTICAS BENTO GRID 2.0 (SPOTLIGHT 3D TILT) -->
   <section class="section-full features-section">
     <div class="content-container">
       
@@ -110,7 +126,7 @@ import Footer from '../components/Footer.astro';
       <div class="bento-features">
         
         <!-- CARD 1: Directo al Grano -->
-        <div class="feature-tile reveal reveal-delay-1">
+        <div class="feature-tile spotlight-card reveal reveal-delay-1">
           <div class="tile-icon-bg">⚡</div>
           <h3>Directo al Grano</h3>
           <p>Apuntes sintetizados en Markdown listos para estudiar. Menos relleno y más comandos, arquitecturas y configuraciones reales.</p>
@@ -118,7 +134,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 2: Gamificación -->
-        <div class="feature-tile feature-tile--highlight reveal reveal-delay-2">
+        <div class="feature-tile spotlight-card feature-tile--highlight reveal reveal-delay-2">
           <div class="tile-icon-bg">🎮</div>
           <h3>Gamificación Real</h3>
           <p>Gana 50 XP y 10 monedas por cada apunte dominado. Sube de rango, alcanza el Nivel 50 y desbloquea el Protocolo de Prestigio.</p>
@@ -126,7 +142,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 3: Redes & Cisco -->
-        <div class="feature-tile reveal reveal-delay-3">
+        <div class="feature-tile spotlight-card reveal reveal-delay-3">
           <div class="tile-icon-bg">🌐</div>
           <h3>Redes & Laboratorios</h3>
           <p>Subnetting IPv4/IPv6 con VLSM, VLANs 802.1Q en Cisco IOS, servidores DNS y DHCP en Linux para simulaciones Packet Tracer.</p>
@@ -134,7 +150,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 4: Tienda de Temas -->
-        <div class="feature-tile reveal reveal-delay-1">
+        <div class="feature-tile spotlight-card reveal reveal-delay-1">
           <div class="tile-icon-bg">🎨</div>
           <h3>Tienda de Temas Visuales</h3>
           <p>Invierte tus créditos en desbloquear skins completas para la web: Kali Linux rojo fuego, Matrix verde fósforo o Cyberpunk neón.</p>
@@ -142,7 +158,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 5: Leaderboard -->
-        <div class="feature-tile reveal reveal-delay-2">
+        <div class="feature-tile spotlight-card reveal reveal-delay-2">
           <div class="tile-icon-bg">🏆</div>
           <h3>Leaderboard Global</h3>
           <p>Compite sanamente contra tus compañeros de clase. Mira quién ha acumulado más experiencia y quién lidera el Hall of Fame.</p>
@@ -150,7 +166,7 @@ import Footer from '../components/Footer.astro';
         </div>
 
         <!-- CARD 6: Buscador Instantáneo -->
-        <div class="feature-tile reveal reveal-delay-3">
+        <div class="feature-tile spotlight-card reveal reveal-delay-3">
           <div class="tile-icon-bg">🔍</div>
           <h3>Búsqueda Rápida (Ctrl+K)</h3>
           <p>Encuentra cualquier comando, servicio o sintaxis en milisegundos con nuestra paleta de comandos flotante integrada.</p>
@@ -162,7 +178,7 @@ import Footer from '../components/Footer.astro';
     </div>
   </section>
 
-  <!-- RUTAS DE APRENDIZAJE EXPANDIDAS -->
+  <!-- RUTAS DE APRENDIZAJE EXPANDIDAS (SPOTLIGHT 3D TILT) -->
   <section class="section-full rutas-section">
     <div class="content-container">
       
@@ -175,7 +191,7 @@ import Footer from '../components/Footer.astro';
       <div class="rutas-grid">
         
         <!-- RUTA 1: SISTEMAS -->
-        <a href="/sistemas" class="ruta-card ruta-card--sistemas tilt-card reveal reveal-delay-1">
+        <a href="/sistemas" class="ruta-card ruta-card--sistemas spotlight-card reveal reveal-delay-1">
           <div class="ruta-card-glow"></div>
           <div class="ruta-card-header">
             <span class="ruta-badge">SOM / SOR</span>
@@ -191,7 +207,7 @@ import Footer from '../components/Footer.astro';
         </a>
 
         <!-- RUTA 2: REDES -->
-        <a href="/redes" class="ruta-card ruta-card--redes tilt-card reveal reveal-delay-2">
+        <a href="/redes" class="ruta-card ruta-card--redes spotlight-card reveal reveal-delay-2">
           <div class="ruta-card-glow"></div>
           <div class="ruta-card-header">
             <span class="ruta-badge">TELECOM & CISCO</span>
@@ -207,7 +223,7 @@ import Footer from '../components/Footer.astro';
         </a>
 
         <!-- RUTA 3: PROGRAMACIÓN -->
-        <a href="/programacion" class="ruta-card ruta-card--prog tilt-card reveal reveal-delay-3">
+        <a href="/programacion" class="ruta-card ruta-card--prog spotlight-card reveal reveal-delay-3">
           <div class="ruta-card-glow"></div>
           <div class="ruta-card-header">
             <span class="ruta-badge">DEV & BACKEND</span>
@@ -327,22 +343,60 @@ import Footer from '../components/Footer.astro';
     100% { transform: translate(-52%, 20px) scale(0.96); }
   }
 
-  /* Contenedor central del Hero */
-  .hero-wrapper {
+  /* Contenedor Split Grid del Hero 3D */
+  .hero-split-grid {
     position: relative;
     z-index: 1;
-    max-width: 1040px;
+    max-width: 1440px;
     width: 100%;
     margin: 0 auto;
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1.15fr 0.95fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  .hero-left-content {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .hero-right-3d {
+    position: relative;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hero-3d-hologram-stage {
+    position: relative;
+    width: 100%;
+    max-width: 580px;
+    height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Reflejo de luz holográfica volumétrica bajo el rack */
+  .hero-3d-hologram-stage::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    width: 75%;
+    height: 45px;
+    background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+    filter: blur(18px);
+    pointer-events: none;
+    z-index: 0;
   }
 
   /* Badge Pill con pulso */
   .hero-badge-container {
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.5rem;
     animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -387,29 +441,29 @@ import Footer from '../components/Footer.astro';
 
   /* Título Principal */
   .hero-title {
-    font-size: clamp(3rem, 7vw, 5.2rem);
+    font-size: clamp(2.8rem, 5.5vw, 4.8rem);
     font-weight: 900;
     line-height: 1.05;
     letter-spacing: -0.04em;
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.25rem;
     color: #ffffff;
     animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .hero-gradient-text {
-    background: linear-gradient(135deg, #ffffff 10%, #4ade80 50%, #38bdf8 100%);
+    background: linear-gradient(135deg, #ffffff 15%, var(--accent-color) 60%, #38bdf8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 45px rgba(74, 222, 128, 0.4));
+    filter: drop-shadow(0 0 40px var(--accent-glow));
   }
 
   /* Subtítulo */
   .hero-subtitle {
-    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
     color: #94a3b8;
-    max-width: 720px;
-    line-height: 1.7;
-    margin: 0 0 2.5rem;
+    max-width: 620px;
+    line-height: 1.65;
+    margin: 0 0 2rem;
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -420,11 +474,33 @@ import Footer from '../components/Footer.astro';
   /* Botones del Hero */
   .hero-actions {
     display: flex;
-    gap: 1.25rem;
-    justify-content: center;
+    gap: 1rem;
+    justify-content: flex-start;
     flex-wrap: wrap;
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
     animation: fadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-hero-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    padding: 1rem 1.6rem;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.25s ease;
+  }
+
+  .btn-hero-ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent-color);
+    color: #ffffff;
+    transform: translateY(-2px);
   }
 
   .btn-hero-primary {
@@ -970,9 +1046,27 @@ import Footer from '../components/Footer.astro';
     }
   }
 
-  /* ==========================================================================
+  /* =========================================
      RESPONSIVE
-     ========================================================================== */
+     ========================================= */
+  @media (max-width: 1024px) {
+    .hero-split-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      text-align: center;
+    }
+    .hero-left-content {
+      align-items: center;
+      text-align: center;
+    }
+    .hero-actions {
+      justify-content: center;
+    }
+    .hero-3d-hologram-stage {
+      height: 440px;
+    }
+  }
+
   @media (max-width: 1100px) {
     .bento-features {
       grid-template-columns: repeat(2, 1fr);

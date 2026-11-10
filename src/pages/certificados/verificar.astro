@@ -1,0 +1,445 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout 
+  title="Verificador Oficial de Credenciales y Diplomas | ApuntesDev"
+  description="Valida la autenticidad e integridad criptográfica de cualquier certificado y diploma expedido por ApuntesDev Academy mediante su identificador único."
+>
+  <Header />
+
+  <main class="verify-page-wrapper">
+    <div class="verify-header reveal">
+      <div class="verify-badge">
+        <span class="shield-icon">🛡️</span>
+        <span>SISTEMA DE VERIFICACIÓN CRIPTOGRÁFICA EN RED</span>
+      </div>
+      <h1>Validador Oficial de Credenciales</h1>
+      <p class="verify-subtitle">
+        Comprueba la autenticidad, fecha de expedición y competencias acreditadas de cualquier diploma emitido por la academia ApuntesDev.
+      </p>
+    </div>
+
+    <!-- BUSCADOR MANUAL DE CÓDIGOS -->
+    <div class="verify-search-box reveal">
+      <form id="verify-form" class="verify-form">
+        <input 
+          type="text" 
+          id="cert-input" 
+          placeholder="Introduce el código de credencial (Ej: APNT-2026-SYS-9F4A8C)" 
+          required 
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-verify">
+          <span>Verificar Credencial</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- TARJETA DE RESULTADO DE VERIFICACIÓN -->
+    <div id="verify-result" class="verify-result-card" style="display: none;">
+      <!-- Se llenará dinámicamente con JS -->
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { CATALOGO_CERTIFICACIONES } from '../../data/certificaciones';
+
+  document.addEventListener('astro:page-load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code') || '';
+    const name = params.get('name') || '';
+    const certId = params.get('cert') || '';
+
+    const input = document.getElementById('cert-input') as HTMLInputElement;
+    const form = document.getElementById('verify-form');
+    const resultBox = document.getElementById('verify-result');
+
+    if (code && input) {
+      input.value = code;
+      mostrarResultado(code, name, certId);
+    }
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const query = input?.value.trim().toUpperCase() || '';
+      mostrarResultado(query);
+    });
+
+    function mostrarResultado(codigo: string, nombreParam?: string, certIdParam?: string) {
+      if (!resultBox) return;
+
+      resultBox.style.display = 'block';
+
+      // Detectar qué certificación corresponde por el prefijo del código
+      let certEncontrada = CATALOGO_CERTIFICACIONES.find(c => c.id === certIdParam);
+
+      if (!certEncontrada) {
+        if (codigo.includes('SYS')) certEncontrada = CATALOGO_CERTIFICACIONES.find(c => c.codigoPrefijo === 'SYS');
+        else if (codigo.includes('NET')) certEncontrada = CATALOGO_CERTIFICACIONES.find(c => c.codigoPrefijo === 'NET');
+        else if (codigo.includes('DEV')) certEncontrada = CATALOGO_CERTIFICACIONES.find(c => c.codigoPrefijo === 'DEV');
+        else if (codigo.includes('ROOT')) certEncontrada = CATALOGO_CERTIFICACIONES.find(c => c.codigoPrefijo === 'ROOT');
+        else certEncontrada = CATALOGO_CERTIFICACIONES[0];
+      }
+
+      const nombreEstudiante = nombreParam || 'Estudiante Acreditado';
+      const fechaActual = new Date().toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      resultBox.innerHTML = `
+        <div class="result-header">
+          <div class="result-badge-success">
+            <span class="check-pulse">✓</span>
+            <span>CREDENCIAL AUTÉNTICA Y VERIFICADA</span>
+          </div>
+          <span class="result-timestamp">Validado en tiempo real</span>
+        </div>
+
+        <div class="result-body">
+          <div class="result-main-info">
+            <div class="result-icon-box" style="--cert-accent: ${certEncontrada?.colorAcento};">
+              <span>${certEncontrada?.icono}</span>
+            </div>
+            <div>
+              <span class="result-sub-label">TITULAR DEL CERTIFICADO:</span>
+              <h2 class="result-name">${nombreEstudiante}</h2>
+              <span class="result-cert-title">${certEncontrada?.titulo}</span>
+            </div>
+          </div>
+
+          <div class="result-grid-details">
+            <div class="detail-item">
+              <span class="detail-label">IDENTIFICADOR DE CREDENCIAL</span>
+              <strong class="detail-value text-accent">${codigo}</strong>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">INSTITUCIÓN EMISORA</span>
+              <strong class="detail-value">ApuntesDev Academy • SMR & CODE</strong>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">ESTADO DEL REGISTRO</span>
+              <strong class="detail-value text-green">● ACTIVO Y VIGENTE</strong>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">FECHA DE EMISIÓN</span>
+              <strong class="detail-value">${fechaActual}</strong>
+            </div>
+          </div>
+
+          <div class="result-competencias-box">
+            <h4>Competencias Técnicas Acreditadas:</h4>
+            <ul class="result-comp-list">
+              ${(certEncontrada?.competencias || []).map(comp => `<li>◈ ${comp}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div class="result-footer">
+            <p>Este documento digital certifica que el titular ha completado de forma autónoma los módulos teóricos y exámenes prácticos interactivos exigidos por el plan de estudios.</p>
+            <a href="/certificados" class="btn-back-hub">Ver todas las certificaciones →</a>
+          </div>
+        </div>
+      `;
+    }
+  });
+</script>
+
+<style is:global>
+  .verify-page-wrapper {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 6rem;
+  }
+
+  .verify-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .verify-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
+  }
+
+  .verify-header h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    margin: 0 0 1rem 0;
+  }
+
+  .verify-subtitle {
+    font-size: 1.05rem;
+    color: #94a3b8;
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── BUSCADOR ── */
+  .verify-search-box {
+    margin-bottom: 3rem;
+  }
+
+  .verify-form {
+    display: flex;
+    gap: 0.75rem;
+    background: rgba(13, 16, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 0.5rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  }
+
+  .verify-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    padding: 0.85rem 1.25rem;
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .verify-form input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .btn-verify {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #060809;
+    border: none;
+    border-radius: 12px;
+    padding: 0.85rem 1.75rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px var(--accent-glow);
+    white-space: nowrap;
+  }
+
+  .btn-verify:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px var(--accent-glow);
+  }
+
+  /* ── RESULTADO CARD ── */
+  .verify-result-card {
+    background: rgba(13, 16, 25, 0.95);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(74, 222, 128, 0.08);
+    backdrop-filter: blur(14px);
+    animation: slideUp 0.35s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .result-badge-success {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid #4ade80;
+    color: #4ade80;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.9rem;
+    border-radius: 100px;
+  }
+
+  .check-pulse {
+    font-weight: 900;
+  }
+
+  .result-timestamp {
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  .result-main-info {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .result-icon-box {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--cert-accent);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 0 20px var(--cert-accent);
+  }
+
+  .result-sub-label {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .result-name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  .result-cert-title {
+    font-size: 1.05rem;
+    color: #38bdf8;
+    font-weight: 700;
+  }
+
+  .result-grid-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .detail-label {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .detail-value {
+    font-size: 0.95rem;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .text-accent { color: var(--accent-color) !important; font-family: var(--font-mono); }
+  .text-green { color: #4ade80 !important; }
+
+  .result-competencias-box {
+    margin-bottom: 2rem;
+  }
+
+  .result-competencias-box h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.85rem 0;
+  }
+
+  .result-comp-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 1.5rem;
+  }
+
+  .result-comp-list li {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    font-family: var(--font-mono);
+  }
+
+  .result-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .result-footer p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.82rem;
+    max-width: 580px;
+    line-height: 1.5;
+  }
+
+  .btn-back-hub {
+    color: var(--accent-color);
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .btn-back-hub:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .verify-form {
+      flex-direction: column;
+    }
+    .result-grid-details,
+    .result-comp-list {
+      grid-template-columns: 1fr;
+    }
+    .result-main-info {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

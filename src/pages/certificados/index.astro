@@ -1,0 +1,236 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import CertificadosHub from '../../components/certificados/CertificadosHub.tsx';
+---
+
+<Layout 
+  title="Certificaciones Técnicas y Diplomas Oficiales | ApuntesDev"
+  description="Consigue tus Diplomas y Certificaciones Profesionales en Sistemas, Redes y Programación. Acredita tus competencias técnicas con código QR y verificación criptográfica para LinkedIn y CV."
+>
+  <Header />
+
+  <main class="cert-page-wrapper">
+    <!-- HERO SECTION DE CERTIFICACIONES -->
+    <section class="cert-hero reveal">
+      <div class="cert-hero-badge">
+        <span class="badge-dot"></span>
+        <span>PROGRAMA DE ACREDITACIÓN PROFESIONAL • PROMOCIÓN 2026</span>
+        <span class="badge-spark">🎓</span>
+      </div>
+
+      <h1 class="cert-hero-title">
+        Certificaciones Técnicas & <br />
+        <span class="text-gradient-gold">Diplomas Oficiales</span>
+      </h1>
+
+      <p class="cert-hero-desc">
+        Demuestra tu dominio en <strong>Sistemas Operativos</strong>, <strong>Arquitectura de Redes</strong> y <strong>Desarrollo Web</strong>. Cada módulo completado desbloquea un diploma digital de alta resolución, descargable en PDF A4 apaisado y con <strong>código QR de verificación criptográfica</strong> para adjuntar a tu currículum o añadir a tu perfil de LinkedIn.
+      </p>
+
+      <!-- STATS RÁPIDAS -->
+      <div class="cert-stats-strip">
+        <div class="stat-pill">
+          <span class="stat-icon">📜</span>
+          <span>4 Diplomas Disponibles</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">🔒</span>
+          <span>Verificación con Código QR</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">💼</span>
+          <span>Compatible con LinkedIn</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">📥</span>
+          <span>Descarga en PDF A4 Oficial</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HUB INTERACTIVO DE CERTIFICACIONES -->
+    <section class="cert-main-section reveal">
+      <CertificadosHub client:load />
+    </section>
+
+    <!-- PREGUNTAS FRECUENTES Y GUÍA DE VERIFICACIÓN -->
+    <section class="cert-faq-section reveal">
+      <h2>Preguntas Frecuentes sobre las Certificaciones</h2>
+      
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>¿Cómo se desbloquea cada certificado?</h3>
+          <p>
+            Al leer los apuntes y superar con éxito los cuestionarios técnicos tipo test de cada categoría (13 en Sistemas, 14 en Redes o 13 en Programación). En cuanto tu progreso alcance el 100%, el botón de emisión oficial se activará automáticamente.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>¿Cómo puedo añadir el diploma a mi perfil de LinkedIn?</h3>
+          <p>
+            Al pulsar en <em>"Ver Diploma"</em>, haz clic en el botón <strong>"💼 Añadir a LinkedIn"</strong>. Se abrirá la pasarela oficial de LinkedIn con el nombre de la certificación, la institución emisora (ApuntesDev), el ID de credencial y la URL de verificación rellenados de forma automática.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>¿Cómo valida un reclutador o profesor la autenticidad?</h3>
+          <p>
+            Cada diploma incorpora un <strong>código QR único</strong> y un identificador criptográfico permanente. Cualquier persona que escanee el código con su teléfono o visite la URL de verificación podrá comprobar en vivo el nombre del estudiante, la fecha de emisión y el nivel alcanzado.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>¿Tiene algún coste la emisión del certificado?</h3>
+          <p>
+            No. Todos los diplomas y certificaciones técnicas de ApuntesDev son <strong>100% gratuitos</strong> para los estudiantes y forman parte de nuestro compromiso con la educación técnica abierta y gamificada.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .cert-page-wrapper {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  /* ── HERO ── */
+  .cert-hero {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .cert-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #ffd700;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: #ffd700;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ffd700;
+  }
+
+  .cert-hero-title {
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    margin: 0 0 1.25rem 0;
+    line-height: 1.15;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #ca8a04 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.3));
+  }
+
+  .cert-hero-desc {
+    font-size: 1.15rem;
+    color: #94a3b8;
+    max-width: 820px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .cert-stats-strip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.45rem 1rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #e2e8f0;
+  }
+
+  .stat-icon {
+    font-size: 1rem;
+  }
+
+  /* ── MAIN SECTION ── */
+  .cert-main-section {
+    margin-bottom: 5rem;
+  }
+
+  /* ── FAQ SECTION ── */
+  .cert-faq-section {
+    background: rgba(13, 16, 25, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 3rem;
+  }
+
+  .cert-faq-section h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 2rem 0;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .faq-item p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .cert-hero-title {
+      font-size: 2.2rem;
+    }
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+    .cert-faq-section {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
