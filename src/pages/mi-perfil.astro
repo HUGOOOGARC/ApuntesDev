@@ -56,10 +56,11 @@ import Footer from '../components/Footer.astro';
               <span class="avatar-emoji">👨‍💻</span>
             </div>
             <div class="perfil-info">
-              <h2>Operador SMR</h2>
+              <h2>${perfil.tituloActivo || 'Operador SMR'}</h2>
               <div class="nivel-badge">
                 Nivel ${perfil.nivel} 
                 ${perfil.prestigio > 0 ? `<span class="prestigio-star">⭐ x${perfil.prestigio}</span>` : ''}
+                ${perfil.cristalesAscension > 0 ? `<span style="margin-left: 6px; color: #60a5fa;">💎 ${perfil.cristalesAscension}</span>` : ''}
               </div>
             </div>
           </div>

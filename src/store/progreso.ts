@@ -52,6 +52,15 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
   try {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
+      // Guardar temas desbloqueados, títulos desbloqueados y título activo codificados
+      const titulosTokens = (nuevoPerfil.titulosDesbloqueados || ['Cadete Técnico']).map(t => 'title:' + t);
+      const activeTitleToken = 'active_title:' + (nuevoPerfil.tituloActivo || 'Cadete Técnico');
+      const payloadTemas = Array.from(new Set([
+        ...(nuevoPerfil.temasDesbloqueados || ['default']),
+        ...titulosTokens,
+        activeTitleToken
+      ]));
+
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -63,7 +72,7 @@ async function sincronizarConSupabase(nuevoPerfil: PerfilEstudiante) {
           cristales_ascension: nuevoPerfil.cristalesAscension,
           apuntes_completados: nuevoPerfil.apuntesCompletados,
           tema_activo: nuevoPerfil.temaActivo,
-          temas_desbloqueados: nuevoPerfil.temasDesbloqueados,
+          temas_desbloqueados: payloadTemas,
           updated_at: new Date().toISOString()
         })
         .eq('id', session.user.id);
@@ -90,15 +99,43 @@ export async function cargarPerfilDesdeSupabase() {
 
       if (data && !error) {
         const perfilActual = perfilStore.get();
-        // Fusión segura de arrays para no perder progreso local ni remoto
+        
+        // Fusión segura de arrays de apuntes
         const apuntesCombinados = Array.from(new Set([
           ...(perfilActual.apuntesCompletados || []),
           ...(data.apuntes_completados || [])
         ]));
+
+        // Extraer temas reales vs títulos codificados desde temas_desbloqueados
+        const rawTemas: string[] = data.temas_desbloqueados || ['default'];
+        const temasRemotos = rawTemas.filter((t) => !t.startsWith('title:') && !t.startsWith('active_title:'));
+        const titulosRemotos = rawTemas
+          .filter((t) => t.startsWith('title:'))
+          .map((t) => t.replace('title:', ''));
+        const activeTitleEntry = rawTemas.find((t) => t.startsWith('active_title:'));
+        const tituloActivoRemoto = activeTitleEntry ? activeTitleEntry.replace('active_title:', '') : null;
+
         const temasCombinados = Array.from(new Set([
           ...(perfilActual.temasDesbloqueados || ['default']),
-          ...(data.temas_desbloqueados || ['default'])
+          ...temasRemotos,
+          'default' // Siempre disponible
         ]));
+
+        const titulosCombinados = Array.from(new Set([
+          ...(perfilActual.titulosDesbloqueados || ['Cadete Técnico']),
+          ...titulosRemotos,
+          'Cadete Técnico' // Siempre disponible
+        ]));
+
+        const temaFinal = data.tema_activo || perfilActual.temaActivo || 'default';
+        const tituloFinal = tituloActivoRemoto || perfilActual.tituloActivo || 'Cadete Técnico';
+
+        if (temaFinal && !temasCombinados.includes(temaFinal)) {
+          temasCombinados.push(temaFinal);
+        }
+        if (tituloFinal && !titulosCombinados.includes(tituloFinal)) {
+          titulosCombinados.push(tituloFinal);
+        }
 
         perfilStore.set({
           ...perfilActual,
@@ -109,9 +146,19 @@ export async function cargarPerfilDesdeSupabase() {
           multiplicadorXP: data.multiplicador_xp ?? perfilActual.multiplicadorXP,
           cristalesAscension: data.cristales_ascension ?? perfilActual.cristalesAscension,
           apuntesCompletados: apuntesCombinados,
-          temaActivo: data.tema_activo ?? perfilActual.temaActivo,
-          temasDesbloqueados: temasCombinados
+          temaActivo: temaFinal,
+          temasDesbloqueados: temasCombinados,
+          tituloActivo: tituloFinal,
+          titulosDesbloqueados: titulosCombinados
         });
+
+        // Asegurar que el DOM y localStorage reflejen el tema activo cargado
+        if (typeof document !== 'undefined' && temaFinal) {
+          document.documentElement.setAttribute('data-theme', temaFinal);
+        }
+        if (typeof localStorage !== 'undefined' && temaFinal) {
+          localStorage.setItem('apuntesdev_tema_activo', temaFinal);
+        }
       }
     }
   } catch (error) {
@@ -221,16 +268,26 @@ export async function aplicarPrestigio() {
 
 export async function comprarTemaNormal(idTema: string, precio: number) {
   const perfil = perfilStore.get();
+  const desbloqueados = perfil.temasDesbloqueados || ['default'];
   
-  if (perfil.monedas >= precio && !perfil.temasDesbloqueados.includes(idTema)) {
+  if (perfil.monedas >= precio && !desbloqueados.includes(idTema)) {
+    const nuevosTemas = Array.from(new Set([...desbloqueados, idTema]));
     const perfilActualizado: PerfilEstudiante = {
       ...perfil,
       monedas: perfil.monedas - precio,
-      temasDesbloqueados: [...perfil.temasDesbloqueados, idTema],
+      temasDesbloqueados: nuevosTemas,
       temaActivo: idTema
     };
 
     perfilStore.set(perfilActualizado);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', idTema);
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('apuntesdev_tema_activo', idTema);
+    }
+
     await sincronizarConSupabase(perfilActualizado);
     return true;
   }
@@ -239,16 +296,26 @@ export async function comprarTemaNormal(idTema: string, precio: number) {
 
 export async function comprarTemaPremium(idTema: string, precioCristales: number) {
   const perfil = perfilStore.get();
+  const desbloqueados = perfil.temasDesbloqueados || ['default'];
   
-  if (perfil.cristalesAscension >= precioCristales && !perfil.temasDesbloqueados.includes(idTema)) {
+  if (perfil.cristalesAscension >= precioCristales && !desbloqueados.includes(idTema)) {
+    const nuevosTemas = Array.from(new Set([...desbloqueados, idTema]));
     const perfilActualizado: PerfilEstudiante = {
       ...perfil,
       cristalesAscension: perfil.cristalesAscension - precioCristales,
-      temasDesbloqueados: [...perfil.temasDesbloqueados, idTema],
+      temasDesbloqueados: nuevosTemas,
       temaActivo: idTema
     };
 
     perfilStore.set(perfilActualizado);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', idTema);
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('apuntesdev_tema_activo', idTema);
+    }
+
     await sincronizarConSupabase(perfilActualizado);
     return true;
   }
@@ -257,9 +324,24 @@ export async function comprarTemaPremium(idTema: string, precioCristales: number
 
 export async function equiparTema(idTema: string) {
   const perfil = perfilStore.get();
-  if (perfil.temasDesbloqueados.includes(idTema)) {
-    const perfilActualizado: PerfilEstudiante = { ...perfil, temaActivo: idTema };
+  const desbloqueados = perfil.temasDesbloqueados || ['default'];
+  if (!desbloqueados.includes('default')) desbloqueados.push('default');
+
+  if (desbloqueados.includes(idTema)) {
+    const perfilActualizado: PerfilEstudiante = { 
+      ...perfil, 
+      temaActivo: idTema,
+      temasDesbloqueados: desbloqueados
+    };
     perfilStore.set(perfilActualizado);
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', idTema);
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('apuntesdev_tema_activo', idTema);
+    }
+
     await sincronizarConSupabase(perfilActualizado);
     return true;
   }
@@ -298,33 +380,47 @@ export async function comprarBoosterXP(multiplicadorDelta: number, precioMonedas
   return false;
 }
 
-export async function comprarTitulo(titulo: string, precio: number) {
+export async function comprarTitulo(titulo: string, precioMonedas: number = 0, precioCristales: number = 0) {
   const perfil = perfilStore.get();
   const titulos = perfil.titulosDesbloqueados || ['Cadete Técnico'];
 
-  if (perfil.monedas >= precio && !titulos.includes(titulo)) {
-    const perfilActualizado: PerfilEstudiante = {
-      ...perfil,
-      monedas: perfil.monedas - precio,
-      titulosDesbloqueados: [...titulos, titulo],
-      tituloActivo: titulo
-    };
-    perfilStore.set(perfilActualizado);
-    await sincronizarConSupabase(perfilActualizado);
-    return true;
+  if (titulos.includes(titulo)) {
+    return equiparTitulo(titulo);
   }
-  return false;
+
+  if (precioCristales > 0 && perfil.cristalesAscension < precioCristales) {
+    return false;
+  }
+  if (precioMonedas > 0 && perfil.monedas < precioMonedas) {
+    return false;
+  }
+
+  const nuevosTitulos = Array.from(new Set([...titulos, titulo]));
+  const perfilActualizado: PerfilEstudiante = {
+    ...perfil,
+    monedas: perfil.monedas - precioMonedas,
+    cristalesAscension: perfil.cristalesAscension - precioCristales,
+    titulosDesbloqueados: nuevosTitulos,
+    tituloActivo: titulo
+  };
+
+  perfilStore.set(perfilActualizado);
+  await sincronizarConSupabase(perfilActualizado);
+  return true;
 }
 
 export async function equiparTitulo(titulo: string) {
   const perfil = perfilStore.get();
   const titulos = perfil.titulosDesbloqueados || ['Cadete Técnico'];
-  if (titulos.includes(titulo)) {
+  if (titulos.includes(titulo) || titulo === 'Cadete Técnico') {
+    const nuevosTitulos = Array.from(new Set([...titulos, titulo]));
     const perfilActualizado: PerfilEstudiante = {
       ...perfil,
-      tituloActivo: titulo
+      tituloActivo: titulo,
+      titulosDesbloqueados: nuevosTitulos
     };
     perfilStore.set(perfilActualizado);
+    await sincronizarConSupabase(perfilActualizado);
     return true;
   }
   return false;

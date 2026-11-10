@@ -89,11 +89,19 @@ export default function PerfilDashboard() {
               <span className="avatar-emoji">👨‍💻</span>
             </div>
             <div className="perfil-info">
-              <h2>{username ? username : 'Operador Anónimo'}</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <h2>{username ? username : 'Operador Anónimo'}</h2>
+                <span style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.35)', padding: '0.2rem 0.65rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 700 }}>
+                  🏷️ {perfil.tituloActivo || 'Cadete Técnico'}
+                </span>
+              </div>
               <div className="badges-row">
                 <span className="nivel-badge">Nivel {perfil.nivel}</span>
                 <span className="prestigio-badge">⭐ Prestigio {perfil.prestigio}</span>
                 <span className="boost-badge">⚡ x{perfil.multiplicadorXP} XP</span>
+                <span className="crystal-badge" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.35)', padding: '0.25rem 0.6rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700 }}>
+                  💎 {perfil.cristalesAscension} Cristales
+                </span>
               </div>
             </div>
           </div>

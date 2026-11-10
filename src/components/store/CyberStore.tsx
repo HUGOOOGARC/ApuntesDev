@@ -133,13 +133,20 @@ export default function CyberStore() {
 
   // 1. Manejo de compra/equipar Temas
   const handleTemaAction = async (tema: TemaItem) => {
-    const yaDesbloqueado = perfil.temasDesbloqueados.includes(tema.id);
-    const yaEquipado = perfil.temaActivo === tema.id;
+    const temasDesbloqueados = perfil.temasDesbloqueados || ['default'];
+    const yaDesbloqueado = temasDesbloqueados.includes(tema.id) || tema.id === 'default';
+    const yaEquipado = (perfil.temaActivo || 'default') === tema.id;
 
     if (yaEquipado) return;
 
     if (yaDesbloqueado) {
       await equiparTema(tema.id);
+      if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', tema.id);
+      }
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('apuntesdev_tema_activo', tema.id);
+      }
       notify(`🎨 Tema "${tema.nombre}" equipado.`);
       return;
     }
@@ -152,8 +159,16 @@ export default function CyberStore() {
       }
       const ok = await comprarTemaPremium(tema.id, tema.precioCristales);
       if (ok) {
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-theme', tema.id);
+        }
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('apuntesdev_tema_activo', tema.id);
+        }
         confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         notify(`✨ ¡Tema Legendario "${tema.nombre}" desbloqueado y equipado!`);
+      } else {
+        notify('❌ No se pudo completar la compra del tema.');
       }
       return;
     }
@@ -167,15 +182,23 @@ export default function CyberStore() {
 
     const ok = await comprarTemaNormal(tema.id, precio);
     if (ok) {
+      if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', tema.id);
+      }
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('apuntesdev_tema_activo', tema.id);
+      }
       confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
       notify(`🎉 ¡Tema "${tema.nombre}" comprado y equipado!`);
+    } else {
+      notify('❌ No se pudo completar la compra del tema.');
     }
   };
 
   // 2. Manejo de Títulos
   const handleTituloAction = async (item: TituloItem) => {
     const titulos = perfil.titulosDesbloqueados || ['Cadete Técnico'];
-    const yaDesbloqueado = titulos.includes(item.titulo);
+    const yaDesbloqueado = titulos.includes(item.titulo) || item.titulo === 'Cadete Técnico';
     const yaEquipado = (perfil.tituloActivo || 'Cadete Técnico') === item.titulo;
 
     if (yaEquipado) return;
@@ -188,18 +211,15 @@ export default function CyberStore() {
 
     if (item.precioCristales && item.precioCristales > 0) {
       if (perfil.cristalesAscension < item.precioCristales) {
-        notify('❌ Requiere 1 Cristal de Ascensión 💎.');
+        notify('❌ Requiere 1 Cristal de Ascensión 💎 (Prestigio requerido).');
         return;
       }
-      // Deducción de cristal y desbloqueo de título legendario
-      const ok = await comprarTitulo(item.titulo, 0);
+      const ok = await comprarTitulo(item.titulo, 0, item.precioCristales);
       if (ok) {
-        perfilStore.set({
-          ...perfil,
-          cristalesAscension: perfil.cristalesAscension - item.precioCristales
-        });
         confetti({ particleCount: 150, spread: 90 });
-        notify(`👑 ¡Título Legendario "${item.titulo}" desbloqueado!`);
+        notify(`👑 ¡Título Legendario "${item.titulo}" desbloqueado y activo!`);
+      } else {
+        notify('❌ Error al adquirir el título.');
       }
       return;
     }
@@ -213,6 +233,8 @@ export default function CyberStore() {
     if (ok) {
       confetti({ particleCount: 70, spread: 60 });
       notify(`🎉 ¡Título "${item.titulo}" adquirido y activo!`);
+    } else {
+      notify('❌ Error al adquirir el título.');
     }
   };
 
@@ -221,7 +243,8 @@ export default function CyberStore() {
     const ok = await comprarBoosterXP(delta, precioMonedas, precioCristales);
     if (ok) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      notify(`⚡ ¡Overclock aplicado! Tu multiplicador ahora es de ${perfil.multiplicadorXP}x permanente.`);
+      const mult = perfilStore.get().multiplicadorXP;
+      notify(`⚡ ¡Overclock aplicado! Tu multiplicador ahora es de ${mult}x permanente.`);
     } else {
       notify('❌ Recursos insuficientes para adquirir este acelerador.');
     }
@@ -343,8 +366,9 @@ export default function CyberStore() {
       {activeTab === 'temas' && (
         <div className="catalog-grid">
           {TEMAS_CATALOGO.map((tema) => {
-            const desbloqueado = perfil.temasDesbloqueados.includes(tema.id);
-            const equipado = perfil.temaActivo === tema.id;
+            const temasDesbloqueados = perfil.temasDesbloqueados || ['default'];
+            const desbloqueado = temasDesbloqueados.includes(tema.id) || tema.id === 'default';
+            const equipado = (perfil.temaActivo || 'default') === tema.id;
 
             return (
               <div
@@ -424,8 +448,8 @@ export default function CyberStore() {
       {activeTab === 'titulos' && (
         <div className="catalog-grid">
           {TITULOS_CATALOGO.map((item) => {
-            const desbloqueado = titulosUsuario.includes(item.titulo);
-            const equipado = tituloActual === item.titulo;
+            const desbloqueado = titulosUsuario.includes(item.titulo) || item.titulo === 'Cadete Técnico';
+            const equipado = (tituloActual || 'Cadete Técnico') === item.titulo;
 
             return (
               <div

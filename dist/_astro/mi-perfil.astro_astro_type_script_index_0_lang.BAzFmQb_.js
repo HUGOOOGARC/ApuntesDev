@@ -1,4 +1,4 @@
-import{f as e,p as t}from"./progreso.D0ebvTy0.js";document.addEventListener(`astro:page-load`,()=>{let n=document.getElementById(`bento-dashboard`);if(!n)return;t.subscribe(t=>{let r=e(t.nivel,t.xp),i=t.apuntesCompletados?t.apuntesCompletados.length:0,a=t.apuntesCompletados.filter(e=>e.includes(`som`)||e.includes(`sor`)).length,o=t.apuntesCompletados.filter(e=>e.includes(`python`)||e.includes(`backend`)||e.includes(`frontend`)).length,s=t.apuntesCompletados.filter(e=>e.includes(`redes`)||e.includes(`routing`)).length,c=Math.min(a*20,100),l=Math.min(o*20,100),u=Math.min(s*20,100);n.innerHTML=`
+import{f as e,p as t}from"./progreso.CBlwQzyC.js";document.addEventListener(`astro:page-load`,()=>{let n=document.getElementById(`bento-dashboard`);if(!n)return;t.subscribe(t=>{let r=e(t.nivel,t.xp),i=t.apuntesCompletados?t.apuntesCompletados.length:0,a=t.apuntesCompletados.filter(e=>e.includes(`som`)||e.includes(`sor`)).length,o=t.apuntesCompletados.filter(e=>e.includes(`python`)||e.includes(`backend`)||e.includes(`frontend`)).length,s=t.apuntesCompletados.filter(e=>e.includes(`redes`)||e.includes(`routing`)).length,c=Math.min(a*20,100),l=Math.min(o*20,100),u=Math.min(s*20,100);n.innerHTML=`
         <!-- CARD 1: IDENTIDAD Y PROGRESO -->
         <article class="bento-card bento-wide">
           <div class="perfil-header">
@@ -6,10 +6,11 @@ import{f as e,p as t}from"./progreso.D0ebvTy0.js";document.addEventListener(`ast
               <span class="avatar-emoji">👨‍💻</span>
             </div>
             <div class="perfil-info">
-              <h2>Operador SMR</h2>
+              <h2>${t.tituloActivo||`Operador SMR`}</h2>
               <div class="nivel-badge">
                 Nivel ${t.nivel} 
                 ${t.prestigio>0?`<span class="prestigio-star">⭐ x${t.prestigio}</span>`:``}
+                ${t.cristalesAscension>0?`<span style="margin-left: 6px; color: #60a5fa;">💎 ${t.cristalesAscension}</span>`:``}
               </div>
             </div>
           </div>
