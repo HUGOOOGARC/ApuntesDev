@@ -4,93 +4,366 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Contacto - ApuntesDev">
+<Layout 
+  title="Contacto y Soporte | ApuntesDev"
+  description="Canal de comunicación oficial de ApuntesDev. Envía tus dudas académicas sobre SMR, propuestas de nuevos apuntes, reportes de erratas o consultas sobre colaboraciones y publicidad."
+>
   <Header />
-  
-  <section class="contacto-container">
-    <h1>✉️ Contacta conmigo</h1>
-    <p>¿Tienes alguna duda sobre los apuntes de SMR o programación? Escríbeme y te responderé lo antes posible.</p>
 
-    <!-- Cambia la URL del action por la que te dé Formspree -->
-    <form action="https://formspree.io/f/xvkknnnq" method="POST" class="formulario">
-      <div class="grupo-form">
-        <label for="nombre">Nombre o Nickname:</label>
-        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Linuxero99">
+  <main class="contact-page-wrapper">
+    <div class="contact-header reveal">
+      <div class="contact-badge">CANAL DE COMUNICACIÓN ABIERTO</div>
+      <h1>Contacta con <span class="text-accent">Nosotros</span></h1>
+      <p class="contact-subtitle">
+        ¿Tienes dudas sobre algún apunte, has detectado una errata o quieres sugerir un nuevo tema de redes o Linux? Escríbenos y te responderemos en un plazo máximo de 24-48 horas laborables.
+      </p>
+    </div>
+
+    <div class="contact-layout reveal">
+      <!-- PANEL LATERAL DE INFORMACIÓN DE CONTACTO -->
+      <aside class="contact-info-panel">
+        <div class="info-card">
+          <div class="info-icon">📧</div>
+          <h3>Correo Electrónico</h3>
+          <p>Para consultas académicas, sugerencias o privacidad:</p>
+          <a href="mailto:contacto@apuntesdev.com" class="info-link">contacto@apuntesdev.com</a>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon">⚡</div>
+          <h3>Comunidad & GitHub</h3>
+          <p>Repositorio de apuntes y código abierto para la comunidad:</p>
+          <a href="https://github.com/HUGOOOGARC/ApuntesDev" target="_blank" rel="noopener noreferrer" class="info-link">
+            github.com/HUGOOOGARC/ApuntesDev ↗
+          </a>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon">🛡️</div>
+          <h3>Compromiso de Privacidad</h3>
+          <p>
+            Tus datos de contacto (nombre y correo) se utilizarán exclusivamente para atender tu consulta y jamás serán cedidos a terceros ni utilizados con fines de spam publicitario.
+          </p>
+          <a href="/privacidad" class="info-sublink">Leer Política de Privacidad →</a>
+        </div>
+      </aside>
+
+      <!-- FORMULARIO DE CONTACTO -->
+      <div class="contact-form-container">
+        <form action="https://formspree.io/f/xvkknnnq" method="POST" class="contact-form" id="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">Nombre o Alias del Estudiante *</label>
+              <input 
+                type="text" 
+                id="nombre" 
+                name="nombre" 
+                required 
+                placeholder="Ej: Hugo / SysAdmin99"
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Correo Electrónico de Contacto *</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                placeholder="tu-correo@ejemplo.com"
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="asunto">Motivo de la Consulta *</label>
+            <select id="asunto" name="asunto" required class="form-select">
+              <option value="duda-academica">Duda sobre un apunte o ejercicio técnico</option>
+              <option value="reporte-errata">Reportar una errata o comando desactualizado</option>
+              <option value="sugerencia">Sugerencia de nuevo tema o herramienta</option>
+              <option value="publicidad-colaboracion">Consulta sobre colaboraciones o Google AdSense</option>
+              <option value="privacidad-datos">Ejercicio de derechos de privacidad (RGPD)</option>
+              <option value="otro">Otro motivo</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mensaje">Mensaje Detallado *</label>
+            <textarea 
+              id="mensaje" 
+              name="mensaje" 
+              rows="6" 
+              required 
+              placeholder="Explica detalladamente tu duda o consulta..."
+            ></textarea>
+          </div>
+
+          <div class="form-checkbox-group">
+            <label class="checkbox-container">
+              <input type="checkbox" required name="acepto_privacidad" id="acepto_privacidad" />
+              <span class="checkbox-label">
+                He leído y acepto la <a href="/privacidad" target="_blank" class="accent-link">Política de Privacidad</a> y consiento el tratamiento de mis datos para responder a esta solicitud.
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-submit-contact">
+            <span>Enviar Mensaje</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </form>
       </div>
-
-      <div class="grupo-form">
-        <label for="email">Correo electrónico (para poder responderte):</label>
-        <input type="email" id="email" name="email" required placeholder="tu@email.com">
-      </div>
-
-      <div class="grupo-form">
-        <label for="mensaje">Tu mensaje:</label>
-        <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Escribe aquí tu duda..."></textarea>
-      </div>
-
-      <button type="submit" class="btn-enviar">Enviar mensaje</button>
-    </form>
-  </section>
+    </div>
+  </main>
 
   <Footer />
 </Layout>
 
 <style>
-  .contacto-container {
-    background: #1e1e1e;
-    padding: 2.5rem;
-    border-radius: 8px;
-    border: 1px solid #333;
-    max-width: 600px;
+  .contact-page-wrapper {
+    max-width: 1160px;
     margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
   }
-  h1 {
+
+  .contact-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .contact-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
     color: var(--accent-color);
-    margin-top: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
   }
-  p {
-    color: #ccc;
-    margin-bottom: 2rem;
+
+  .contact-header h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    margin: 0 0 1rem 0;
   }
-  .formulario {
+
+  .text-accent {
+    color: var(--accent-color);
+    text-shadow: 0 0 18px var(--accent-glow);
+  }
+
+  .contact-subtitle {
+    font-size: 1.05rem;
+    color: #94a3b8;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .contact-info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .info-card {
+    background: rgba(13, 15, 23, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.6rem;
+    backdrop-filter: blur(12px);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .info-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(74, 222, 128, 0.3);
+  }
+
+  .info-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .info-card h3 {
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin: 0 0 0.4rem 0;
+    font-weight: 800;
+  }
+
+  .info-card p {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 0 0 0.85rem 0;
+  }
+
+  .info-link {
+    color: var(--accent-color);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: opacity 0.2s;
+    word-break: break-all;
+  }
+
+  .info-link:hover {
+    text-decoration: underline;
+  }
+
+  .info-sublink {
+    color: #38bdf8;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .info-sublink:hover {
+    text-decoration: underline;
+  }
+
+  .contact-form-container {
+    background: rgba(13, 15, 23, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+  }
+
+  .contact-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
-  .grupo-form {
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-  label {
-    font-weight: bold;
-    color: #eee;
+
+  .form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #e2e8f0;
   }
-  input, textarea {
-    background-color: var(--bg-color);
-    border: 1px solid #444;
-    color: var(--text-color);
-    padding: 0.8rem;
-    border-radius: 4px;
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    color: #ffffff;
     font-family: inherit;
-    font-size: 1rem;
-  }
-  input:focus, textarea:focus {
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
     outline: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
     border-color: var(--accent-color);
+    background: rgba(15, 18, 28, 0.95);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15), 0 0 15px var(--accent-glow);
   }
-  .btn-enviar {
-    background-color: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
-    padding: 1rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 4px;
+
+  .form-group select {
     cursor: pointer;
-    transition: opacity 0.2s;
   }
-  .btn-enviar:hover {
-    opacity: 0.9;
+
+  .form-group select option {
+    background: #0d0f17;
+    color: #ffffff;
+  }
+
+  .form-checkbox-group {
+    margin-top: 0.25rem;
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  .checkbox-container input {
+    margin-top: 0.2rem;
+    accent-color: var(--accent-color);
+    cursor: pointer;
+  }
+
+  .btn-submit-contact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #060809;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+
+  .btn-submit-contact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-glow);
+  }
+
+  .accent-link {
+    color: var(--accent-color);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 900px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-form-container {
+      padding: 2rem 1.5rem;
+    }
   }
 </style>

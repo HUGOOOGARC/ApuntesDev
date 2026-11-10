@@ -4,23 +4,302 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Política de Cookies - ApuntesDev">
+<Layout 
+  title="Política de Cookies | ApuntesDev"
+  description="Información detallada sobre el uso de cookies técnicas, de preferencias y publicitarias de Google AdSense en ApuntesDev. Aprende cómo gestionarlas o desactivarlas."
+>
   <Header />
-  <article class="legal-doc">
-    <h1>Política de Cookies</h1>
-    <p>Esta web utiliza cookies propias y de terceros (Google AdSense) para ofrecer una mejor experiencia y mostrar anuncios personalizados.</p>
-    <h2>¿Qué son las cookies?</h2>
-    <p>Son pequeños archivos de texto que se guardan en tu navegador para recordar tus preferencias y visitas.</p>
-    <h2>Desactivación</h2>
-    <p>Puedes desactivar las cookies desde la configuración de tu navegador en cualquier momento.</p>
-  </article>
+
+  <main class="legal-page-wrapper">
+    <div class="legal-header reveal">
+      <div class="legal-badge">POLÍTICA DE COOKIES Y RASTREADORES</div>
+      <h1>Política de Cookies</h1>
+      <p class="legal-subtitle">Conforme al RGPD y a las directrices de Google AdSense • Actualizado: Noviembre 2026</p>
+    </div>
+
+    <article class="legal-doc-card reveal">
+      <section class="doc-section">
+        <h2>1. ¿Qué es una Cookie?</h2>
+        <p>
+          Una cookie es un pequeño archivo de texto que un sitio web descarga en tu ordenador, smartphone o tableta cuando accedes a determinadas páginas. Las cookies permiten a una página web, entre otras cosas, almacenar y recuperar información sobre los hábitos de navegación de un usuario o de su equipo, recordar su sesión de estudio y personalizar el aspecto visual de la interfaz.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>2. Tipos de Cookies Utilizadas en ApuntesDev</h2>
+        <p>
+          En este portal educativo utilizamos tanto cookies propias necesarias para el funcionamiento del sistema como cookies de terceros asociadas a la plataforma de publicidad Google AdSense:
+        </p>
+
+        <div class="table-responsive">
+          <table class="cookies-table">
+            <thead>
+              <tr>
+                <th>Nombre / Clave</th>
+                <th>Tipo y Origen</th>
+                <th>Duración</th>
+                <th>Finalidad y Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>apuntesdev_perfil:*</code></td>
+                <td>Propia (Local / Téc.)</td>
+                <td>Persistente</td>
+                <td>Almacena tu nivel, XP acumulada, monedas, temas visuales desbloqueados y lista de apuntes leídos en tu navegador para una carga instantánea.</td>
+              </tr>
+              <tr>
+                <td><code>sb-*-auth-token</code></td>
+                <td>Propia (Supabase)</td>
+                <td>Sesión / 1 año</td>
+                <td>Gestiona la sesión segura del usuario registrado y permite la sincronización de logros con la nube.</td>
+              </tr>
+              <tr>
+                <td><code>apuntesdev_cookie_consent</code></td>
+                <td>Propia (Técnica)</td>
+                <td>1 año</td>
+                <td>Recuerda tu elección de consentimiento en el banner de cookies para no volver a mostrártelo en cada visita.</td>
+              </tr>
+              <tr>
+                <td><code>_gads, _gac, IDE</code></td>
+                <td>Terceros (Google AdSense)</td>
+                <td>13 meses</td>
+                <td>Muestra publicidad digital, limita el número de veces que se muestra un anuncio a un usuario y mide la eficacia de las campañas publicitarias.</td>
+              </tr>
+              <tr>
+                <td><code>DSID, FLC, AID</code></td>
+                <td>Terceros (Google / DoubleClick)</td>
+                <td>Varia (días a meses)</td>
+                <td>Vincula la actividad del usuario en diferentes dispositivos si ha iniciado sesión previamente en su cuenta de Google para personalización publicitaria.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="doc-section highlight-box">
+        <h2>3. Publicidad Personalizada de Google AdSense</h2>
+        <p>
+          Google, como proveedor externo, utiliza cookies para publicar anuncios en nuestro sitio web. La utilización de estas cookies permite a Google y a sus socios publicar anuncios basados en las visitas previas que los usuarios han realizado a ApuntesDev o a otros sitios web en Internet.
+        </p>
+        <p>
+          Si no deseas que Google utilice tus datos de navegación para mostrarte anuncios personalizados según tus intereses, puedes deshabilitarlo en cualquier momento a través de la herramienta oficial:
+        </p>
+        <p>
+          👉 <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" class="accent-link">Centro de Control de Anuncios de Google (Google Ad Center)</a>
+        </p>
+        <p>
+          Adicionalmente, puedes desactivar el rastreo de redes publicitarias de terceros mediante las siguientes plataformas globales del sector publicitario:
+        </p>
+        <ul class="legal-list">
+          <li><a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" class="accent-link">Digital Advertising Alliance (DAA) — Choices</a></li>
+          <li><a href="https://www.youronlinechoices.eu/" target="_blank" rel="noopener noreferrer" class="accent-link">European Interactive Digital Advertising Alliance (EDAA) — Your Online Choices</a></li>
+          <li><a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener noreferrer" class="accent-link">Network Advertising Initiative (NAI)</a></li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>4. Cómo Gestionar o Bloquear Cookies en tu Navegador</h2>
+        <p>
+          Puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo mediante la configuración de las opciones del navegador que utilices. Ten en cuenta que si bloqueas las cookies técnicas esenciales, algunas funcionalidades (como el guardado de temas y apuntes completados) podrían verse afectadas:
+        </p>
+        <ul class="legal-list">
+          <li><strong>Google Chrome:</strong> Configuración → Privacidad y seguridad → Cookies y otros datos de sitios.</li>
+          <li><strong>Mozilla Firefox:</strong> Ajustes → Privacidad & Seguridad → Cookies y datos del sitio.</li>
+          <li><strong>Microsoft Edge:</strong> Configuración → Cookies y permisos del sitio → Administrar y eliminar cookies.</li>
+          <li><strong>Apple Safari:</strong> Preferencias → Privacidad → Bloquear todas las cookies o Gestionar datos de sitios web.</li>
+          <li><strong>Brave / Opera:</strong> Configuración → Privacidad y seguridad → Configuración de contenido → Cookies.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>5. Consentimiento y Modificaciones</h2>
+        <p>
+          Al pulsar el botón "Aceptar todas" en nuestro banner de cookies, estás consintiendo el uso de las cookies descritas de conformidad con esta Política. Puedes cambiar tu consentimiento en cualquier momento limpiando las cookies de tu navegador o desde el banner inferior de preferencias.
+        </p>
+      </section>
+    </article>
+  </main>
+
   <Footer />
 </Layout>
 
 <style>
-  /* Puedes copiar aquí exactamente los mismos estilos CSS que pusiste en privacidad.astro */
-  .legal-doc { background: #1e1e1e; padding: 2rem 3rem; border-radius: 8px; border: 1px solid #333; }
-  h1 { color: var(--accent-color); border-bottom: 1px solid #333; padding-bottom: 1rem; }
-  h2 { margin-top: 2rem; color: #fff; }
-  p { color: #ccc; line-height: 1.8; }
+  .legal-page-wrapper {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  .legal-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .legal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .legal-header h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .legal-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .legal-doc-card {
+    background: rgba(13, 15, 23, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 3rem 3.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+  }
+
+  .doc-section {
+    margin-bottom: 3rem;
+  }
+
+  .doc-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .doc-section h2 {
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.6rem;
+    letter-spacing: -0.015em;
+  }
+
+  .doc-section p {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0 0 1.2rem 0;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .cookies-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    background: rgba(10, 11, 16, 0.6);
+  }
+
+  .cookies-table th {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-weight: 800;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cookies-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+
+  .cookies-table code {
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--accent-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+
+  .highlight-box {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.06) 0%, rgba(74, 222, 128, 0.04) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 14px;
+    padding: 2rem 2.2rem;
+    margin: 2.5rem 0;
+  }
+
+  .highlight-box h2 {
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.2);
+  }
+
+  .legal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .legal-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: #cbd5e1;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  .legal-list li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #38bdf8;
+    font-weight: 900;
+  }
+
+  .accent-link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+
+  .accent-link:hover {
+    color: #86efac;
+  }
+
+  @media (max-width: 768px) {
+    .legal-doc-card {
+      padding: 2rem 1.5rem;
+    }
+
+    .legal-header h1 {
+      font-size: 2.1rem;
+    }
+  }
 </style>

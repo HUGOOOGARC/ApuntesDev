@@ -54,6 +54,7 @@ const anio = new Date().getFullYear();
           <li><a href="/privacidad">Política de Privacidad</a></li>
           <li><a href="/cookies">Política de Cookies</a></li>
           <li><a href="/aviso-legal">Aviso Legal</a></li>
+          <li><button type="button" id="btn-reopen-cookies" class="footer-cookie-btn">Configurar Cookies</button></li>
         </ul>
       </div>
 
@@ -67,6 +68,15 @@ const anio = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const btnReopen = document.getElementById('btn-reopen-cookies');
+    btnReopen?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('abrir-configuracion-cookies'));
+    });
+  });
+</script>
 
 <style>
   .main-footer {
@@ -225,6 +235,22 @@ const anio = new Date().getFullYear();
     padding: 0.3rem 0.75rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .footer-cookie-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+    font-family: inherit;
+    text-align: left;
+  }
+
+  .footer-cookie-btn:hover {
+    color: var(--accent-color);
   }
 
   @media (max-width: 900px) {

@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import CommandPalette from '../components/CommandPalette.tsx';
 import Toast from '../components/Toast.astro';
 import PWAInstallPrompt from '../components/PWAInstallPrompt.tsx';
+import CookieBanner from '../components/CookieBanner.tsx';
 
 interface Props {
   title: string;
@@ -51,11 +52,15 @@ const socialImageURL = image.startsWith('http')
   <meta name="application-name" content="ApuntesDev" />
   <meta name="msapplication-TileColor" content="#0a0a0f" />
   
-  <!-- SEO Técnico y Metadatos -->
+  <!-- SEO Técnico, Indexación y Metadatos para Google AdSense -->
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="author" content={author} />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <link rel="canonical" href={canonicalURL} />
+  
+  <!-- Verificación de Google AdSense (Descomentar y colocar tu ID cuando lo tengas en el panel de AdSense) -->
+  <!-- <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX" /> -->
   
   <!-- Open Graph / Facebook / LinkedIn -->
   <meta property="og:type" content={type} />
@@ -282,6 +287,8 @@ const socialImageURL = image.startsWith('http')
       });
     }
   </script>
+  <!-- Banner de Consentimiento de Cookies RGPD y Google AdSense -->
+  <CookieBanner client:load />
 </body>
 </html>
 

@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
 
+# Google AdSense Crawler (Requerido para la revisión y aprobación del sitio)
+User-agent: Mediapartners-Google
+Allow: /
+
+# Googlebot general
+User-agent: Googlebot
+Allow: /
+
+# Sitemaps oficiales
+Sitemap: https://apuntes-dev-six.vercel.app/sitemap-index.xml
 Sitemap: https://www.apuntesdev.com/sitemap-index.xml

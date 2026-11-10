@@ -4,56 +4,271 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Sobre mí - ApuntesDev">
+<Layout 
+  title="Sobre el Proyecto y Autoría | ApuntesDev"
+  description="Conoce el origen, misión educativa y metodología de ApuntesDev: la plataforma gamificada diseñada por y para estudiantes de Sistemas Microinformáticos y Redes (SMR) y Desarrollo Web."
+>
   <Header />
-  
-  <article class="perfil">
-    <h1>Sobre mí</h1>
-    
-    <div class="contenido-perfil">
-      <p>¡Hola! Soy el creador de <strong>ApuntesDev</strong>.</p>
+
+  <main class="about-page-wrapper">
+    <!-- HERO ABOUT -->
+    <section class="about-hero reveal">
+      <div class="about-badge">PROYECTO EDUCATIVO // E-E-A-T</div>
+      <h1>Sobre Apuntes<span class="text-accent">Dev</span></h1>
+      <p class="about-tagline">
+        Democratizando y gamificando la formación técnica en Sistemas Operativos, Redes y Programación para estudiantes de Formación Profesional y autodidactas.
+      </p>
+    </section>
+
+    <!-- BENTO GRID DE PRESENTACIÓN -->
+    <div class="about-grid reveal">
       
-      <p>Actualmente soy estudiante del ciclo de <strong>Sistemas Microinformáticos y Redes (SMR)</strong>. Decidí crear esta web con un doble propósito: tener mis apuntes de 1º y 2º organizados y accesibles en cualquier momento, y ayudar a otras personas que estén estudiando lo mismo o que quieran adentrarse en el mundo de la informática desde cero.</p>
-      
-      <h2>¿Qué encontrarás aquí?</h2>
-      <ul>
-        <li>Tutoriales y comandos para Sistemas Operativos (Windows/Linux).</li>
-        <li>Conceptos de Redes locales y seguridad.</li>
-        <li>Introducción a la programación (Python) y Desarrollo Web (HTML/CSS/Astro).</li>
-      </ul>
-      
-      <p>Todo el contenido está escrito desde mi experiencia en clase y mis propias prácticas, diseñado para ir directo al grano.</p>
+      <!-- CARD 1: EL ORIGEN Y LA MISIÓN -->
+      <article class="about-card about-card--wide">
+        <div class="card-icon">🚀</div>
+        <h2>El Origen de la Plataforma</h2>
+        <p>
+          <strong>ApuntesDev</strong> nació en las aulas de Formación Profesional del ciclo formativo de <strong>Sistemas Microinformáticos y Redes (SMR)</strong>. Al enfrentarnos a temarios extensos de administración de servidores, direccionamiento de subredes y arquitectura de ordenadores, detectamos una necesidad imperiosa: los estudiantes necesitaban un repositorio digital centralizado que fuera <strong>directo al grano</strong>, con sintaxis actualizada y comandos reales comprobados en entornos de laboratorio.
+        </p>
+        <p>
+          Lo que comenzó como una colección personal de guías de terminal y configuraciones de switches Cisco ha evolucionado hacia una <strong>plataforma de estudio gamificada de alto rendimiento</strong>, donde cada lección completada otorga experiencia (XP), créditos virtuales y rangos de maestría técnica.
+        </p>
+      </article>
+
+      <!-- CARD 2: PILARES PEDAGÓGICOS -->
+      <article class="about-card">
+        <div class="card-icon">🎯</div>
+        <h3>Metodología Sin Rodeos</h3>
+        <p>
+          Cada apunte está diseñado siguiendo el principio <em>"Aprender Haciendo"</em>: explicaciones conceptuales concisas acompañadas de tablas comparativas, ejemplos prácticos de consola y advertencias de seguridad para laboratorios reales.
+        </p>
+      </article>
+
+      <!-- CARD 3: GAMIFICACIÓN Y RETENCIÓN -->
+      <article class="about-card">
+        <div class="card-icon">⚡</div>
+        <h3>Gamificación Educativa</h3>
+        <p>
+          A través de nuestro sistema de niveles, rankings globales y desafíos tipo test interactivos, transformamos el estudio técnico tradicional en un reto motivador que fomenta la constancia y el hábito diario de lectura técnica.
+        </p>
+      </article>
+
+      <!-- CARD 4: HERRAMIENTAS INTERACTIVAS -->
+      <article class="about-card">
+        <div class="card-icon">🛠️</div>
+        <h3>Arsenal de Herramientas</h3>
+        <p>
+          Integramos simuladores en tiempo real (Calculadora visual de Subnetting IPv4/VLSM, Generador de Permisos Linux octal/simbólico y Simulador de Terminal) para poner en práctica la teoría sin necesidad de abrir una máquina virtual.
+        </p>
+      </article>
+
+      <!-- CARD 5: COMPROMISO Y TRANSPARENCIA EDITORIAL -->
+      <article class="about-card about-card--wide">
+        <div class="card-icon">🛡️</div>
+        <h2>Compromiso de Calidad y Transparencia</h2>
+        <p>
+          En ApuntesDev creemos firmemente en la educación pública, accesible y de calidad:
+        </p>
+        <ul class="about-list">
+          <li><strong>Contenido 100% Gratuito:</strong> Todos los apuntes, cuestionarios interactivos y herramientas de cálculo son de libre acceso para cualquier estudiante o docente sin muros de pago.</li>
+          <li><strong>Revisión Continua:</strong> Mantenemos las guías al día con las versiones LTS más recientes de Linux (Debian 12, Ubuntu 24.04), Windows Server y Python 3.12+.</li>
+          <li><strong>Financiación Ética:</strong> Para costear los servidores, la base de datos en tiempo real y el dominio web, recurrimos a publicidad no invasiva mediante Google AdSense, garantizando siempre que los anuncios no obstaculicen la lectura ni la experiencia de aprendizaje.</li>
+        </ul>
+
+        <div class="about-action-box">
+          <p>¿Tienes dudas, sugerencias o quieres proponer un nuevo tema para el arsenal?</p>
+          <a href="/contacto" class="btn-about-contact">✉️ Contactar con el Autor y Soporte →</a>
+        </div>
+      </article>
+
     </div>
-  </article>
+  </main>
 
   <Footer />
 </Layout>
 
 <style>
-  .perfil {
-    background: #1e1e1e;
-    padding: 2rem 3rem;
-    border-radius: 8px;
-    border: 1px solid #333;
+  .about-page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
   }
-  h1 {
+
+  .about-hero {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .about-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
     color: var(--accent-color);
-    border-bottom: 1px solid #333;
-    padding-bottom: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    margin-bottom: 1.25rem;
   }
-  h2 {
-    color: #fff;
+
+  .about-hero h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    margin: 0 0 1rem 0;
+  }
+
+  .text-accent {
+    color: var(--accent-color);
+    text-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .about-tagline {
+    font-size: 1.15rem;
+    color: #94a3b8;
+    max-width: 750px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .about-card {
+    background: rgba(13, 15, 23, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 2.2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+
+  .about-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(74, 222, 128, 0.3);
+  }
+
+  .about-card--wide {
+    grid-column: 1 / -1;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-card h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  .about-card h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 0.8rem 0;
+  }
+
+  .about-card p {
+    color: #cbd5e1;
+    font-size: 0.98rem;
+    line-height: 1.75;
+    margin: 0 0 1rem 0;
+  }
+
+  .about-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .about-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .about-list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: #cbd5e1;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  .about-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent-color);
+    font-weight: 900;
+  }
+
+  .about-action-box {
     margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
-  .contenido-perfil p, .contenido-perfil li {
-    color: #ccc;
-    line-height: 1.8;
-    font-size: 1.1rem;
+
+  .about-action-box p {
+    margin: 0;
+    font-weight: 600;
+    color: #e2e8f0;
   }
-  ul {
-    margin-bottom: 2rem;
+
+  .btn-about-contact {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+    color: #060809;
+    padding: 0.65rem 1.4rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px var(--accent-glow);
   }
-  li {
-    margin-bottom: 0.5rem;
+
+  .btn-about-contact:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px var(--accent-glow);
+  }
+
+  @media (max-width: 900px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-hero h1 {
+      font-size: 2.2rem;
+    }
+
+    .about-action-box {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 </style>
