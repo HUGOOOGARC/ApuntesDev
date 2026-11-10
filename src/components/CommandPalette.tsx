@@ -9,7 +9,9 @@ const ACCIONES = [
   { id: 'programacion', title: '💻 Desarrollo y Programación', route: '/programacion' },
   { id: 'ranking', title: '🏆 Leaderboard Global', route: '/ranking' },
   { id: 'perfil', title: '👤 Mi Perfil y Estadísticas', route: '/perfil' },
-  { id: 'tienda', title: '🎨 Tienda de Temas', route: '/perfil' }
+  { id: 'duelo', title: '⚔️ Arena 1v1 (Duelo Técnico)', route: '/duelo' },
+  { id: 'tienda', title: '🏪 Tienda de Recompensas', route: '/tienda' },
+  { id: 'certificados', title: '🎓 Certificaciones & Diplomas', route: '/certificados' }
 ];
 
 export default function CommandPalette() {

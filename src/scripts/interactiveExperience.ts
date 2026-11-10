@@ -3,95 +3,143 @@ import Lenis from 'lenis';
 let lenisInstance: Lenis | null = null;
 
 /**
- * Inicia Lenis Smooth Scroll con soporte para Astro View Transitions
+ * Inicia Lenis Smooth Scroll optimizado (solo en desktop con puntero preciso)
  */
 export function initLenis() {
-  // Evitar en usuarios con preferencias de movimiento reducido
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Evitar en móviles, tablets y preferencias de movimiento reducido
+  const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 900;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (isTouch || prefersReduced) {
+    if (lenisInstance) {
+      lenisInstance.destroy();
+      lenisInstance = null;
+    }
     return;
   }
 
-  // Destruir instancia previa si existe (al cambiar de página)
   if (lenisInstance) {
     lenisInstance.destroy();
     lenisInstance = null;
   }
 
-  lenisInstance = new Lenis({
-    duration: 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    orientation: 'vertical',
-    gestureOrientation: 'vertical',
-    smoothWheel: true,
-    touchMultiplier: 1.5,
-  });
+  try {
+    lenisInstance = new Lenis({
+      duration: 0.75, // Rápido y reactivo, sin sensación de pesadez ni lag
+      easing: (t) => 1 - Math.pow(1 - t, 3), // Curva cubic out natural
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      touchMultiplier: 1.0,
+      syncTouch: false,
+    });
 
-  function raf(time: number) {
-    lenisInstance?.raf(time);
-    requestAnimationFrame(raf);
+    let animationId: number;
+    function raf(time: number) {
+      lenisInstance?.raf(time);
+      animationId = requestAnimationFrame(raf);
+    }
+    animationId = requestAnimationFrame(raf);
+  } catch (err) {
+    console.warn('Lenis falló al iniciar, usando scroll nativo:', err);
   }
-
-  requestAnimationFrame(raf);
 }
 
 /**
- * Inicializa el efecto Glow Spotlight 3D Tilt en tarjetas interactivas
+ * Inicializa el efecto Glow Spotlight 3D Tilt con caché de layout (cero layout-thrashing)
  */
 export function initSpotlightTilt() {
+  // Solo en dispositivos con ratón real
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
   const cards = document.querySelectorAll<HTMLElement>('.spotlight-card, .feature-tile, .ruta-card, .rival-card, .item-card');
 
   cards.forEach((card) => {
-    // Evitar bind duplicado
     if (card.dataset.spotlightBound === 'true') return;
     card.dataset.spotlightBound = 'true';
 
+    let rect: DOMRect | null = null;
+    let ticking = false;
+
+    // Cachear dimensiones al entrar (evita getBoundingClientRect en cada pixel)
+    card.addEventListener('mouseenter', () => {
+      rect = card.getBoundingClientRect();
+    }, { passive: true });
+
     card.addEventListener('mousemove', (e: MouseEvent) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      if (!rect || ticking) return;
+      ticking = true;
 
-      // Coordenadas CSS para el gradiente radial reflectante
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
+      requestAnimationFrame(() => {
+        if (!rect) {
+          ticking = false;
+          return;
+        }
 
-      // Inclinación 3D sutil (máximo 6 grados para no cansar la vista)
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -5.5;
-      const rotateY = ((x - centerX) / centerX) * 5.5;
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
-    });
+        card.style.setProperty('--mouse-x', `${x.toFixed(0)}px`);
+        card.style.setProperty('--mouse-y', `${y.toFixed(0)}px`);
+
+        // Inclinación 3D sutil (máximo 4 grados para no sobrecargar composición)
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -4;
+        const rotateY = ((x - centerX) / centerX) * 4;
+
+        card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(1)}deg) rotateY(${rotateY.toFixed(1)}deg) translateY(-2px)`;
+        ticking = false;
+      });
+    }, { passive: true });
 
     card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-    });
+      rect = null;
+      card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+    }, { passive: true });
   });
 }
 
 /**
- * Botones Magnéticos para CTAs de impacto ("Empezar a Estudiar", "Jugar Duelo", "Comprar")
+ * Botones Magnéticos optimizados
  */
 export function initMagneticButtons() {
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
   const magneticElements = document.querySelectorAll<HTMLElement>('.magnetic, [data-magnetic]');
 
   magneticElements.forEach((btn) => {
     if (btn.dataset.magneticBound === 'true') return;
     btn.dataset.magneticBound = 'true';
 
-    btn.addEventListener('mousemove', (e: MouseEvent) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - (rect.left + rect.width / 2);
-      const y = e.clientY - (rect.top + rect.height / 2);
+    let rect: DOMRect | null = null;
+    let ticking = false;
 
-      // Factor de atracción magnética suave
-      const magnetStrength = 0.28;
-      btn.style.transform = `translate(${x * magnetStrength}px, ${y * magnetStrength}px) scale(1.03)`;
-    });
+    btn.addEventListener('mouseenter', () => {
+      rect = btn.getBoundingClientRect();
+    }, { passive: true });
+
+    btn.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!rect || ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        if (!rect) {
+          ticking = false;
+          return;
+        }
+        const x = e.clientX - (rect.left + rect.width / 2);
+        const y = e.clientY - (rect.top + rect.height / 2);
+
+        btn.style.transform = `translate(${(x * 0.22).toFixed(1)}px, ${(y * 0.22).toFixed(1)}px)`;
+        ticking = false;
+      });
+    }, { passive: true });
 
     btn.addEventListener('mouseleave', () => {
-      btn.style.transform = 'translate(0px, 0px) scale(1)';
-    });
+      rect = null;
+      btn.style.transform = 'translate(0px, 0px)';
+    }, { passive: true });
   });
 }
 
@@ -101,7 +149,6 @@ export function initMagneticButtons() {
 export function initAdSenseShield() {
   const adHolders = document.querySelectorAll<HTMLElement>('.adsense-slot-shield');
   adHolders.forEach((holder) => {
-    // Si ya contiene un iframe de AdSense cargado, ocultar skeleton
     const hasLoadedAd = holder.querySelector('iframe, ins.adsbygoogle[data-ad-status="filled"]');
     if (hasLoadedAd) {
       holder.classList.add('ad-filled');

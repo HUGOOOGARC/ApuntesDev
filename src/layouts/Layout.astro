@@ -113,6 +113,9 @@ const socialImageURL = image.startsWith('http')
 </head>
 
 <body>
+  <!-- Capa de fondo fija aislada en GPU (elimina repaints por scroll a 120 FPS) -->
+  <div class="ambient-bg-layer" aria-hidden="true"></div>
+
   <!-- Paleta de comandos rápida (Ctrl + K) -->
   <CommandPalette client:load />
 
@@ -413,11 +416,22 @@ const socialImageURL = image.startsWith('http')
     flex-direction: column;
     min-height: 100vh;
     background-color: var(--bg-color);
+    transition: background-color 0.35s ease;
+  }
+
+  /* Capa de fondo fija acelerada por hardware (CERO repaints durante scroll) */
+  .ambient-bg-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -10;
+    background-color: var(--bg-color);
     background-image: 
       radial-gradient(circle at 50% -12%, var(--hologram-color) 0%, transparent 55%),
-      radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+      radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 100% 100%, 28px 28px;
-    background-attachment: fixed;
+    transform: translateZ(0);
+    will-change: transform;
     transition: background-color 0.35s ease;
   }
 

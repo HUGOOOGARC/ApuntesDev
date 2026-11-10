@@ -300,14 +300,15 @@ import ServerRack3D from '../components/3d/ServerRack3D.tsx';
     z-index: 0;
   }
 
-  /* Esferas de luz ambiental flotantes */
+  /* Esferas de luz ambiental optimizadas (Sin filter:blur para máxima tasa de cuadros) */
   .glow-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
     pointer-events: none;
-    opacity: 0.6;
-    animation: orbFloat 10s ease-in-out infinite alternate;
+    opacity: 0.55;
+    transform: translateZ(0);
+    will-change: transform;
+    animation: orbFloat 12s ease-in-out infinite alternate;
   }
 
   .glow-orb--emerald {
